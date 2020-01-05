@@ -45,45 +45,19 @@ namespace HoloFab {
 				string bot = receivedRobots[i].robotName;
 				double[] basePlane = receivedRobots[i].robotPlane;
 				EndeffectorData endEffector = receivedRobots[i].endEffector;
-				//double[] tcp = receivedRobots[i]._TCPplane;
                 
 				#if DEBUG
 				Debug.Log("Robot: " + bot);
 				#endif
 				if (bot == "KR150-2_110") {
 					ProcessHoloBot(this.tagKukaKR150, this.goPrefabKukaKR150, basePlane, endEffector, robotID);
-					// GameObject Kuka = GameObject.FindGameObjectWithTag(this.tagKukaKR150);
-					//
-					// if (Kuka == null) {
-					// 	Debug.Log("Robot: Kuka doesn't exist. Creating.");
-					// 	CreateBot(this.cPlane, this.goPrefabKukaKR150, basePlane, endEffector, robotID);
-					// } else {
-					// 	Debug.Log("Robot: Kuka exists. Updating.");
-					// 	Kuka.transform.SetPositionAndRotation(new Vector3((float)basePlane[0], (float)basePlane[1], (float)basePlane[2]) + cPlane.transform.position,
-					// 	                                      cPlane.transform.rotation * new Quaternion(-(float)basePlane[5], (float)basePlane[6], (float)basePlane[4], (float)basePlane[3]));
-					// }
+
 				} else if (bot == "IRB120") {
 					ProcessHoloBot(this.tagABB120, this.goPrefabABB120, basePlane, endEffector, robotID);
-					// GameObject abbOne = GameObject.FindGameObjectWithTag(this.tagABB120);
-					// if (abbOne == null) {
-					// 	Debug.Log("Robot: ABB120 doesn't exist. Creating.");
-					// 	CreateBot(this.cPlane, this.goPrefabABB120, basePlane, endEffector, robotID);
-					// } else {
-					// 	Debug.Log("Robot: ABB120 exists. Updating.");
-					// 	abbOne.transform.SetPositionAndRotation(new Vector3((float)basePlane[0], (float)basePlane[1], (float)basePlane[2]) + cPlane.transform.position,
-					// 	                                        cPlane.transform.rotation * new Quaternion(-(float)basePlane[5], (float)basePlane[6], (float)basePlane[4], (float)basePlane[3]));
-					// }
+
 				} else if (bot == "IRB140") {
 					ProcessHoloBot(this.tagABB140, this.goPrefabABB140, basePlane, endEffector, robotID);
-					// GameObject abbTwo = GameObject.FindGameObjectWithTag(this.tagABB140);
-					// if (abbTwo == null) {
-					// 	Debug.Log("Robot: ABB140 doesn't exist. Creating.");
-					// 	CreateBot(cPlane, this.goPrefabABB140, basePlane, endEffector, robotID);
-					// } else {
-					// 	Debug.Log("Robot: ABB140 exists. Updating.");
-					// 	abbTwo.transform.SetPositionAndRotation(new Vector3((float)basePlane[0], (float)basePlane[1], (float)basePlane[2]) + cPlane.transform.position,
-					// 	                                        cPlane.transform.rotation * new Quaternion(-(float)basePlane[5], (float)basePlane[6], (float)basePlane[4], (float)basePlane[3]));
-					// }
+
 				} else {
 					#if DEBUG
 					Debug.Log("Robot: robot not recognized");

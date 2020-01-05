@@ -78,7 +78,7 @@ namespace GoogleARCore.Examples.Common
                  return;
             }
             ////////////////////////////////////////////////////////////////////////////////
-            // Commented
+            // Modified
             m_MeshRenderer.enabled = DetectedPlaneVisualizer.flagVisible;
             ////////////////////////////////////////////////////////////////////////////////
             _UpdateMeshIfNeeded();

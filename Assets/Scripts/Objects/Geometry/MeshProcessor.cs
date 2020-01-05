@@ -11,10 +11,8 @@ using HoloFab.CustomData;
 namespace HoloFab {
 	// Process Received Meshes and update relevant gameObjects.
 	// TODO:
-	// - Check if both MeshPlus and Mesh work
 	// - Check if shader now is fixed.
 	// - Difference between Prefabs is only tag?
-	// - Should Objects be place in CPlane or in Object MAnager like robots?
 	public class MeshProcessor : MonoBehaviour {
 		[Tooltip("An Prefab of a mesh.")]
 		public GameObject goPrefabMesh;
