@@ -1,17 +1,35 @@
 using System;
 using System.Collections.Generic;
 
+#if WINDOWS_UWP
+using Windows.Networking;
+using Windows.Networking.Connectivity;
+using Windows.Networking.Sockets;
+using Windows.Storage.Streams;
+using System.Threading;
+using System.Threading.Tasks;
+#else
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+#endif
 
 namespace HoloFab {
 	public static class TCPReceive {
-		// Connection Object Reference.
+		#if WINDOWS_UWP
+		// Connection Object References.
+		private static StreamSocketListener listener;
+		private static StreamSocket client;
+		// Task Object Reference.
+		private static CancelationTokenSource cancelationTokenSource;
+		private static Task receiver;
+		#else
+		// Connection Object References.
 		private static TcpListener listener;
 		private static TcpClient client;
 		// Thread Object Reference.
-		private static Thread receiveThread = null;
+		private static Thread receiver = null;
+		#endif
 		// Local Port
 		private static int localPort = 11111;
 		// History:
@@ -26,25 +44,94 @@ namespace HoloFab {
 		// Enable connection - if not yet open.
 		public static void TryStartConnection(int _localPort=11111) {
 			// Create a new thread to receive incoming messages.
-			if (TCPReceive.receiveThread == null) {
-				if (TCPReceive.localPort != _localPort)
-					TCPReceive.localPort = _localPort;
-				// Reset.
-				TCPReceive.debugMessages = new List<string>();
-				TCPReceive.dataMessages = new List<string>();
-				// Start the thread.
-				TCPReceive.receiveThread = new Thread(new ThreadStart(ReceiveData));
-				TCPReceive.receiveThread.IsBackground = true;
-				TCPReceive.receiveThread.Start();
-				TCPReceive.debugMessages.Add("TCPReceive: Thread Started.");
-			}
+			if (TCPReceive.receiver == null)
+				StartConnection(_localPort);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		#if WINDOWS_UWP
+		private static async void StartConnection(int _localPort){
+			if (TCPReceive.localPort != _localPort)
+				TCPReceive.localPort = _localPort;
+			// Reset.
+			TCPReceive.debugMessages = new List<string>();
+			TCPReceive.dataMessages = new List<string>();
+			// Start the thread.
+			TCPReceive.cancelationTokenSource = new CancellationTokenSource();
+			TCPReceive.receiver = new Task(() => ReceiveData(), TCPReceive.cancelationTokenSource.Token);
+			TCPReceive.receiver.Start();
+			TCPReceive.debugMessages.Add("TCPReceive: Task Finished: " + TCPReceive.receiver.IsCompleted); // Check if even works at all.
+			TCPReceive.debugMessages.Add("TCPReceive: Thread Started.");
 		}
 		// Disable connection.
 		public static void StopConnection() {
 			// Reset.
-			if (TCPReceive.receiveThread != null) {
-				TCPReceive.receiveThread.Abort();
-				TCPReceive.receiveThread = null; // Good Practice?
+			if (TCPReceive.receiver != null) {
+				TCPReceive.cancelationTokenSource.Cancel();
+				TCPReceive.receiver.Wait(1);
+				TCPReceive.cancelationTokenSource.Dispose();
+				TCPReceive.receiver = null; // Good Practice?
+				TCPReceive.debugMessages.Add("TCPReceive: Stopping Task.");
+			}
+			if (TCPReceive.listener != null) {
+				TCPReceive.listener.Dispose();
+				TCPReceive.listener = null; // Good Practice?
+				TCPReceive.debugMessages.Add("TCPReceive: Stopping Listener.");
+			}
+			// if (TCPReceive.client != null) {
+			// 	TCPReceive.client.Close();
+			// 	TCPReceive.client = null; // Good Practice?
+			// 	TCPReceive.debugMessages.Add("TCPReceive: Stopping Client.");
+			// }
+		}
+		// Constantly check for new messages on given port.
+		private static async void ReceiveData(){
+			try {
+				// Open.
+				TCPReceive.listener = new StreamSocketListener();
+				TCPReceive.listener.ConnectionReceived += OnClientFound;
+				await TCPReceive.listener.BindServiceNameAsync(TCPReceive.localPort);
+			} catch (Exception exception) {
+				SocketErrorStatus webErrorStatus = SocketError.GetStatus(exception.GetBaseException().HResult);
+				string webError = (webErrorStatus.ToString() != "Unknown") ? webErrorStatus.ToString() :
+				                                                             exception.Message;
+				// Exception.
+				TCPReceive.debugMessages.Add("TCPReceive: Exception: " + webError); //exception.ToString()
+			} finally {
+				TCPReceive.StopConnection();
+			}
+		}
+		private static async void OnClientFound(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args){
+			string receiveString;
+			using (StreamReader reader = new StreamReader(args.Socket.InputStream.AsStreamForRead())) {
+				receiveString = await reader.ReadLineAsync();
+			}
+			// If buffer not empty - react to it.
+			if ((!string.IsNullOrEmpty(receiveString)) && ((TCPReceive.dataMessages.Count == 0) || (TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1] != receiveString))) {
+				TCPReceive.debugMessages.Add("TCPReceive: New Data: " + receiveString);
+				TCPReceive.dataMessages.Add(receiveString);
+				TCPReceive.flagDataRead = false;
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		#else
+		private static void StartConnection(int _localPort){
+			if (TCPReceive.localPort != _localPort)
+				TCPReceive.localPort = _localPort;
+			// Reset.
+			TCPReceive.debugMessages = new List<string>();
+			TCPReceive.dataMessages = new List<string>();
+			// Start the thread.
+			TCPReceive.receiver = new Thread(new ThreadStart(ReceiveData));
+			TCPReceive.receiver.IsBackground = true;
+			TCPReceive.receiver.Start();
+			TCPReceive.debugMessages.Add("TCPReceive: Thread Started.");
+		}
+		// Disable connection.
+		public static void StopConnection() {
+			// Reset.
+			if (TCPReceive.receiver != null) {
+				TCPReceive.receiver.Abort();
+				TCPReceive.receiver = null; // Good Practice?
 				TCPReceive.debugMessages.Add("TCPReceive: Stopping Thread.");
 			}
 			if (TCPReceive.listener != null) {
@@ -59,32 +146,18 @@ namespace HoloFab {
 			}
 		}
 		// Constantly check for new messages on given port.
-		private static void ReceiveData() {
-			// Open.
-			IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, TCPReceive.localPort);
-			TCPReceive.listener = new TcpListener(anyIP);
-			TCPReceive.listener.Start();
-			// Infinite loop.
+		private static void ReceiveData(){
 			try {
+				// Open.
+				IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, TCPReceive.localPort);
+				TCPReceive.listener = new TcpListener(anyIP);
+				TCPReceive.listener.Start();
+				// Infinite loop.
 				while (true) {
 					TCPReceive.client = TCPReceive.listener.AcceptTcpClient();
                     
 					if (TCPReceive.client.Available > 0) {
-                        byte[] data = new byte[8096];
-                        string receiveString = string.Empty;
-                        // Receive Bytes.
-                        NetworkStream stream = TCPReceive.client.GetStream();
-						int i;
-						while ((i = stream.Read(data, 0, data.Length)) != 0) {
-							receiveString += EncodeUtilities.DecodeData(data, 0, i);
-                            TCPReceive.debugMessages.Add("TCPReceive: Receiveddata: " + receiveString);
-						}
-						// If buffer not empty - react to it.
-						if ((!string.IsNullOrEmpty(receiveString)) && ((TCPReceive.dataMessages.Count == 0) || (TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1] != receiveString))) {
-							TCPReceive.debugMessages.Add("TCPReceive: New Data: " + receiveString);
-							TCPReceive.dataMessages.Add(receiveString);
-							TCPReceive.flagDataRead = false;
-						}
+						OnClientFound();
 					}
 				}
 			} catch (SocketException exception) {
@@ -97,5 +170,23 @@ namespace HoloFab {
 				TCPReceive.StopConnection();
 			}
 		}
+		private static void OnClientFound(){
+			byte[] data = new byte[8096];
+			string receiveString = string.Empty;
+			// Receive Bytes.
+			NetworkStream stream = TCPReceive.client.GetStream();
+			int i;
+			while ((i = stream.Read(data, 0, data.Length)) != 0) {
+				receiveString += EncodeUtilities.DecodeData(data, 0, i);
+				TCPReceive.debugMessages.Add("TCPReceive: Received data: " + receiveString);
+			}
+			// If buffer not empty - react to it.
+			if ((!string.IsNullOrEmpty(receiveString)) && ((TCPReceive.dataMessages.Count == 0) || (TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1] != receiveString))) {
+				TCPReceive.debugMessages.Add("TCPReceive: New Data: " + receiveString);
+				TCPReceive.dataMessages.Add(receiveString);
+				TCPReceive.flagDataRead = false;
+			}
+		}
+		#endif
 	}
 }

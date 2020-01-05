@@ -23,31 +23,35 @@ namespace HoloFab {
 		// Local Variables.
 		// - last interpreted message.
 		private string lastMessage = "";
-        // - CPlane object tag.
-        private string tagCPlane = "CPlane";
-        // - Local reference of CPlane object
-        private GameObject cPlane;
-
-        // Unity Functions.
-        void OnEnable() {
+		// - CPlane object tag.
+		private string tagCPlane = "CPlane";
+		// - Local reference of CPlane object
+		private GameObject cPlane;
+        
+		// temp:
+		public List<string> debugMessages = new List<string>();
+        
+		// Unity Functions.
+		void OnEnable() {
 			TCPReceive.TryStartConnection(this.localPortOverride);
 		}
 		void OnDisable() {
 			TCPReceive.StopConnection();
 		}
 		void Update() {
-            if (this.cPlane == null) {
-			    this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-			    #if DEBUG
-			    Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
-			    #endif
-			    if (this.cPlane == null) return;
-            }
-
+			if (this.cPlane == null) {
+				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+				#if DEBUG
+				Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
+				#endif
+				if (this.cPlane == null) return;
+			}
+            
 			if (!TCPReceive.flagDataRead) {
 				TCPReceive.flagDataRead = true;
 				InterpreteData(TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1]);
 			}
+			this.debugMessages = TCPReceive.debugMessages;
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// A function responsible for decoding and reacting to received TCP data.
