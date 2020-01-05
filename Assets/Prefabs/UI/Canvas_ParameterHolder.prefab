@@ -211,7 +211,8 @@ MonoBehaviour:
   easingDuration: 0.5
   flagStartState: 0
   flagSwipeRight: 1
-  swipeMultiplier: 0.05
+  closedStateRemainder: 0.05
+  startDraggingThreshold: 50
 --- !u!1 &9112842467166750415
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,7 +247,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 160, y: 25}
+  m_AnchoredPosition: {x: 175, y: 25}
   m_SizeDelta: {x: 200, y: -25}
   m_Pivot: {x: 0, y: 0}
 --- !u!223 &9112842467166750515
@@ -321,8 +322,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: 25}
-  m_SizeDelta: {x: 100, y: -25}
+  m_AnchoredPosition: {x: 65, y: 25}
+  m_SizeDelta: {x: 60, y: -25}
   m_Pivot: {x: 0, y: 0}
 --- !u!223 &9112842468198084537
 Canvas:
@@ -396,8 +397,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -65, y: 25}
-  m_SizeDelta: {x: 400, y: -25}
+  m_AnchoredPosition: {x: -60, y: 25}
+  m_SizeDelta: {x: 360, y: -25}
   m_Pivot: {x: 1, y: 0}
 --- !u!223 &9112842468277384852
 Canvas:
