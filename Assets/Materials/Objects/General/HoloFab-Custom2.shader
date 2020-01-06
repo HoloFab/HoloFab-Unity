@@ -14,7 +14,7 @@
 			Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "LightMode"="ForwardBase" }
 
 			// Turn off back surface culling
-			//Cull Back
+			Cull Off
 			// Turn on Blending for alpha
 			Blend SrcAlpha OneMinusSrcAlpha
 
@@ -57,9 +57,9 @@
 				fixed4 color : SV_Target;
 			};
 			///////////////////////////////////////////////////////////////////////
+			// Vertex Shader.
 			// - shadow strength
 			float _ShadowStrength;
-			// Vertex Shader.
 			fragmentShaderData vert(vertexShaderData IN) {
 				fragmentShaderData output;
 
@@ -85,6 +85,8 @@
 
 				return output;
 			}
+
+			///////////////////////////////////////////////////////////////////////
 			// Geometry Shader
 			//[maxvertexcount(6)]
 			//void geom (triangle fragmentShaderData IN[3], inout TriangleStream<fragmentShaderData> output) {
@@ -102,6 +104,9 @@
 			//	}
 			//	output.RestartStrip();
 			//}
+
+			///////////////////////////////////////////////////////////////////////
+			// Fragment Shader.
 			// Inputs from outside the shader:
 			// - alpha
 			float _Alpha;
@@ -109,137 +114,12 @@
 			//float4 _TintColor;
 			//// - texture
 			//sampler2D _MainTexture;
-			// Fragment Shader.
 			fragmentShaderOutput frag (fragmentShaderData IN) {
 				fragmentShaderOutput output;
 
 				// Apply Colors
 				output.color = IN.vertexColor;
-				output.color.a = _Alpha/2;
-				//output.color *= _TintColor;
-
-				// Apply Shadows
-				fixed shadowAttenuation = 1;
-				//fixed shadowAttenuation = SHADOW_ATTENUATION(IN);
-				fixed3 lighting = IN.diffuseColor * shadowAttenuation + IN.ambientColor;
-				output.color.rgb *= (1 - (1-lighting) * IN.vertexColor.a);
-
-				// Apply Texture
-				//fixed4 texture = tex2D (_MainTexture, IN.uv);
-				//output.color.rgb *= texture.rgb;
-				//output.color.a *= texture.a;
-
-				return output;
-			}
-			ENDCG
-		}
-		// Main Pass.
-		Pass {
-			Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "LightMode"="ForwardBase" }
-
-			// Turn off back surface culling
-			Cull Back
-			// Turn on Blending for alpha
-			Blend SrcAlpha OneMinusSrcAlpha
-
-			// Actual Shader
-			CGPROGRAM
-			// Shader function declarations
-			#pragma vertex vert
-			//#pragma geometry geom
-			#pragma fragment frag
-			#pragma multi_compile_fwdbase nolightmap nodirlightmap nodynlightmap novertexlight
-			// Includes
-			#include "UnityCG.cginc"
-			#include "UnityLightingCommon.cginc"
-			#include "Lighting.cginc"
-			#include "AutoLight.cginc"
-
-			///////////////////////////////////////////////////////////////////////
-			// vertex shader inputs
-			struct vertexShaderData {
-				float4 position : POSITION; // vertex position
-				float3 normal : NORMAL; // vertex normal
-				//float2 uv : TEXCOORD0; // texture coordinate
-				fixed3 vertexColor : COLOR0; // vertex color
-			};
-
-			// fragment shader inputs
-			struct fragmentShaderData {
-				float4 position : SV_POSITION; // Screen vertex position
-				float3 normal : NORMAL; // vertex normal
-				//float3 worldPosition : TEXCOORD0; // World position
-				//float2 uv : TEXCOORD1; // texture coordinate
-				//SHADOW_COORDS(2) // put shadows data into TEXCOORD1
-				fixed4 vertexColor : COLOR0; // vertex color
-				fixed4 diffuseColor : COLOR1; // diffuse lighting color
-				fixed3 ambientColor : COLOR2; // ambient lighting color
-			};
-
-			// fragment shader outputs
-			struct fragmentShaderOutput {
-				fixed4 color : SV_Target;
-			};
-			///////////////////////////////////////////////////////////////////////
-			// - shadow strength
-			float _ShadowStrength;
-			// Vertex Shader.
-			fragmentShaderData vert(vertexShaderData IN) {
-				fragmentShaderData output;
-
-				output.position = UnityObjectToClipPos(IN.position);
-				output.normal = IN.normal;
-				//output.worldPosition = mul(UNITY_MATRIX_MVP, IN.position);
-				//output.uv = IN.uv;
-				half3 worldNormal = UnityObjectToWorldNormal(IN.normal);
-
-				// Color
-				output.vertexColor.rgb = IN.vertexColor;// ShadeVertexLights(IN.position, IN.normal);
-				output.vertexColor.a = _ShadowStrength;
-
-				// Diffuse Lighting
-				half normalMagnitude = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
-				output.diffuseColor = normalMagnitude * _LightColor0;
-
-				// Ambient lighting
-				output.ambientColor = ShadeSH9(half4(worldNormal, 1));
-
-				// Compute shadow data
-				//TRANSFER_SHADOW(output)
-
-				return output;
-			}
-			// Geometry Shader
-			//[maxvertexcount(6)]
-			//void geom (triangle fragmentShaderData IN[3], inout TriangleStream<fragmentShaderData> output) {
-			//	for (int i = 0; i < 3; i++) {
-			//		fragmentShaderData currentPoint = IN[i];
-			//		currentPoint.vertexColor.a = 0;
-			//		output.Append(currentPoint);
-			//	}
-			//	output.RestartStrip();
-			//	for (int j = 0; j < 3; j++) {
-			//	//for (int j = 2; j >= 0; j--) {
-			//		fragmentShaderData currentPoint = IN[j];
-			//		//currentPoint.vertexColor.a = 0;
-			//		output.Append(currentPoint);
-			//	}
-			//	output.RestartStrip();
-			//}
-			// Inputs from outside the shader:
-			// - alpha
-			float _Alpha;
-			//// - tint color
-			//float4 _TintColor;
-			//// - texture
-			//sampler2D _MainTexture;
-			// Fragment Shader.
-			fragmentShaderOutput frag (fragmentShaderData IN) {
-				fragmentShaderOutput output;
-
-				// Apply Colors
-				output.color = IN.vertexColor;
-				output.color.a = _Alpha/2;
+				output.color.a = _Alpha;
 				//output.color *= _TintColor;
 
 				// Apply Shadows
@@ -285,6 +165,8 @@
 
 			    return o;
 			}
+
+			///////////////////////////////////////////////////////////////////////
 			// Fragment Shader.
 			float4 frag(v2f IN) : SV_Target {
 			    SHADOW_CASTER_FRAGMENT(IN)
