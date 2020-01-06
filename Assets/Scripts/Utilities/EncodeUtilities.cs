@@ -17,16 +17,16 @@ namespace HoloFab {
 			else
 				message = output;
 			return Encoding.UTF8.GetBytes(message);
-        }
-        // Decode Data into a string.
-        public static string DecodeData(byte[] data) {
-            return Encoding.UTF8.GetString(data);
-        }
-        // Decode Data into a string.
-        public static string DecodeData(byte[] data, int index, int count) { 
-            return Encoding.UTF8.GetString(data, index, count);
-        }
-    }
+		}
+		// Decode Data into a string.
+		public static string DecodeData(byte[] data) {
+			return Encoding.UTF8.GetString(data);
+		}
+		// Decode Data into a string.
+		public static string DecodeData(byte[] data, int index, int count) {
+			return Encoding.UTF8.GetString(data, index, count);
+		}
+	}
 	/////////////////////////////////////////////////////////////////////////////
 	// Unity only side.
 	public static partial class EncodeUtilities {

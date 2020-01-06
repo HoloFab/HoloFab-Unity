@@ -8,6 +8,7 @@ using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 #else
 using System.Net;
 using System.Net.Sockets;
@@ -21,7 +22,7 @@ namespace HoloFab {
 		private static StreamSocketListener listener;
 		private static StreamSocket client;
 		// Task Object Reference.
-		private static CancelationTokenSource cancelationTokenSource;
+		private static CancellationTokenSource cancellationTokenSource;
 		private static Task receiver;
 		#else
 		// Connection Object References.
@@ -56,26 +57,26 @@ namespace HoloFab {
 			TCPReceive.debugMessages = new List<string>();
 			TCPReceive.dataMessages = new List<string>();
 			// Start the thread.
-			TCPReceive.cancelationTokenSource = new CancellationTokenSource();
-			TCPReceive.receiver = new Task(() => ReceiveData(), TCPReceive.cancelationTokenSource.Token);
+			TCPReceive.cancellationTokenSource = new CancellationTokenSource();
+			TCPReceive.receiver = new Task(() => ReceiveData(), TCPReceive.cancellationTokenSource.Token);
 			TCPReceive.receiver.Start();
-			TCPReceive.debugMessages.Add("TCPReceive: Task Finished: " + TCPReceive.receiver.IsCompleted); // Check if even works at all.
-			TCPReceive.debugMessages.Add("TCPReceive: Thread Started.");
+			TCPReceive.debugMessages.Add("TCPReceive: UWP: Task Finished: " + TCPReceive.receiver.IsCompleted); // Check if even works at all.
+			TCPReceive.debugMessages.Add("TCPReceive: UWP: Thread Started.");
 		}
 		// Disable connection.
 		public static void StopConnection() {
 			// Reset.
 			if (TCPReceive.receiver != null) {
-				TCPReceive.cancelationTokenSource.Cancel();
+				TCPReceive.cancellationTokenSource.Cancel();
 				TCPReceive.receiver.Wait(1);
-				TCPReceive.cancelationTokenSource.Dispose();
+				TCPReceive.cancellationTokenSource.Dispose();
 				TCPReceive.receiver = null; // Good Practice?
-				TCPReceive.debugMessages.Add("TCPReceive: Stopping Task.");
+				TCPReceive.debugMessages.Add("TCPReceive: UWP: Stopping Task.");
 			}
 			if (TCPReceive.listener != null) {
 				TCPReceive.listener.Dispose();
 				TCPReceive.listener = null; // Good Practice?
-				TCPReceive.debugMessages.Add("TCPReceive: Stopping Listener.");
+				TCPReceive.debugMessages.Add("TCPReceive: UWP: Stopping Listener.");
 			}
 			// if (TCPReceive.client != null) {
 			// 	TCPReceive.client.Close();
@@ -89,13 +90,13 @@ namespace HoloFab {
 				// Open.
 				TCPReceive.listener = new StreamSocketListener();
 				TCPReceive.listener.ConnectionReceived += OnClientFound;
-				await TCPReceive.listener.BindServiceNameAsync(TCPReceive.localPort);
+				await TCPReceive.listener.BindServiceNameAsync(TCPReceive.localPort.ToString());
 			} catch (Exception exception) {
 				SocketErrorStatus webErrorStatus = SocketError.GetStatus(exception.GetBaseException().HResult);
 				string webError = (webErrorStatus.ToString() != "Unknown") ? webErrorStatus.ToString() :
 				                                                             exception.Message;
 				// Exception.
-				TCPReceive.debugMessages.Add("TCPReceive: Exception: " + webError); //exception.ToString()
+				TCPReceive.debugMessages.Add("TCPReceive: UWP: Exception: " + webError); //exception.ToString()
 			} finally {
 				TCPReceive.StopConnection();
 			}
@@ -107,7 +108,7 @@ namespace HoloFab {
 			}
 			// If buffer not empty - react to it.
 			if ((!string.IsNullOrEmpty(receiveString)) && ((TCPReceive.dataMessages.Count == 0) || (TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1] != receiveString))) {
-				TCPReceive.debugMessages.Add("TCPReceive: New Data: " + receiveString);
+				TCPReceive.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
 				TCPReceive.dataMessages.Add(receiveString);
 				TCPReceive.flagDataRead = false;
 			}
