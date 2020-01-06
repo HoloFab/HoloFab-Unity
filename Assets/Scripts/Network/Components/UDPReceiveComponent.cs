@@ -21,27 +21,27 @@ namespace HoloFab {
 		public static bool flagUICommunicationStarted = false;
 		// - last interpreted message.
 		private string lastMessage = "";
-        // - CPlane object tag.
-        private string tagCPlane = "CPlane";
-        // - Local reference of CPlane object
-        private GameObject cPlane;
-
-        // Unity Functions.
-        void OnEnable() {
+		// - CPlane object tag.
+		private string tagCPlane = "CPlane";
+		// - Local reference of CPlane object
+		private GameObject cPlane;
+        
+		// Unity Functions.
+		void OnEnable() {
 			UDPReceive.TryStartConnection(this.localPortOverride);
 		}
 		void OnDisable() {
 			UDPReceive.StopConnection();
 		}
 		void Update() {
-            if (this.cPlane == null) {
-			    this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-			    #if DEBUG
-			    Debug.Log("UDPReceive Component: CPlane: " + this.cPlane);
-			    #endif
-			    if (this.cPlane == null) return;
-            }
-
+			if (this.cPlane == null) {
+				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+				#if DEBUG
+				Debug.Log("UDPReceive Component: CPlane: " + this.cPlane);
+				#endif
+				if (this.cPlane == null) return;
+			}
+            
 			if (!UDPReceive.flagDataRead) {
 				UDPReceive.flagDataRead = true;
 				InterpreteData(UDPReceive.dataMessages[UDPReceive.dataMessages.Count-1]);
@@ -95,11 +95,11 @@ namespace HoloFab {
 		}
 		// - IP address
 		private void InterpreteIPAddress(string data){
-            UDPSendComponent sender = gameObject.GetComponent<UDPSendComponent>();
+			UDPSendComponent sender = gameObject.GetComponent<UDPSendComponent>();
 			sender.remoteIP = EncodeUtilities.InterpreteIPAddress(data);
 			UDPReceiveComponent.flagUICommunicationStarted = true;
 			// Inform UI Manager.
-			UIManager.instance.OnValueChanged();
+			ParameterUIMenu.instance.OnValueChanged();
 		}
 	}
 }

@@ -258,6 +258,7 @@ GameObject:
   - component: {fileID: 1950089824591659281}
   - component: {fileID: 1950089824591659287}
   - component: {fileID: 6076003166689451263}
+  - component: {fileID: 2613269689753376373}
   m_Layer: 5
   m_Name: Canvas_InstantiateParameters
   m_TagString: Untagged
@@ -341,6 +342,37 @@ MonoBehaviour:
   flagSwipeRight: 0
   closedStateRemainder: 0.05
   startDraggingThreshold: 20
+--- !u!114 &2613269689753376373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950089824591659285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6c21512d8728b4eb8a34d9f796e0b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonBooleanAdder: {fileID: 1950089825338456655}
+  buttonCounterAdder: {fileID: 1950089824621668621}
+  buttonSliderAdder: {fileID: 1950089824840140642}
+  buttonDeleter: {fileID: 430974813}
+  canvasBooleanToggle: {fileID: 0}
+  canvasCounter: {fileID: 0}
+  canvasSlider: {fileID: 0}
+  goPrefabUIBooleanToggle: {fileID: 3794625393475678148, guid: c614d5ac590706a4bb24984f1c591ce2,
+    type: 3}
+  goPrefabUICounter: {fileID: 4142424979184076918, guid: aead857e9d1446045b5dc877ace01445,
+    type: 3}
+  goPrefabUISlider: {fileID: 1395631823260924711, guid: f67a3cc541d897e42aa42d44d455052d,
+    type: 3}
+  tagUIItemBoolean: Toggle
+  tagUIItemCounter: Counter
+  tagUIItemSlider: Slider
+  limitBooleanToggle: 6
+  limitCounter: 6
+  limitSlider: 7
 --- !u!1 &1950089824621668611
 GameObject:
   m_ObjectHideFlags: 0

@@ -218,6 +218,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: InstantiateParam
       objectReference: {fileID: 0}
+    - target: {fileID: 2613269689753376373, guid: c189614db516fa045bf118dc3f0616a1,
+        type: 3}
+      propertyPath: canvasBooleanToggle
+      value: 
+      objectReference: {fileID: 5741891940080718899}
+    - target: {fileID: 2613269689753376373, guid: c189614db516fa045bf118dc3f0616a1,
+        type: 3}
+      propertyPath: canvasCounter
+      value: 
+      objectReference: {fileID: 5741891941196070073}
+    - target: {fileID: 2613269689753376373, guid: c189614db516fa045bf118dc3f0616a1,
+        type: 3}
+      propertyPath: canvasSlider
+      value: 
+      objectReference: {fileID: 5741891940161326366}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c189614db516fa045bf118dc3f0616a1, type: 3}
 --- !u!224 &3082716006701800321 stripped
@@ -348,6 +363,24 @@ PrefabInstance:
 --- !u!224 &5741891940329698576 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9112842466842463898, guid: ded0c985a8844454783bdc7ce06e3109,
+    type: 3}
+  m_PrefabInstance: {fileID: 3591653401760037770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5741891940080718899 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 9112842468198084537, guid: ded0c985a8844454783bdc7ce06e3109,
+    type: 3}
+  m_PrefabInstance: {fileID: 3591653401760037770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5741891941196070073 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 9112842467166750515, guid: ded0c985a8844454783bdc7ce06e3109,
+    type: 3}
+  m_PrefabInstance: {fileID: 3591653401760037770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5741891940161326366 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 9112842468277384852, guid: ded0c985a8844454783bdc7ce06e3109,
     type: 3}
   m_PrefabInstance: {fileID: 3591653401760037770}
   m_PrefabAsset: {fileID: 0}

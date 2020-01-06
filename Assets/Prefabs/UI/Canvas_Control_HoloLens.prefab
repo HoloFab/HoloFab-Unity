@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 3591653401551882462}
   - component: {fileID: 3591653401551882461}
   - component: {fileID: 3591653401551882460}
-  - component: {fileID: 8177970324160263637}
-  - component: {fileID: 5266338690092633400}
   m_Layer: 5
   m_Name: Canvas_Control_HoloLens
   m_TagString: Untagged
@@ -103,55 +101,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8177970324160263637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3591653401551882458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b55691ad5b034fe6966763a6e23818d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  trackedTargetType: 0
-  trackedHandness: 3
-  trackedHandJoint: 2
-  transformOverride: {fileID: 0}
-  additionalOffset: {x: 0, y: 0, z: 0}
-  additionalRotation: {x: 0, y: 0, z: 0}
-  updateSolvers: 1
---- !u!114 &5266338690092633400
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3591653401551882458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4684083f6dff4a1d8a790bccc354fcf4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  updateLinkedTransform: 0
-  moveLerpTime: 0.1
-  rotateLerpTime: 0.1
-  scaleLerpTime: 0
-  maintainScale: 1
-  smoothing: 1
-  lifetime: 0
-  referenceDirection: 1
-  minDistance: 1
-  maxDistance: 2
-  minViewDegrees: 0
-  maxViewDegrees: 30
-  aspectV: 1
-  ignoreAngleClamp: 0
-  ignoreDistanceClamp: 0
-  useFixedVerticalPosition: 0
-  fixedVerticalPosition: -0.4
-  orientToReferenceDirection: 0
 --- !u!1001 &3591653400417983125
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -274,6 +223,21 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2613269689753376373, guid: c189614db516fa045bf118dc3f0616a1,
+        type: 3}
+      propertyPath: canvasBooleanToggle
+      value: 
+      objectReference: {fileID: 5741891940080718899}
+    - target: {fileID: 2613269689753376373, guid: c189614db516fa045bf118dc3f0616a1,
+        type: 3}
+      propertyPath: canvasCounter
+      value: 
+      objectReference: {fileID: 5741891941196070073}
+    - target: {fileID: 2613269689753376373, guid: c189614db516fa045bf118dc3f0616a1,
+        type: 3}
+      propertyPath: canvasSlider
+      value: 
+      objectReference: {fileID: 5741891940161326366}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c189614db516fa045bf118dc3f0616a1, type: 3}
 --- !u!224 &3082716006701800321 stripped
@@ -409,6 +373,24 @@ PrefabInstance:
 --- !u!224 &5741891940329698576 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9112842466842463898, guid: ded0c985a8844454783bdc7ce06e3109,
+    type: 3}
+  m_PrefabInstance: {fileID: 3591653401760037770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5741891940080718899 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 9112842468198084537, guid: ded0c985a8844454783bdc7ce06e3109,
+    type: 3}
+  m_PrefabInstance: {fileID: 3591653401760037770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5741891941196070073 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 9112842467166750515, guid: ded0c985a8844454783bdc7ce06e3109,
+    type: 3}
+  m_PrefabInstance: {fileID: 3591653401760037770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5741891940161326366 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 9112842468277384852, guid: ded0c985a8844454783bdc7ce06e3109,
     type: 3}
   m_PrefabInstance: {fileID: 3591653401760037770}
   m_PrefabAsset: {fileID: 0}
