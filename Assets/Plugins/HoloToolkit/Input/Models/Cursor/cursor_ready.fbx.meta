@@ -1,0 +1,193 @@
+fileFormatVersion: 2
+guid: cd98ed1c2d8e6aa42b62d240b781aa1e
+ModelImporter:
+  serializedVersion: 26
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: cursor_cross_root
+  - first:
+      1: 100002
+    second: Cursor_Joystick
+  - first:
+      1: 100004
+    second: //RootNode
+  - first:
+      1: 100006
+    second: Cursor_Ring
+  - first:
+      1: 100008
+    second: Cursor_SizeNorthSouth
+  - first:
+      1: 100010
+    second: cursor_sizeNorthSouth_ring
+  - first:
+      1: 100012
+    second: cursor_sizeNorthSouth_ring_interaction_root
+  - first:
+      1: 100014
+    second: cursor_sizeNorthSouth_ring_press_scale
+  - first:
+      1: 100016
+    second: joystick_move
+  - first:
+      1: 100018
+    second: js_tool_indictators
+  - first:
+      1: 100020
+    second: ring_interaction_geo
+  - first:
+      1: 100022
+    second: ring_interaction_root
+  - first:
+      1: 100024
+    second: ring_observation_scale
+  - first:
+      1: 100026
+    second: ring_press_scale
+  - first:
+      4: 400000
+    second: cursor_cross_root
+  - first:
+      4: 400002
+    second: Cursor_Joystick
+  - first:
+      4: 400004
+    second: //RootNode
+  - first:
+      4: 400006
+    second: Cursor_Ring
+  - first:
+      4: 400008
+    second: Cursor_SizeNorthSouth
+  - first:
+      4: 400010
+    second: cursor_sizeNorthSouth_ring
+  - first:
+      4: 400012
+    second: cursor_sizeNorthSouth_ring_interaction_root
+  - first:
+      4: 400014
+    second: cursor_sizeNorthSouth_ring_press_scale
+  - first:
+      4: 400016
+    second: joystick_move
+  - first:
+      4: 400018
+    second: js_tool_indictators
+  - first:
+      4: 400020
+    second: ring_interaction_geo
+  - first:
+      4: 400022
+    second: ring_interaction_root
+  - first:
+      4: 400024
+    second: ring_observation_scale
+  - first:
+      4: 400026
+    second: ring_press_scale
+  - first:
+      23: 2300000
+    second: ring_interaction_geo
+  - first:
+      33: 3300000
+    second: ring_interaction_geo
+  - first:
+      43: 4300000
+    second: ring_interaction_geo
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lambert11
+    second: {fileID: 2100000, guid: a2c9c4679b0c3cf47b3ba3a449c985d7, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

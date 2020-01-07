@@ -21,12 +21,12 @@ namespace HoloFab {
 		[HideInInspector]
 		public float value=0.0f;
         
-		void Start() {
-			// Subscribe Button Event.
-			slider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
-		}
+		// void Start() {
+		// 	// Subscribe Button Event.
+		// 	slider.onValueChanged.AddListener(delegate { ValueChangeCheck(); });
+		// }
 		// Update value On UI click.
-		void ValueChangeCheck() {
+		public void ValueChangeCheck() {
 			this.value = slider.value;
 			this.label.text = this.value.ToString("0.00");
 			#if DEBUG

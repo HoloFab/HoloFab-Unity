@@ -19,12 +19,12 @@ namespace HoloFab {
 		[HideInInspector]
 		public bool value=false;
         
-		void Start() {
-			// Subscribe Button Event.
-			toggle.onValueChanged.AddListener((value) => ToggleValueOnChange(value));
-		}
+		// void Start() {
+		// 	// Subscribe Button Event.
+		// 	toggle.onValueChanged.AddListener((value) => ToggleValueOnChange(value));
+		// }
 		// Update value On UI click.
-		private void ToggleValueOnChange(bool boolean) {
+		public void ToggleValueOnChange(bool boolean) {
 			this.value = boolean;
 			#if DEBUG
 			Debug.Log("Boolean Toggle: Value: " + this.value);

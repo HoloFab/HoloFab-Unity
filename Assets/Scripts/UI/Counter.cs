@@ -23,14 +23,14 @@ namespace HoloFab {
         
 		// Start is called before the first frame update
 		void Start() {
-			P.onClick.AddListener(CounterPlus);
-			N.onClick.AddListener(CounterMinus);
+			// P.onClick.AddListener(CounterPlus);
+			// N.onClick.AddListener(CounterMinus);
 		}
 		// Update value On UI click.
-		void CounterPlus() {
+		public void CounterPlus() {
 			CounterChanged(1);
 		}
-		void CounterMinus() {
+		public void CounterMinus() {
 			CounterChanged(-1);
 		}
 		private void CounterChanged(int shift){

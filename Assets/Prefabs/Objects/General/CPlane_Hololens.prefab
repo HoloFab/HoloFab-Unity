@@ -205,7 +205,6 @@ GameObject:
   - component: {fileID: 3798030945849454406}
   - component: {fileID: 2271385839333936673}
   - component: {fileID: 971674854263298660}
-  - component: {fileID: 4496307539336314710}
   - component: {fileID: -2505333804154878619}
   m_Layer: 0
   m_Name: CPlane_Hololens
@@ -289,22 +288,6 @@ MonoBehaviour:
     type: 2}
   PlacementSurface: 1
   ChildrenToHide: []
---- !u!114 &4496307539336314710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3798030945849454401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d47a84e3a7a867e40863cf37e1466b9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InteractibleParameters:
-    Scrollable: 1
-    Placeable: 1
-  TargetFeedbackSound: {fileID: 0}
 --- !u!65 &-2505333804154878619
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -423,7 +406,7 @@ GameObject:
   - component: {fileID: 3798030946296297781}
   - component: {fileID: 4703955233386745005}
   - component: {fileID: 134009956001568792}
-  - component: {fileID: 417925213187504649}
+  - component: {fileID: 8380068313423109857}
   m_Layer: 0
   m_Name: Z
   m_TagString: CPlaneZ
@@ -584,7 +567,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &417925213187504649
+--- !u!114 &8380068313423109857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -593,10 +576,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3798030946296297777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cc0d50db20b37a4e80acc93c5702037, type: 3}
+  m_Script: {fileID: 11500000, guid: ac8d5b128a1d8204fb76c86f47b75912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PivotAxis: 0
+  pivotAxis: 0
+  targetTransform: {fileID: 0}
 --- !u!1 &3798030946472093035
 GameObject:
   m_ObjectHideFlags: 0
