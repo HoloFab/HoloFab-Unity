@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#if !UNITY_ANDROID
+using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity;
 using HoloToolkit.Unity.SpatialMapping;
@@ -535,3 +536,4 @@ public class Placeable : MonoBehaviour {
 		shadowAsset = null;
 	}
 }
+#endif

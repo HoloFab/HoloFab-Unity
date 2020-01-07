@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+#if !UNITY_ANDROID
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 using HoloToolkit.Unity;
@@ -178,3 +179,4 @@ public class PlaySpaceManager : Singleton<PlaySpaceManager> {
 		}
 	}
 }
+#endif

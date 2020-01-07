@@ -1,3 +1,4 @@
+#if !UNITY_ANDROID
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using HoloToolkit.Unity;
@@ -158,3 +159,4 @@ public class SpaceCollectionManager : Singleton<SpaceCollectionManager> {
 		return newPosition;
 	}
 }
+#endif

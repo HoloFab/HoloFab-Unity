@@ -153,10 +153,12 @@ namespace HoloFab {
 				IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, TCPReceive.localPort);
 				TCPReceive.listener = new TcpListener(anyIP);
 				TCPReceive.listener.Start();
+                
 				// Infinite loop.
 				while (true) {
-					TCPReceive.client = TCPReceive.listener.AcceptTcpClient();
-                    
+					if (TCPReceive.client == null) {
+						TCPReceive.client = TCPReceive.listener.AcceptTcpClient();
+					}
 					if (TCPReceive.client.Available > 0) {
 						OnClientFound();
 					}

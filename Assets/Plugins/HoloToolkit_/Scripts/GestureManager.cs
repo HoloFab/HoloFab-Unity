@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+#if WINDOWS_UWP
 using UnityEngine;
 using UnityEngine.XR.WSA.Input;
 using HoloToolkit.Unity;
@@ -84,3 +85,4 @@ namespace HoloToolkit.Unity {
 		}
 	}
 }
+#endif
