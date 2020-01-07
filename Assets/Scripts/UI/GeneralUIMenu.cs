@@ -63,23 +63,24 @@ namespace HoloFab {
 		}
 		// - Destroy Objects
 		public void OnDestroyObjects() {
-			//TagProcessor.DeleteTags();
-			//TagProcessor.DeleteTags();
-			//TagProcessor.DeleteTags();
-			GameObject[] go = GameObject.FindGameObjectsWithTag("ReceivedMesh");
-			GameObject[] goPlus = GameObject.FindGameObjectsWithTag("ReceivedMeshPlus");
-			GameObject[] goL = GameObject.FindGameObjectsWithTag("labels");
-            
-			for (int i = 0; i < go.Length; i++) {
-				Destroy(go[i]);
-			}
-			for (int i = 0; i < goPlus.Length; i++) {
-				Destroy(goPlus[i]);
-			}
-			for (int i = 0; i < goL.Length; i++) {
-				Destroy(goL[i]);
-			}
-			Resources.UnloadUnusedAssets();
+			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
+			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.TCP);
+			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
+			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();
+			// GameObject[] go = GameObject.FindGameObjectsWithTag("ReceivedMesh");
+			// GameObject[] goPlus = GameObject.FindGameObjectsWithTag("ReceivedMeshPlus");
+			// GameObject[] goL = GameObject.FindGameObjectsWithTag("labels");
+			//
+			// for (int i = 0; i < go.Length; i++) {
+			// 	Destroy(go[i]);
+			// }
+			// for (int i = 0; i < goPlus.Length; i++) {
+			// 	Destroy(goPlus[i]);
+			// }
+			// for (int i = 0; i < goL.Length; i++) {
+			// 	Destroy(goL[i]);
+			// }
+			// Resources.UnloadUnusedAssets();
 		}
 	}
 }
