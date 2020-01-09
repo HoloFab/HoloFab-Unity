@@ -4,6 +4,7 @@ using UnityEngine;
 using HoloToolkit.Unity;
 using HoloToolkit.Unity.SpatialMapping;
 
+
 /// <summary>
 /// Enumeration containing the surfaces on which a GameObject
 /// can be placed.  For simplicity of this sample, only one

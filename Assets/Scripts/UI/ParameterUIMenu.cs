@@ -59,10 +59,12 @@ namespace HoloFab {
 		public string tagUIItemSlider = "Slider";
 		[Tooltip("Limiting amounts for each type of generatable UI.")]
 		public int limitBooleanToggle = 6, limitCounter = 6, limitSlider = 7;
-        
-		// Local variables.
-		// - UI item amounts to keep track.
-		private int amountBooleanToggle = 0, amountCounter = 0, amountSlider = 0;
+
+        public GameObject panel;
+
+        // Local variables.
+        // - UI item amounts to keep track.
+        private int amountBooleanToggle = 0, amountCounter = 0, amountSlider = 0;
 		// - Heights of canvases to be calculated on Start.
 		private float heightCanvasBooleanToggle, heightCanvasCounter, heightCanvasSlider;
         
@@ -71,36 +73,33 @@ namespace HoloFab {
 		private static string lastMessage;
 		// Reference to the Sender.
 		private static UDPSendComponent sender;
-        
+
 		void Start() {
-			// // Set up the buttons. // Should be in code?
-			// if (this.buttonBooleanAdder != null)
-			// 	this.buttonBooleanAdder.onClick.AddListener(TryAddBooleanToggle);
-			// if (this.buttonCounterAdder != null)
-			// 	this.buttonCounterAdder.onClick.AddListener(TryAddCounter);
-			// if (this.buttonSliderAdder != null)
-			// 	this.buttonSliderAdder.onClick.AddListener(TryAddSlider);
-			// if (this.buttonDeleter != null)
-			// 	this.buttonDeleter.onClick.AddListener(DeleteGeneratedUI);
-			// Extract Canvas Heights.
-			if (this.canvasBooleanToggle != null)
-				this.heightCanvasBooleanToggle = this.canvasBooleanToggle.gameObject.GetComponent<RectTransform>().rect.height;
-			if (this.canvasCounter != null)
-				this.heightCanvasCounter = this.canvasCounter.gameObject.GetComponent<RectTransform>().rect.height;
-			if (this.canvasSlider != null)
-				this.heightCanvasSlider = this.canvasSlider.gameObject.GetComponent<RectTransform>().rect.height;
+            // Extract Canvas Heights.
+            if (this.canvasBooleanToggle != null)
+                this.heightCanvasBooleanToggle = 660; // this.canvasBooleanToggle.gameObject.GetComponent<RectTransform>().rect.height;
+            if (this.canvasCounter != null)
+                this.heightCanvasCounter = 660; // this.canvasCounter.gameObject.GetComponent<RectTransform>().rect.height;
+            if (this.canvasSlider != null)
+                this.heightCanvasSlider = 660; //this.canvasSlider.gameObject.GetComponent<RectTransform>().rect.height;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		// Generic UI adding function.
 		private void TryAddUIItem(ref int amount, int limit, GameObject goPrefab, Canvas cParent, float height) {
 			if (amount < limit) {
-				#if DEBUG
+                #if DEBUG
 				Debug.Log("ParameterUIMenu: Adding new UI Element.");
-				#endif
+                #endif          
+                //determinning the position in Y
+                float poseY = amount * height / limit;    
                 
-				GameObject goUIItem = Instantiate(goPrefab, cParent.gameObject.transform);
+                //Updating the size of panel
+                //panel.GetComponent<InteractivePanel>().SetPanelSize(poseY);
+
+                //Adding
+                GameObject goUIItem = Instantiate(goPrefab, cParent.gameObject.transform);
 				RectTransform rectTransform = goUIItem.GetComponent<RectTransform>();
-				rectTransform.anchoredPosition = new Vector2(0, amount * height / limit);
+				rectTransform.anchoredPosition = new Vector2(0, poseY);
 				amount++;
                 
 				// Inform UI Manager.

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -327,6 +327,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0e4c74e73a25a714a99af532f50996de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &316080947 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6871336628347677362, guid: 1a66ec102febe62439b4689f484571d8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1855259595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &316080953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 316080947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9572af111cf153b4bb061d08bca86024, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1270908118
@@ -801,86 +819,6 @@ PrefabInstance:
     - target: {fileID: 3591653401551882463, guid: 1a66ec102febe62439b4689f484571d8,
         type: 3}
       propertyPath: m_Pivot.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1940762677726499316, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3082716007196832970, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3082716007402908159, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3082716008218296743, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3591653400792796225, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1940762677685672144, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: c1175d89019ad174bbf22f55e1611fe0,
-        type: 3}
-    - target: {fileID: 1940762677685672144, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3082716006730265497, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 243ffed89b1ef6e4088fbbe47f35c663,
-        type: 3}
-    - target: {fileID: 3082716006730265497, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3082716006948249080, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 17277c8454ae48d4eb405983cff2bc79,
-        type: 3}
-    - target: {fileID: 3082716006948249080, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3082716007448060123, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 3c96b9eb402e04243a6e5de06a623ee9,
-        type: 3}
-    - target: {fileID: 3082716007448060123, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3591653400842665419, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: a9d3d55b18b4a634fb2893c4e01c5b61,
-        type: 3}
-    - target: {fileID: 3591653400842665419, guid: 1a66ec102febe62439b4689f484571d8,
-        type: 3}
-      propertyPath: m_Type
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
