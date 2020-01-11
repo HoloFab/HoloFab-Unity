@@ -204,7 +204,6 @@ GameObject:
   - component: {fileID: 223835945175131222}
   - component: {fileID: 3798030945849454406}
   - component: {fileID: 2271385839333936673}
-  - component: {fileID: 971674854263298660}
   - component: {fileID: -2505333804154878619}
   m_Layer: 0
   m_Name: CPlane_Hololens
@@ -266,28 +265,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &971674854263298660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3798030945849454401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b55a82fc3f3d8b84baae628435fa376b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlaceableBoundsMaterial: {fileID: 2100000, guid: d36b7ee01dc87214b806e1701556977e,
-    type: 2}
-  NotPlaceableBoundsMaterial: {fileID: 2100000, guid: eb4cbe00eea6ad745a6adbdb539073b5,
-    type: 2}
-  PlaceableShadowMaterial: {fileID: 2100000, guid: 6a456fc8cccbf9a4b8a68fdeade06bbe,
-    type: 2}
-  NotPlaceableShadowMaterial: {fileID: 2100000, guid: 41fb550921caba2429696edccc4500d2,
-    type: 2}
-  PlacementSurface: 1
-  ChildrenToHide: []
 --- !u!65 &-2505333804154878619
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -406,7 +383,7 @@ GameObject:
   - component: {fileID: 3798030946296297781}
   - component: {fileID: 4703955233386745005}
   - component: {fileID: 134009956001568792}
-  - component: {fileID: 8380068313423109857}
+  - component: {fileID: 2115089219142933754}
   m_Layer: 0
   m_Name: Z
   m_TagString: CPlaneZ
@@ -567,7 +544,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &8380068313423109857
+--- !u!114 &2115089219142933754
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -576,7 +553,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3798030946296297777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac8d5b128a1d8204fb76c86f47b75912, type: 3}
+  m_Script: {fileID: 11500000, guid: 2547b4dd088644d6aaf64f45df657c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pivotAxis: 0

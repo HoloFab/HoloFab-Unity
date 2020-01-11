@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7000469901324630345}
   - component: {fileID: 2682597075398436885}
   - component: {fileID: 7926522167912225682}
-  - component: {fileID: 7501329299858001309}
+  - component: {fileID: 4959303747075521828}
   m_Layer: 0
   m_Name: Tag
   m_TagString: labels
@@ -158,7 +158,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7501329299858001309
+--- !u!114 &4959303747075521828
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,7 +167,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 8249547479529524255}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cc0d50db20b37a4e80acc93c5702037, type: 3}
+  m_Script: {fileID: 11500000, guid: 2547b4dd088644d6aaf64f45df657c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PivotAxis: 0
+  pivotAxis: 0
+  targetTransform: {fileID: 0}

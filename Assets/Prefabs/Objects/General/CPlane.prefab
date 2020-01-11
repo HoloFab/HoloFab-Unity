@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 3798030946296297781}
   - component: {fileID: 4703955233386745005}
   - component: {fileID: 134009956001568792}
-  - component: {fileID: 417925213187504649}
+  - component: {fileID: 9023568447932498785}
   m_Layer: 0
   m_Name: Z
   m_TagString: CPlaneZ
@@ -530,7 +530,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &417925213187504649
+--- !u!114 &9023568447932498785
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -539,10 +539,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3798030946296297777}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cc0d50db20b37a4e80acc93c5702037, type: 3}
+  m_Script: {fileID: 11500000, guid: 2547b4dd088644d6aaf64f45df657c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PivotAxis: 0
+  pivotAxis: 0
+  targetTransform: {fileID: 0}
 --- !u!1 &3798030946472093035
 GameObject:
   m_ObjectHideFlags: 0
