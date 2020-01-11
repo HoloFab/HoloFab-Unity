@@ -35,15 +35,7 @@ namespace GoogleARCore.Examples.HelloAR
     /// Controls the HelloAR example.
     /// </summary>
     public class HoloFabARController : MonoBehaviour
-    {
-        ////////////////////////////////////////////////////////////////////////////////
-        // Added
-        /// <summary>
-        /// To place Cplane just once.
-        /// </summary>
-        public static bool flagCPlaneSet = false;
-        ////////////////////////////////////////////////////////////////////////////////
-
+    {       
         /// <summary>
         /// The first-person camera being used to render the passthrough camera image (i.e. AR
         /// background).
@@ -63,7 +55,7 @@ namespace GoogleARCore.Examples.HelloAR
         /// <summary>
         /// A prefab to place when a raycast from a user touch hits a feature point.
         /// </summary>
-        public GameObject GameObjectPointPrefab;
+        //public GameObject GameObjectPointPrefab;
 
         /// <summary>
         /// The rotation in degrees need to apply to prefab when it is placed.
@@ -83,8 +75,7 @@ namespace GoogleARCore.Examples.HelloAR
         {
             // Enable ARCore to target 60fps camera capture frame rate on supported devices.
             // Note, Application.targetFrameRate is ignored when QualitySettings.vSyncCount != 0.
-            Application.targetFrameRate = 60;
-            HoloFabARController.flagCPlaneSet = false;
+            Application.targetFrameRate = 60;           
         }
 
         /// <summary>
@@ -111,9 +102,15 @@ namespace GoogleARCore.Examples.HelloAR
             TrackableHit hit;
             TrackableHitFlags raycastFilter = TrackableHitFlags.PlaneWithinPolygon |
                 TrackableHitFlags.FeaturePointWithSurfaceNormal;
-            if (!HoloFabARController.flagCPlaneSet)
+            ////////////////////////////////////////////////////////////////////////////////
+            //Modified
+
+            //check if there is any CPlane already
+            GameObject cPlane = GameObject.FindGameObjectWithTag("CPlane");
+
+            //Instantiate if there is no CPlane
+            if (cPlane==null)
             {
-                HoloFabARController.flagCPlaneSet = true;
                 if (Frame.Raycast(touch.position.x, touch.position.y, raycastFilter, out hit))
                 {
                     // Use hit pose and camera pose to check if hittest is from the
@@ -128,11 +125,13 @@ namespace GoogleARCore.Examples.HelloAR
                     {
                         // Choose the prefab based on the Trackable that got hit.
                         GameObject prefab;
-                        if (hit.Trackable is FeaturePoint)
-                        {
-                            prefab = GameObjectPointPrefab;
-                        }
-                        else if (hit.Trackable is DetectedPlane)
+                        
+                        //if (hit.Trackable is FeaturePoint)
+                        //{
+                        //    prefab = GameObjectPointPrefab;
+                        //}
+            ////////////////////////////////////////////////////////////////////////////////
+                        if (hit.Trackable is DetectedPlane)
                         {
                             DetectedPlane detectedPlane = hit.Trackable as DetectedPlane;
                             if (detectedPlane.PlaneType == DetectedPlaneType.Vertical)
@@ -164,9 +163,7 @@ namespace GoogleARCore.Examples.HelloAR
                         gameObject.transform.parent = anchor.transform;
                     }
                 }
-            }
-
-                
+            }                
         }
 
         /// <summary>

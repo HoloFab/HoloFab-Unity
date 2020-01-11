@@ -25,17 +25,8 @@ namespace HoloFab {
 		[Tooltip("Button to Delete Objects.")]
 		public Button buttonObjects;
         
-		// Local Variables:
-		// - flag grid visible
 		bool flagGridVisible = true;
-        
-		void Start() {
-			// buttonExit.onClick.AddListener(OnExit);
-			// buttonDestroyCplane.onClick.AddListener(OnDestroyCPlane);
-			// buttonToggleGrid.onClick.AddListener(OnTogglePointsAndGrids);
-			// buttonObjects.onClick.AddListener(OnDestroyObjects);
-		}
-		//////////////////////////////////////////////////////////////////////////
+        		
 		// Events to be raised on clicks:
 		// - exit application
 		public void OnExit() {
@@ -49,8 +40,6 @@ namespace HoloFab {
 		public void OnDestroyCPlane() {
 			GameObject cPlane = GameObject.FindGameObjectWithTag("CPlane");
 			DestroyImmediate(cPlane);
-			// Reset CPlane setting for AR core
-			HoloFabARController.flagCPlaneSet = false;
 			Resources.UnloadUnusedAssets();
 		}
 		// - Toggle AR Core Grid
@@ -66,21 +55,7 @@ namespace HoloFab {
 			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.TCP);
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
-			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();
-			// GameObject[] go = GameObject.FindGameObjectsWithTag("ReceivedMesh");
-			// GameObject[] goPlus = GameObject.FindGameObjectsWithTag("ReceivedMeshPlus");
-			// GameObject[] goL = GameObject.FindGameObjectsWithTag("labels");
-			//
-			// for (int i = 0; i < go.Length; i++) {
-			// 	Destroy(go[i]);
-			// }
-			// for (int i = 0; i < goPlus.Length; i++) {
-			// 	Destroy(goPlus[i]);
-			// }
-			// for (int i = 0; i < goL.Length; i++) {
-			// 	Destroy(goL[i]);
-			// }
-			// Resources.UnloadUnusedAssets();
+			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();			
 		}
 	}
 }

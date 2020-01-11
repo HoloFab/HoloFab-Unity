@@ -58,16 +58,19 @@ namespace HoloFab {
 		[Tooltip("Tags for generatable UI items.")]
 		public string tagUIItemSlider = "Slider";
 		[Tooltip("Limiting amounts for each type of generatable UI.")]
-		public int limitBooleanToggle = 6, limitCounter = 6, limitSlider = 7;
+		public int UILimitCount = 6;
 
+        [Header("Adjustable panel from scene")]
+        [Tooltip("Adjustable UI panel")]
         public GameObject panel;
+        private RectTransform rt;
+        private int InitialSize;
+        private int maximumSize;
+        private float maxY;
 
         // Local variables.
         // - UI item amounts to keep track.
         private int amountBooleanToggle = 0, amountCounter = 0, amountSlider = 0;
-		// - Heights of canvases to be calculated on Start.
-		private float heightCanvasBooleanToggle, heightCanvasCounter, heightCanvasSlider;
-        
 		// Network variables.
 		// Stored message to avoid unnecessary traffic.
 		private static string lastMessage;
@@ -75,13 +78,10 @@ namespace HoloFab {
 		private static UDPSendComponent sender;
 
 		void Start() {
-            // Extract Canvas Heights.
-            if (this.canvasBooleanToggle != null)
-                this.heightCanvasBooleanToggle = 660; // this.canvasBooleanToggle.gameObject.GetComponent<RectTransform>().rect.height;
-            if (this.canvasCounter != null)
-                this.heightCanvasCounter = 660; // this.canvasCounter.gameObject.GetComponent<RectTransform>().rect.height;
-            if (this.canvasSlider != null)
-                this.heightCanvasSlider = 660; //this.canvasSlider.gameObject.GetComponent<RectTransform>().rect.height;
+            // Instanses of panel variables
+            rt = panel.GetComponent<RectTransform>();
+            InitialSize = 110;
+            maximumSize = 660;           
 		}
 		//////////////////////////////////////////////////////////////////////////
 		// Generic UI adding function.
@@ -91,11 +91,16 @@ namespace HoloFab {
 				Debug.Log("ParameterUIMenu: Adding new UI Element.");
                 #endif          
                 //determinning the position in Y
-                float poseY = amount * height / limit;    
-                
-                //Updating the size of panel
-                //panel.GetComponent<InteractivePanel>().SetPanelSize(poseY);
+                float poseY = amount * height / limit;
 
+                //Updating the size of panel
+                if (poseY != 0){
+                    if (maxY <= poseY){
+                        rt.sizeDelta = new Vector2(rt.sizeDelta.x, poseY + InitialSize);
+                        maxY = poseY;
+                    }
+                }                
+               
                 //Adding
                 GameObject goUIItem = Instantiate(goPrefab, cParent.gameObject.transform);
 				RectTransform rectTransform = goUIItem.GetComponent<RectTransform>();
@@ -108,21 +113,21 @@ namespace HoloFab {
 		}
 		// Add Boolean Toggle UI item.
 		public void TryAddBooleanToggle() {
-			TryAddUIItem(ref this.amountBooleanToggle, this.limitBooleanToggle,
+			TryAddUIItem(ref this.amountBooleanToggle, this.UILimitCount,
 			             this.goPrefabUIBooleanToggle, this.canvasBooleanToggle,
-			             this.heightCanvasBooleanToggle);
+			             this.maximumSize);
 		}
 		// Add Counter UI item.
 		public void TryAddCounter() {
-			TryAddUIItem(ref this.amountCounter, this.limitCounter,
+			TryAddUIItem(ref this.amountCounter, this.UILimitCount,
 			             this.goPrefabUICounter, this.canvasCounter,
-			             this.heightCanvasCounter);
+			             this.maximumSize);
 		}
 		// Add Slider UI item.
 		public void TryAddSlider() {
-			TryAddUIItem(ref this.amountSlider, this.limitSlider,
+			TryAddUIItem(ref this.amountSlider, this.UILimitCount,
 			             this.goPrefabUISlider, this.canvasSlider,
-			             this.heightCanvasSlider);
+			             this.maximumSize);
 		}
 		// Delete all user generated UIs.
 		public void DeleteGeneratedUI() {
@@ -141,7 +146,11 @@ namespace HoloFab {
             
 			// Inform UI Manager.
 			ParameterUIMenu.instance.OnValueChanged();
-		}
+
+            // Setting the Initial size of panel
+            rt.sizeDelta = new Vector2(rt.sizeDelta.x, InitialSize);
+            maxY = InitialSize;
+        }
         
 		//////////////////////////////////////////////////////////////////////////
 		// React to a value change.

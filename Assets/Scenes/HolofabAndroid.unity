@@ -329,24 +329,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e4c74e73a25a714a99af532f50996de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &316080947 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6871336628347677362, guid: 1a66ec102febe62439b4689f484571d8,
-    type: 3}
-  m_PrefabInstance: {fileID: 1855259595}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &316080953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 316080947}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9572af111cf153b4bb061d08bca86024, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1270908118
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,8 +838,6 @@ MonoBehaviour:
   GameObjectVerticalPlanePrefab: {fileID: 3798030945849454401, guid: e05b802831383ab47a314c87d6181bfd,
     type: 3}
   GameObjectHorizontalPlanePrefab: {fileID: 3798030945849454401, guid: e05b802831383ab47a314c87d6181bfd,
-    type: 3}
-  GameObjectPointPrefab: {fileID: 3798030945849454401, guid: e05b802831383ab47a314c87d6181bfd,
     type: 3}
 --- !u!4 &1947088192
 Transform:
