@@ -1,5 +1,5 @@
-//#define DEBUG
-#undef DEBUG
+#define DEBUG
+//#undef DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -30,6 +30,7 @@ namespace HoloFab {
         
 		// temp:
 		public List<string> debugMessages = new List<string>();
+		private int count=0;
         
 		// Unity Functions.
 		void OnEnable() {
@@ -51,7 +52,14 @@ namespace HoloFab {
 				TCPReceive.flagDataRead = true;
 				InterpreteData(TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1]);
 			}
-			this.debugMessages = TCPReceive.debugMessages;
+			if ((count == 0) || (count < TCPReceive.debugMessages.Count)) {
+				for (int i = count; i < TCPReceive.debugMessages.Count; i++) {
+					#if DEBUG
+					Debug.Log(TCPReceive.debugMessages[i]);
+					#endif
+				}
+				count = TCPReceive.debugMessages.Count;
+			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// A function responsible for decoding and reacting to received TCP data.

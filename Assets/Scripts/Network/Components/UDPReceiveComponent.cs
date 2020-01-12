@@ -84,10 +84,16 @@ namespace HoloFab {
 		}
 		// - RobotControllers
 		private void InterpreteRobotController(string data){
-			GameObject[] gos = GameObject.FindGameObjectsWithTag("Axis");
-			for (int i = 0; i < gos.Length; i++) {
-				gos[i].GetComponent<RobotController>().ProcessRobotController(EncodeUtilities.InterpreteRobotController(data));
-			}
+			List<RobotControllerData> controllersData = EncodeUtilities.InterpreteRobotController(data);
+            
+			RobotProcessor processor = ObjectManager.instance.GetComponent<RobotProcessor>();
+			foreach (RobotControllerData controllerData in controllersData)
+				if(processor.robots.ContainsKey(controllerData.robotID))
+					processor.robots[controllerData.robotID].GetComponentInChildren<RobotController>().ProcessRobotController(controllerData);
+			// GameObject[] gos = GameObject.FindGameObjectsWithTag("Axis");
+			// for (int i = 0; i < gos.Length; i++) {
+			// 	gos[i].GetComponent<RobotController>().ProcessRobotController(EncodeUtilities.InterpreteRobotController(data));
+			// }
 		}
 		// - Tag
 		private void InterpreteTag(string data){

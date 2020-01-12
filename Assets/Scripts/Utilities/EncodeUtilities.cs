@@ -33,11 +33,11 @@ namespace HoloFab {
 		public static List<MeshData> InterpreteMesh(string data){
 			return JsonConvert.DeserializeObject<List<MeshData> >(data);
 		}
-		public static IList<RobotData> InterpreteHoloBots(string data){
-			return JsonConvert.DeserializeObject<IList<RobotData> >(data);
+		public static List<RobotData> InterpreteHoloBots(string data){
+			return JsonConvert.DeserializeObject<List<RobotData> >(data);
 		}
-		public static IList<RobotControllerData> InterpreteRobotController(string data){
-			return JsonConvert.DeserializeObject<IList<RobotControllerData> >(data);
+		public static List<RobotControllerData> InterpreteRobotController(string data){
+			return JsonConvert.DeserializeObject<List<RobotControllerData> >(data);
 		}
 		public static TagData InterpreteTag(string data){
 			return JsonConvert.DeserializeObject<TagData>(data);

@@ -30,10 +30,12 @@
 			#include "UnityLightingCommon.cginc"
 			#include "Lighting.cginc"
 			#include "AutoLight.cginc"
+			//#include "UnityInstancing.gcinc"
 
 			///////////////////////////////////////////////////////////////////////
 			// vertex shader inputs
 			struct vertexShaderData {
+				UNITY_VERTEX_INPUT_INSTANCE_ID
 				float4 position : POSITION; // vertex position
 				float3 normal : NORMAL; // vertex normal
 				//float2 uv : TEXCOORD0; // texture coordinate
@@ -42,6 +44,8 @@
 
 			// fragment shader inputs
 			struct fragmentShaderData {
+				UNITY_VERTEX_INPUT_INSTANCE_ID
+				UNITY_VERTEX_OUTPUT_STEREO
 				float4 position : SV_POSITION; // Screen vertex position
 				float3 normal : NORMAL; // vertex normal
 				//float3 worldPosition : TEXCOORD0; // World position
@@ -62,6 +66,10 @@
 			float _ShadowStrength;
 			fragmentShaderData vert(vertexShaderData IN) {
 				fragmentShaderData output;
+				//UNITY_INSTANTIAATE_OUTPUT(fragmentShaderData output);
+				UNITY_SETUP_INSTANCE_ID(IN);
+				UNITY_TRANSFER_INSTANCE_ID(IN, output);
+				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(output);
 
 				output.position = UnityObjectToClipPos(IN.position);
 				output.normal = IN.normal;
@@ -116,6 +124,7 @@
 			//sampler2D _MainTexture;
 			fragmentShaderOutput frag (fragmentShaderData IN) {
 				fragmentShaderOutput output;
+				UNITY_SETUP_INSTANCE_ID(IN);
 
 				// Apply Colors
 				output.color = IN.vertexColor;

@@ -21,13 +21,13 @@ namespace HoloFab {
 		public double[] axis;
         
 		// Decode Received Data.
-		public void ProcessRobotController(IList<RobotControllerData> receivedRobotControllers) {
-			foreach (RobotControllerData rc in receivedRobotControllers) {
-				if (this.robotID == rc.robotID) {
-					this.axis = rc.robotAxisAngles.ToArray();
-					return;
-				}
-			}
+		public void ProcessRobotController(RobotControllerData receivedRobotController) {//List<RobotControllerData> receivedRobotControllers) {
+			this.axis = receivedRobotController.robotAxisAngles.ToArray();
+			// foreach (RobotControllerData receivedRobotController in receivedRobotControllers) {
+			// 	if (this.robotID == receivedRobotController.robotID) {
+			//			return;
+			// 	}
+			// }
 		}
 	}
 }

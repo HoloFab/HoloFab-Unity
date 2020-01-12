@@ -59,50 +59,50 @@ namespace HoloFab {
 		public string tagUIItemSlider = "Slider";
 		[Tooltip("Limiting amounts for each type of generatable UI.")]
 		public int UILimitCount = 6;
-
-        [Header("Adjustable panel from scene")]
-        [Tooltip("Adjustable UI panel")]
-        public GameObject panel;
-        private RectTransform rt;
-        private int InitialSize;
-        private int maximumSize;
-        private float maxY;
-
-        // Local variables.
-        // - UI item amounts to keep track.
-        private int amountBooleanToggle = 0, amountCounter = 0, amountSlider = 0;
+        
+		[Header("Adjustable panel from scene")]
+		[Tooltip("Adjustable UI panel")]
+		public GameObject panel;
+		private RectTransform rt;
+		private int InitialSize;
+		private int maximumSize;
+		private float maxY;
+        
+		// Local variables.
+		// - UI item amounts to keep track.
+		private int amountBooleanToggle = 0, amountCounter = 0, amountSlider = 0;
 		// Network variables.
 		// Stored message to avoid unnecessary traffic.
 		private static string lastMessage;
 		// Reference to the Sender.
 		private static UDPSendComponent sender;
-
+        
 		void Start() {
-            // Instanses of panel variables
-            rt = panel.GetComponent<RectTransform>();
-            InitialSize = 110;
-            maximumSize = 660;           
+			// Instanses of panel variables
+			rt = panel.GetComponent<RectTransform>();
+			InitialSize = 110;
+			maximumSize = 660;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		// Generic UI adding function.
 		private void TryAddUIItem(ref int amount, int limit, GameObject goPrefab, Canvas cParent, float height) {
 			if (amount < limit) {
-                #if DEBUG
+				#if DEBUG
 				Debug.Log("ParameterUIMenu: Adding new UI Element.");
-                #endif          
-                //determinning the position in Y
-                float poseY = amount * height / limit;
-
-                //Updating the size of panel
-                if (poseY != 0){
-                    if (maxY <= poseY){
-                        rt.sizeDelta = new Vector2(rt.sizeDelta.x, poseY + InitialSize);
-                        maxY = poseY;
-                    }
-                }                
-               
-                //Adding
-                GameObject goUIItem = Instantiate(goPrefab, cParent.gameObject.transform);
+				#endif
+				//determinning the position in Y
+				float poseY = amount * height / limit;
+                
+				//Updating the size of panel
+				if (poseY != 0) {
+					if (maxY <= poseY) {
+						rt.sizeDelta = new Vector2(rt.sizeDelta.x, poseY + InitialSize);
+						maxY = poseY;
+					}
+				}
+                
+				//Adding
+				GameObject goUIItem = Instantiate(goPrefab, cParent.gameObject.transform);
 				RectTransform rectTransform = goUIItem.GetComponent<RectTransform>();
 				rectTransform.anchoredPosition = new Vector2(0, poseY);
 				amount++;
@@ -146,11 +146,11 @@ namespace HoloFab {
             
 			// Inform UI Manager.
 			ParameterUIMenu.instance.OnValueChanged();
-
-            // Setting the Initial size of panel
-            rt.sizeDelta = new Vector2(rt.sizeDelta.x, InitialSize);
-            maxY = InitialSize;
-        }
+            
+			// Setting the Initial size of panel
+			rt.sizeDelta = new Vector2(rt.sizeDelta.x, InitialSize);
+			maxY = InitialSize;
+		}
         
 		//////////////////////////////////////////////////////////////////////////
 		// React to a value change.
@@ -168,9 +168,9 @@ namespace HoloFab {
 				Debug.Log("ParameterUIMenu: Found items: booleans: " + goBooleans.Length + ", counters: " + goCounters.Length + ", sliders: " + goSliders.Length);
                 
 				// Extract data.
-				IList<bool> bools = new List<bool>();
-				IList<int> ints = new List<int>();
-				IList<float> floats = new List<float>();
+				List<bool> bools = new List<bool>();
+				List<int> ints = new List<int>();
+				List<float> floats = new List<float>();
 				foreach (GameObject goItem in goBooleans)
 					bools.Add(goItem.GetComponent<BooleanToggle>().value);
 				foreach (GameObject goItem in goCounters)

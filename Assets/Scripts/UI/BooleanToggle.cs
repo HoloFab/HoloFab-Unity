@@ -24,13 +24,18 @@ namespace HoloFab {
 		// 	toggle.onValueChanged.AddListener((value) => ToggleValueOnChange(value));
 		// }
 		// Update value On UI click.
-		public void ToggleValueOnChange(bool boolean) {
-			this.value = boolean;
+		public void ToggleValueOnChange() {
+			this.value = !toggle.isOn;
 			#if DEBUG
 			Debug.Log("Boolean Toggle: Value: " + this.value);
 			#endif
 			// Inform UI Manager.
 			ParameterUIMenu.instance.OnValueChanged();
+		}
+		public void OnToggleClicked(){
+			ToggleValueOnChange();
+			if (toggle != null)
+				toggle.isOn = !toggle.isOn;
 		}
 	}
 }

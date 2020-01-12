@@ -30,10 +30,11 @@ namespace HoloFab {
 		// - CPlane object tag.
 		private string tagCPlane = "CPlane";
 		// - Keep track of robots by ids.
-		private Dictionary<int, GameObject> robots = new Dictionary<int, GameObject>();
+		[HideInInspector]
+		public Dictionary<int, GameObject> robots = new Dictionary<int, GameObject>();
         
 		// Decode Received Data.
-		public void ProcessRobot(IList<RobotData> receivedRobots) {
+		public void ProcessRobot(List<RobotData> receivedRobots) {
 			#if DEBUG
 			Debug.Log("Robot: got robots: " + receivedRobots.Count);
 			#endif

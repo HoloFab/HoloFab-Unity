@@ -78,11 +78,6 @@ namespace HoloFab {
 				TCPReceive.listener = null; // Good Practice?
 				TCPReceive.debugMessages.Add("TCPReceive: UWP: Stopping Listener.");
 			}
-			// if (TCPReceive.client != null) {
-			// 	TCPReceive.client.Close();
-			// 	TCPReceive.client = null; // Good Practice?
-			// 	TCPReceive.debugMessages.Add("TCPReceive: Stopping Client.");
-			// }
 		}
 		// Constantly check for new messages on given port.
 		private static async void ReceiveData(){
@@ -97,8 +92,6 @@ namespace HoloFab {
 				                                                             exception.Message;
 				// Exception.
 				TCPReceive.debugMessages.Add("TCPReceive: UWP: Exception: " + webError); //exception.ToString()
-			} finally {
-				TCPReceive.StopConnection();
 			}
 		}
 		private static async void OnClientFound(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args){
