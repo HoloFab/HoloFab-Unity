@@ -7,6 +7,7 @@ using UnityEngine;
 
 using HoloFab;
 using HoloFab.CustomData;
+using System.Threading;
 
 /// <summary>
 /// Receives Data from MeshStreaming and Positioner Component
@@ -31,34 +32,42 @@ namespace HoloFab {
 		// temp:
 		public List<string> debugMessages = new List<string>();
 		private int count=0;
-        
-		// Unity Functions.
-		void OnEnable() {
-			TCPReceive.TryStartConnection(this.localPortOverride);
+
+        TCPReceive tcp;
+
+        // Unity Functions.
+        void OnEnable() {
+            _ShowAndroidToastMessage("Hollo World . . .");
+            Thread.Sleep(1500);
+            _ShowAndroidToastMessage("Your IP is:\n" + NetworkUtilities.LocalIPAddress());
+            Thread.Sleep(3500);
+            tcp = new TCPReceive(localPortOverride);
+            tcp.TryStartConnection(this.localPortOverride);
 		}
 		void OnDisable() {
-			TCPReceive.StopConnection();
+			tcp.StopConnection();
 		}
 		void Update() {
-			if (this.cPlane == null) {
-				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+            if (this.cPlane == null) {
+                _ShowAndroidToastMessage("Touch on the screen to place your CPlane");
+                this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
 				#if DEBUG
 				Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
 				#endif
 				if (this.cPlane == null) return;
 			}
-            
-			if (!TCPReceive.flagDataRead) {
-				TCPReceive.flagDataRead = true;
-				InterpreteData(TCPReceive.dataMessages[TCPReceive.dataMessages.Count-1]);
-			}
-			if ((count == 0) || (count < TCPReceive.debugMessages.Count)) {
-				for (int i = count; i < TCPReceive.debugMessages.Count; i++) {
+            if (!this.tcp.flagDataRead) {
+                _ShowAndroidToastMessage("Parsing meshes . . .");
+                InterpreteData(this.tcp.dataMessages[this.tcp.dataMessages.Count-1]);
+                this.tcp.flagDataRead = true;
+            }
+			if ((count == 0) || (count < tcp.debugMessages.Count)) {
+				for (int i = count; i < tcp.debugMessages.Count; i++) {
 					#if DEBUG
-					Debug.Log(TCPReceive.debugMessages[i]);
+					Debug.Log(tcp.debugMessages[i]);
 					#endif
 				}
-				count = TCPReceive.debugMessages.Count;
+				count = tcp.debugMessages.Count;
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
@@ -96,5 +105,24 @@ namespace HoloFab {
 		private void InterpreteHoloBots(string data){
 			ObjectManager.instance.GetComponent<RobotProcessor>().ProcessRobot(EncodeUtilities.InterpreteHoloBots(data));
 		}
-	}
+
+        public void _ShowAndroidToastMessage(string message)
+        {
+            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject unityActivity =
+                unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+
+            if (unityActivity != null)
+            {
+                AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
+                unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+                {
+                    AndroidJavaObject toastObject =
+                        toastClass.CallStatic<AndroidJavaObject>(
+                            "makeText", unityActivity, message, 0);
+                    toastObject.Call("show");
+                }));
+            }
+        }
+    }
 }

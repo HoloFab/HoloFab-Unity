@@ -24,8 +24,15 @@ namespace HoloFab {
 		public Button buttonToggleGrid;
 		[Tooltip("Button to Delete Objects.")]
 		public Button buttonObjects;
-        
-		bool flagGridVisible = true;
+
+        public GameObject goP3D;
+
+        // - CPlane object.
+        private string tagCPlane = "CPlane";
+        private GameObject cPlane;
+
+
+        bool flagGridVisible = true;
         		
 		// Events to be raised on clicks:
 		// - exit application
@@ -57,5 +64,10 @@ namespace HoloFab {
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
 			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();			
 		}
-	}
+        public void OnAdd3DPoint()
+        {
+            cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+            GameObject p3D = Instantiate(goP3D, Camera.main.transform.position + Camera.main.transform.forward, this.cPlane.transform.rotation, this.cPlane.transform);
+        }
+    }
 }
