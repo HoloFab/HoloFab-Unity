@@ -9,12 +9,21 @@
 	}
 	SubShader {
 		//////////////////////////////////////////////////////////////////////////
+		// Special pass for depth testing.
+		Pass {
+			// Render depth
+			ZWrite On
+			// Don't render color
+			ColorMask 0
+		}
 		// Main Pass.
 		Pass {
 			Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" "LightMode"="ForwardBase" }
-
+			// Turn off depth testing - necessary for transparency
+			ZWrite Off
 			// Turn off back surface culling
 			Cull Off
+			ColorMask RGBA
 			// Turn on Blending for alpha
 			Blend SrcAlpha OneMinusSrcAlpha
 
@@ -95,7 +104,8 @@
 			}
 
 			///////////////////////////////////////////////////////////////////////
-			// Geometry Shader
+			// // Geometry Shader
+			// // Duplicate faces in reverse order
 			//[maxvertexcount(6)]
 			//void geom (triangle fragmentShaderData IN[3], inout TriangleStream<fragmentShaderData> output) {
 			//	for (int i = 0; i < 3; i++) {
