@@ -30,15 +30,13 @@ namespace HoloFab {
 		public Button buttonToggleGrid;
 		[Tooltip("Button to Delete Objects.")]
 		public Button buttonObjects;
-    
-		bool flagGridVisible = true;
-    
-    public GameObject goP3D;
-
-    // - CPlane object.
-    private string tagCPlane = "CPlane";
-    private GameObject cPlane;
-        		
+        
+		// KEep track of the scanned grid status.
+		private bool flagGridVisible = true;
+        
+		[Tooltip("Example of point 3D object.")]
+		public GameObject goP3D;
+        
 		// Events to be raised on clicks:
 		// - exit application
 		public void OnExit() {
@@ -53,8 +51,10 @@ namespace HoloFab {
 			//TODO not actually delete c plane but start placing it (put infron tf camera and activate placable)
 			#if WINDOWS_UWP
 			#else
-			GameObject cPlane = GameObject.FindGameObjectWithTag("CPlane");
-			DestroyImmediate(cPlane);
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
+            
+			DestroyImmediate(ObjectManager.cPlane);
 			Resources.UnloadUnusedAssets();
 			#endif
 		}
@@ -98,10 +98,12 @@ namespace HoloFab {
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
 			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();
 		}
-        public void OnAdd3DPoint()
-        {
-            cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-            GameObject p3D = Instantiate(goP3D, Camera.main.transform.position + Camera.main.transform.forward, this.cPlane.transform.rotation, this.cPlane.transform);
-        }
-    }
+		public void OnAdd3DPoint() {
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
+            
+			GameObject p3D = Instantiate(this.goP3D, Camera.main.transform.position + Camera.main.transform.forward,
+			                             ObjectManager.cPlane.transform.rotation, ObjectManager.cPlane.transform);
+		}
+	}
 }

@@ -16,26 +16,21 @@ namespace HoloFab {
 	public class MeshProcessor : MonoBehaviour {
 		[Tooltip("An Prefab of a mesh.")]
 		public GameObject goPrefabMesh;
-        [Tooltip("An Prefab of a mesh.")]
-        public GameObject goPrefabMeshPlus;
-		// - Local reference of CPlane object
-		private GameObject cPlane;
+		[Tooltip("An Prefab of a mesh.")]
+		public GameObject goPrefabMeshPlus;
 		// - Generated Object Tags.
 		private string tagMesh = "ReceivedMesh";
 		private string tagMeshPlus = "ReceivedMeshPlus";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
         
 		// Decode Received Data.
 		public void ProcessMesh(List<MeshData> receivedMeshes, SourceType sourceType) {
 			#if DEBUG
 			Debug.Log("Mesh: Received Count: " + receivedMeshes.Count + ". Type: " + (int)sourceType);
 			#endif
-			this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-			#if DEBUG
-			Debug.Log("Mesh: CPlane: " + this.cPlane);
-			#endif
-			if (this.cPlane == null) return;
+            
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
+            
 			// Find relevant objects based on source to update
 			GameObject[] goRelevantMeshes;
 			string currentTag;
@@ -65,8 +60,8 @@ namespace HoloFab {
 			List<Color> currentColors = new List<Color>();
 			// Loop through all received meshes.
 			for (int i = 0; i < receivedMeshes.Count; i++) {
-                // Condition Vertex based data (points and colors). // Later: normals etc.
-                for (int j = 0; j < receivedMeshes[i].vertices.Count; j++) {
+				// Condition Vertex based data (points and colors). // Later: normals etc.
+				for (int j = 0; j < receivedMeshes[i].vertices.Count; j++) {
 					currentVertices.Add(new Vector3(receivedMeshes[i].vertices[j][0],
 					                                receivedMeshes[i].vertices[j][1],
 					                                receivedMeshes[i].vertices[j][2]));
@@ -74,11 +69,11 @@ namespace HoloFab {
 					currentColors.Add(new Color((float)receivedMeshes[i].colors[colorIndex][1] / 255.0f,
 					                            (float)receivedMeshes[i].colors[colorIndex][2] / 255.0f,
 					                            (float)receivedMeshes[i].colors[colorIndex][3] / 255.0f,
-                                                1.0f));
-                }
-                float alpha = (float)receivedMeshes[i].colors[0][0] / 255.0f;
-                // Condition Faces.
-                for (int j = 0; j < receivedMeshes[i].faces.Count; j++) {
+					                            1.0f));
+				}
+				float alpha = (float)receivedMeshes[i].colors[0][0] / 255.0f;
+				// Condition Faces.
+				for (int j = 0; j < receivedMeshes[i].faces.Count; j++) {
 					currentFaces.Add(receivedMeshes[i].faces[j][1]);
 					currentFaces.Add(receivedMeshes[i].faces[j][2]);
 					currentFaces.Add(receivedMeshes[i].faces[j][3]);
@@ -101,12 +96,12 @@ namespace HoloFab {
 					#if DEBUG
 					Debug.Log("Mesh: Adding new Mesh");
 					#endif
-					meshInstance = Instantiate(currentPrefab, this.cPlane.transform.position, this.cPlane.transform.rotation, this.cPlane.transform);
-                }
-                meshInstance.GetComponent<Renderer>().material.SetFloat("_ShadowStrength", 1.0f);
-                meshInstance.GetComponent<Renderer>().material.SetFloat("_Alpha", alpha);
-                meshInstance.GetComponent<MeshFilter>().mesh = MeshUtilities.DecodeMesh(currentVertices, currentFaces, currentColors);
-            }
+					meshInstance = Instantiate(currentPrefab, ObjectManager.cPlane.transform.position, ObjectManager.cPlane.transform.rotation, ObjectManager.cPlane.transform);
+				}
+				meshInstance.GetComponent<Renderer>().material.SetFloat("_ShadowStrength", 1.0f);
+				meshInstance.GetComponent<Renderer>().material.SetFloat("_Alpha", alpha);
+				meshInstance.GetComponent<MeshFilter>().mesh = MeshUtilities.DecodeMesh(currentVertices, currentFaces, currentColors);
+			}
             
 			// Delete Extraneous Meshes.
 			if (goRelevantMeshes.Length > receivedMeshes.Count) {

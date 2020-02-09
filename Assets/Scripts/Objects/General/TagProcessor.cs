@@ -17,22 +17,15 @@ namespace HoloFab {
 	public class TagProcessor : MonoBehaviour {
 		[Tooltip("A prefab of a tag.")]
 		public GameObject goPrefabTag;
-		// - Local reference of CPlane object
-		private GameObject cPlane;
 		// - Tag tag.
 		private string tagTag = "labels";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
         
 		// Decode Received Data.
 		public void ProcessTag(TagData receivedTags) {
 			GameObject[] goTags = GameObject.FindGameObjectsWithTag(tagTag);
             
-			this.cPlane = GameObject.FindGameObjectWithTag(tagCPlane);
-			#if DEBUG
-			Debug.Log("Tag: CPlane: " + this.cPlane);
-			#endif
-			if (this.cPlane == null) return;
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
             
 			// Loop through tags received.
 			for (int i = 0; i < receivedTags.text.Count; i++) {
@@ -50,9 +43,9 @@ namespace HoloFab {
 					#if DEBUG
 					Debug.Log("Tag: tag new instantiating.");
 					#endif
-					tagInstance = Instantiate(this.goPrefabTag, this.cPlane.transform.position,
-					                          this.cPlane.transform.rotation,
-					                          this.cPlane.transform);
+					tagInstance = Instantiate(this.goPrefabTag, ObjectManager.cPlane.transform.position,
+					                          ObjectManager.cPlane.transform.rotation,
+					                          ObjectManager.cPlane.transform);
 				}
                 
 				// Prepare Values

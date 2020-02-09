@@ -13,22 +13,12 @@ using HoloFab.CustomData;
 namespace HoloFab {
 	// Process Received Robots and update relevant gameObjects.
 	public class RobotProcessor : MonoBehaviour {
-		[Tooltip("Prefab of a robots.")]
-		public GameObject goPrefabKukaKR150;
-		[Tooltip("Prefab of a robots.")]
-		public GameObject goPrefabABB120;
-		[Tooltip("Prefab of a robots.")]
-		public GameObject goPrefabABB140;
-		// - Local reference of CPlane object
-		private GameObject cPlane;
-		// - Generated Object Tags.
-		private string tagKukaKR150 = "Kuka_KR150";
-		private string tagABB120 = "ABB_120";
-		private string tagABB140 = "ABB_140";
+		[Tooltip("A dictionary of supported robots - accessible from Unity directly.")]
+		public List<UnityRobot> robotDictionary = new List<UnityRobot>();
+		// Dictionary not serializable in unity. Otherwise better to have them as dictionary of name to robotexample
+        
 		// - Tool tag
 		private string tagTool = "tool_Object";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
 		// - Keep track of robots by ids.
 		[HideInInspector]
 		public Dictionary<int, GameObject> robots = new Dictionary<int, GameObject>();
@@ -38,11 +28,9 @@ namespace HoloFab {
 			#if DEBUG
 			Debug.Log("Robot: got robots: " + receivedRobots.Count);
 			#endif
-			cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-			#if DEBUG
-			Debug.Log("Robot: CPlane: " + cPlane);
-			#endif
-			if (cPlane == null) return;
+            
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
             
 			// Loop through all received robots.
 			for (int i = 0; i < receivedRobots.Count; i++) {
@@ -54,16 +42,15 @@ namespace HoloFab {
 				#if DEBUG
 				Debug.Log("Robot: " + bot);
 				#endif
-				if (bot == "KR150-2_110") {
-					ProcessHoloBot(this.tagKukaKR150, this.goPrefabKukaKR150, basePlane, endEffector, robotID);
-                    
-				} else if (bot == "IRB120") {
-					ProcessHoloBot(this.tagABB120, this.goPrefabABB120, basePlane, endEffector, robotID);
-                    
-				} else if (bot == "IRB140") {
-					ProcessHoloBot(this.tagABB140, this.goPrefabABB140, basePlane, endEffector, robotID);
-                    
-				} else {
+				bool flagFound = false;
+				foreach(UnityRobot unityRobot in this.robotDictionary) {
+					if (bot == unityRobot.name) {
+						ProcessHoloBot(unityRobot.tag, unityRobot.goExample, basePlane, endEffector, robotID);
+						flagFound = true;
+						break;
+					}
+				}
+				if (!flagFound) {
 					#if DEBUG
 					Debug.Log("Robot: robot not recognized");
 					#endif
@@ -78,34 +65,34 @@ namespace HoloFab {
 			//	#if DEBUG
 			//	Debug.Log("Robot: robot doesn't exist. Creating.");
 			//	#endif
-			//	goHoloBot = CreateBot(this.cPlane, goPrefab, endEffector, robotID);
+			//	goHoloBot = CreateBot(ObjectManager.cPlane, goPrefab, endEffector, robotID);
 			//}
 			if (!robots.ContainsKey(robotID)) {
-				goHoloBot = CreateBot(this.cPlane, goPrefab, endEffector, robotID);
+				goHoloBot = CreateBot(ObjectManager.cPlane, goPrefab, endEffector, robotID);
 				robots.Add(robotID, goHoloBot);
 			} else {
 				goHoloBot = robots[robotID];
 				if (goHoloBot.tag != tag) {
 					DestroyImmediate(goHoloBot);
-					goHoloBot = CreateBot(this.cPlane, goPrefab, endEffector, robotID);
+					goHoloBot = CreateBot(ObjectManager.cPlane, goPrefab, endEffector, robotID);
 					robots[robotID] = goHoloBot;
 				}
 			}
 			// Update HoloBot transform.
-			goHoloBot.transform.SetPositionAndRotation(this.cPlane.transform.position + new Vector3((float)basePlane[0],
-			                                                                                        (float)basePlane[1],
-			                                                                                        (float)basePlane[2]),
-			                                           this.cPlane.transform.rotation * new Quaternion(-(float)basePlane[5],
-			                                                                                           (float)basePlane[6],
-			                                                                                           (float)basePlane[4],
-			                                                                                           (float)basePlane[3]));
+			goHoloBot.transform.SetPositionAndRotation(ObjectManager.cPlane.transform.position + new Vector3((float)basePlane[0],
+			                                                                                                 (float)basePlane[1],
+			                                                                                                 (float)basePlane[2]),
+			                                           ObjectManager.cPlane.transform.rotation * new Quaternion(-(float)basePlane[5],
+			                                                                                                    (float)basePlane[6],
+			                                                                                                    (float)basePlane[4],
+			                                                                                                    (float)basePlane[3]));
 		}
         
 		private GameObject CreateBot(GameObject cPlane, GameObject goPrefab, EndeffectorData endEffector, int robotID) { // int port, double[] tcp
 			#if DEBUG
 			Debug.Log("Robot: Instantiating");
 			#endif
-			GameObject goHoloBot = Instantiate(goPrefab, this.cPlane.transform.position, this.cPlane.transform.rotation, this.cPlane.transform);
+			GameObject goHoloBot = Instantiate(goPrefab, ObjectManager.cPlane.transform.position, ObjectManager.cPlane.transform.rotation, ObjectManager.cPlane.transform);
 			goHoloBot.GetComponentInChildren<RobotController>().robotID = robotID;
             
 			foreach (MeshFilter meshFilter in goHoloBot.GetComponentsInChildren<MeshFilter>()) {

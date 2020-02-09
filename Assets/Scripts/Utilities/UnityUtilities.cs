@@ -34,10 +34,19 @@ namespace HoloFab {
 			Vector2 temp = new Vector2(direction.x, direction.z).normalized;
 			return Mathf.Atan2(temp.x, temp.y) * Mathf.Rad2Deg;
 		}
+        
+		public static void UniversalDebug(string message){
+			#if UNITY_ANDROID
+			AndroidUtilities.ToastMessage(message);
+			// #elif WINDOWS_UWP
+			#else
+			Debug.Log(message);
+			#endif
+		}
 	}
     
 	public static class AndroidUtilities {
-		public static void _ShowAndroidToastMessage(string message) {
+		public static void ToastMessage(string message) {
 			AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"); // Shouldn't this be Holofab?
 			AndroidJavaObject unityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             

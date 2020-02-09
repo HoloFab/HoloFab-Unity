@@ -24,10 +24,10 @@ namespace HoloFab {
 				this.robotID = _robotID;
 				this.robotName = _robotName;
 				this.endEffector = _endEffector;
-                this.robotPlane = new double[] { 0, 0, 0, 1, 0, 0, 0 };
-            }
+				this.robotPlane = new double[] { 0, 0, 0, 1, 0, 0, 0 };
+			}
 			public RobotData(int _robotID, string _robotName, EndeffectorData _endEffector, double[] _robotPlane) : this(_robotID, _robotName, _endEffector) {
-                this.robotPlane = _robotPlane;
+				this.robotPlane = _robotPlane;
 			}
 		}
 		// Custom Endeffector Mesh Data.
