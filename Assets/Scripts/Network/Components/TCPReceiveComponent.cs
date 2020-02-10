@@ -22,52 +22,39 @@ namespace HoloFab {
 		public int localPortOverride = 11111;
         
 		// Local Variables.
+		// - TCP Receiver
+		private TCPReceive tcpReceiver;
 		// - last interpreted message.
 		private string lastMessage = "";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
-		// - Local reference of CPlane object
-		private GameObject cPlane;
-        
 		// temp:
 		public List<string> debugMessages = new List<string>();
 		private int count=0;
-
-        TCPReceive tcp;
-
-        // Unity Functions.
-        void OnEnable() {
-            _ShowAndroidToastMessage("Hollo World . . .");
-            Thread.Sleep(1500);
-            _ShowAndroidToastMessage("Your IP is:\n" + NetworkUtilities.LocalIPAddress());
-            Thread.Sleep(3500);
-            tcp = new TCPReceive(localPortOverride);
-            tcp.TryStartConnection(this.localPortOverride);
+        
+        
+		// Unity Functions.
+		void OnEnable() {
+			this.tcpReceiver = new TCPReceive(this.localPortOverride);
 		}
 		void OnDisable() {
-			tcp.StopConnection();
+			this.tcpReceiver.StopConnection();
 		}
 		void Update() {
-            if (this.cPlane == null) {
-                _ShowAndroidToastMessage("Touch on the screen to place your CPlane");
-                this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-				#if DEBUG
-				Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
-				#endif
-				if (this.cPlane == null) return;
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
+			// If data found - react
+			if (!this.tcpReceiver.flagDataRead) {
+				UnityUtilities.UniversalDebug("Parsing meshes . . .");
+				InterpreteData(this.tcpReceiver.dataMessages[this.tcpReceiver.dataMessages.Count-1]);
+				this.tcpReceiver.flagDataRead = true;
 			}
-            if (!this.tcp.flagDataRead) {
-                _ShowAndroidToastMessage("Parsing meshes . . .");
-                InterpreteData(this.tcp.dataMessages[this.tcp.dataMessages.Count-1]);
-                this.tcp.flagDataRead = true;
-            }
-			if ((count == 0) || (count < tcp.debugMessages.Count)) {
-				for (int i = count; i < tcp.debugMessages.Count; i++) {
+			// Temp - extract data
+			if ((this.count == 0) || (this.count < this.tcpReceiver.debugMessages.Count)) {
+				for (int i = this.count; i < this.tcpReceiver.debugMessages.Count; i++) {
 					#if DEBUG
-					Debug.Log(tcp.debugMessages[i]);
+					UnityUtilities.UniversalDebug(this.tcpReceiver.debugMessages[i]);
 					#endif
 				}
-				count = tcp.debugMessages.Count;
+				this.count = this.tcpReceiver.debugMessages.Count;
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
@@ -76,14 +63,14 @@ namespace HoloFab {
 			if ((!string.IsNullOrEmpty(message)) && (this.lastMessage != message)) {
 				this.lastMessage = message;
 				#if DEBUG
-				Debug.Log("TCPReceive Component: New message found: " + message);
+				UnityUtilities.UniversalDebug("TCPReceive Component: New message found: " + message);
 				#endif
 				string[] messageComponents;
 				messageComponents = message.Split(new char[] { '|' }, 2);
                 
 				string header = messageComponents[0];
 				#if DEBUG
-				Debug.Log("TCPReceive Component: Header: " + header);
+				UnityUtilities.UniversalDebug("TCPReceive Component: Header: " + header);
 				#endif
 				if (header == "MESHSTREAMING") {
 					InterpreteMesh(messageComponents[1], SourceType.TCP);
@@ -91,7 +78,7 @@ namespace HoloFab {
 					InterpreteHoloBots(messageComponents[1]);
 				} else {
 					#if DEBUG
-					Debug.Log("TCPReceive Component: Header Not Recognized");
+					UnityUtilities.UniversalDebug("TCPReceive Component: Header Not Recognized");
 					#endif
 				}
 			}
@@ -105,24 +92,5 @@ namespace HoloFab {
 		private void InterpreteHoloBots(string data){
 			ObjectManager.instance.GetComponent<RobotProcessor>().ProcessRobot(EncodeUtilities.InterpreteHoloBots(data));
 		}
-
-        public void _ShowAndroidToastMessage(string message)
-        {
-            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject unityActivity =
-                unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-
-            if (unityActivity != null)
-            {
-                AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
-                unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
-                {
-                    AndroidJavaObject toastObject =
-                        toastClass.CallStatic<AndroidJavaObject>(
-                            "makeText", unityActivity, message, 0);
-                    toastObject.Call("show");
-                }));
-            }
-        }
-    }
+	}
 }

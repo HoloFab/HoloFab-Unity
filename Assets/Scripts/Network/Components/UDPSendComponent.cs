@@ -13,12 +13,22 @@ namespace HoloFab {
 		[Header("Necessary Variables.")]
 		[Tooltip("A port for UDP communication to send to.")]
 		public int remotePortOverride = 8055;
-        [Tooltip("Received IP address of the computer.")]
-        public string remoteIP = null;
+		[Tooltip("Received IP address of the computer.")]
+		public string remoteIP = null;
         
+		// Local Variables.
+		// - UDP sender
+		private UDPSend udpSender;
+        
+		// Unity Functions.
+		void OnEnable() {
+			this.udpSender = new UDPSend(this.remotePortOverride);
+		}
+		void OnDisable() {}
+		// Main Sender function
 		public void SendUI(byte[] data) {
 			if (this.remoteIP != null) // just in case
-				UDPSend.Send(data, this.remoteIP, this.remotePortOverride);
+				this.udpSender.Send(data, this.remoteIP);
 		}
 	}
 }

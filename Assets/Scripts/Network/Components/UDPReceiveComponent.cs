@@ -16,35 +16,28 @@ namespace HoloFab {
 		public int localPortOverride = 12121;
         
 		// Local Variables.
+		// - UDP sender
+		private UDPReceive udpReceiver;
 		// - IP Address received.
 		[HideInInspector]
 		public static bool flagUICommunicationStarted = false;
 		// - last interpreted message.
 		private string lastMessage = "";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
-		// - Local reference of CPlane object
-		private GameObject cPlane;
         
 		// Unity Functions.
 		void OnEnable() {
-			UDPReceive.TryStartConnection(this.localPortOverride);
+			this.udpReceiver = new UDPReceive(this.localPortOverride);
 		}
 		void OnDisable() {
-			UDPReceive.StopConnection();
+			this.udpReceiver.StopConnection();
 		}
 		void Update() {
-			if (this.cPlane == null) {
-				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-				#if DEBUG
-				Debug.Log("UDPReceive Component: CPlane: " + this.cPlane);
-				#endif
-				if (this.cPlane == null) return;
-			}
-            
-			if (!UDPReceive.flagDataRead) {
-				UDPReceive.flagDataRead = true;
-				InterpreteData(UDPReceive.dataMessages[UDPReceive.dataMessages.Count-1]);
+			// Check for C-plane
+			if (!ObjectManager.instance.CheckCPlane()) return;
+			// If data found - react
+			if (!this.udpReceiver.flagDataRead) {
+				this.udpReceiver.flagDataRead = true;
+				InterpreteData(this.udpReceiver.dataMessages[this.udpReceiver.dataMessages.Count-1]);
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
@@ -53,14 +46,14 @@ namespace HoloFab {
 			if ((!string.IsNullOrEmpty(message)) && (this.lastMessage != message)) {
 				this.lastMessage = message;
 				#if DEBUG
-				Debug.Log("UDPReceive Component: New message found: " + message);
+				UnityUtilities.UniversalDebug("UDPReceive Component: New message found: " + message);
 				#endif
 				string[] messageComponents;
 				messageComponents = message.Split('|');
                 
 				string header = messageComponents[0];
 				#if DEBUG
-				Debug.Log("UDPReceive Component: Header: " + header);
+				UnityUtilities.UniversalDebug("UDPReceive Component: Header: " + header);
 				#endif
 				if (header == "MESHSTREAMINGPLUS") {
 					InterpreteMesh(messageComponents[1], SourceType.UDP);
@@ -72,7 +65,7 @@ namespace HoloFab {
 					InterpreteIPAddress(messageComponents[1]);
 				} else {
 					#if DEBUG
-					Debug.Log("UDPReceive Component: Header Not Recognized");
+					UnityUtilities.UniversalDebug("UDPReceive Component: Header Not Recognized");
 					#endif
 				}
 			}
