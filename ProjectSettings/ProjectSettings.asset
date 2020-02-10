@@ -676,7 +676,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    14: release;DOTNETWINRT_PRESENT
+    14: master;DOTNETWINRT_PRESENT
   platformArchitecture:
     iPhone: 1
   scriptingBackend: {}
@@ -693,7 +693,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Template3D
-  metroPackageVersion: 1.0.30.0
+  metroPackageVersion: 1.0.31.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: HoloFab
