@@ -32,35 +32,46 @@ namespace HoloFab {
 		// temp:
 		public List<string> debugMessages = new List<string>();
 		private int count=0;
-
-        TCPReceive tcp;
-
-        // Unity Functions.
-        void OnEnable() {
-            _ShowAndroidToastMessage("Hollo World . . .");
-            Thread.Sleep(1500);
-            _ShowAndroidToastMessage("Your IP is:\n" + NetworkUtilities.LocalIPAddress());
-            Thread.Sleep(3500);
-            tcp = new TCPReceive(localPortOverride);
-            tcp.TryStartConnection(this.localPortOverride);
+        
+		TCPReceive tcp;
+        
+		// Unity Functions.
+		void OnEnable() {
+			#if UNITY_ANDROID
+			UnityUtilities.UniversalDebug("Hollo World . . .");
+			Thread.Sleep(1500);
+			UnityUtilities.UniversalDebug("Your IP is:\n" + NetworkUtilities.LocalIPAddress());
+			Thread.Sleep(3500);
+			#endif
+			if (this.tcp != null)
+				this.tcp.StopConnection();
+			this.tcp = new TCPReceive(localPortOverride);
+			this.tcp.TryStartConnection(this.localPortOverride);
 		}
 		void OnDisable() {
-			tcp.StopConnection();
+			this.tcp.StopConnection();
 		}
 		void Update() {
-            if (this.cPlane == null) {
-                _ShowAndroidToastMessage("Touch on the screen to place your CPlane");
-                this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+			if (!this.tcp.flagConnectionFound) {
+				#if DEBUG
+				Debug.Log("TCPReceive Component: Connection Found: " + this.tcp.flagConnectionFound);
+				#endif
+				this.tcp.TryStartConnection(this.localPortOverride);
+				if (!this.tcp.flagConnectionFound) return;
+			}
+			if (this.cPlane == null) {
+				UnityUtilities.UniversalDebug("CPlane not found. Set it by touching scanned grid.");
+				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
 				#if DEBUG
 				Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
 				#endif
 				if (this.cPlane == null) return;
 			}
-            if (!this.tcp.flagDataRead) {
-                _ShowAndroidToastMessage("Parsing meshes . . .");
-                InterpreteData(this.tcp.dataMessages[this.tcp.dataMessages.Count-1]);
-                this.tcp.flagDataRead = true;
-            }
+			if (!this.tcp.flagDataRead) {
+				UnityUtilities.UniversalDebug("Parsing input . . .");
+				InterpreteData(this.tcp.dataMessages[this.tcp.dataMessages.Count-1]);
+				this.tcp.flagDataRead = true;
+			}
 			if ((count == 0) || (count < tcp.debugMessages.Count)) {
 				for (int i = count; i < tcp.debugMessages.Count; i++) {
 					#if DEBUG
@@ -105,24 +116,23 @@ namespace HoloFab {
 		private void InterpreteHoloBots(string data){
 			ObjectManager.instance.GetComponent<RobotProcessor>().ProcessRobot(EncodeUtilities.InterpreteHoloBots(data));
 		}
-
-        public void _ShowAndroidToastMessage(string message)
-        {
-            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject unityActivity =
-                unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-
-            if (unityActivity != null)
-            {
-                AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
-                unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
-                {
-                    AndroidJavaObject toastObject =
-                        toastClass.CallStatic<AndroidJavaObject>(
-                            "makeText", unityActivity, message, 0);
-                    toastObject.Call("show");
-                }));
-            }
-        }
-    }
+        
+		public void _ShowAndroidToastMessage(string message)
+		{
+			AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+			AndroidJavaObject unityActivity =
+				unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            
+			if (unityActivity != null) {
+				AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
+				unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+				{
+					AndroidJavaObject toastObject =
+						toastClass.CallStatic<AndroidJavaObject>(
+						                                         "makeText", unityActivity, message, 0);
+					toastObject.Call("show");
+				}));
+			}
+		}
+	}
 }

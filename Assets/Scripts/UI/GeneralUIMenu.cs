@@ -49,11 +49,11 @@ namespace HoloFab {
 		// - Destroy CPlane
 		public void OnDestroyCPlane() {
 			//TODO not actually delete c plane but start placing it (put infron tf camera and activate placable)
-			#if WINDOWS_UWP
-			#else
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
-            
+			#if WINDOWS_UWP
+			ObjectManager.cPlane.GetComponent<Placeable>().OnTap();
+			#else
 			DestroyImmediate(ObjectManager.cPlane);
 			Resources.UnloadUnusedAssets();
 			#endif
