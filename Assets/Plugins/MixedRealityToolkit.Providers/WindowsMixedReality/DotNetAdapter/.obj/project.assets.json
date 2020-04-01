@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.6": {
-      "Microsoft.Windows.MixedReality.DotNetWinRT/0.5.1043": {
+      "Microsoft.Windows.MixedReality.DotNetWinRT/0.5.1048": {
         "type": "package",
         "dependencies": {
           "System.Drawing.Primitives": "4.3.0"
@@ -44,10 +44,10 @@
     }
   },
   "libraries": {
-    "Microsoft.Windows.MixedReality.DotNetWinRT/0.5.1043": {
-      "sha512": "SFK8LNw2qSCVY8qRpnnLc81QZZH9VFq167zL6aq9/TBMdkey50TGEHauxEAB8LqyfYYA2SsE0inDwsXePduIqw==",
+    "Microsoft.Windows.MixedReality.DotNetWinRT/0.5.1048": {
+      "sha512": "K3nws5dSbk0Pic9DkfqV87/1KN/bLz5gjPYRitB6HmOCqpsyzk/VrNvn7OQ2GCyWVPX5qYcuwY2OkZVa8i+MHA==",
       "type": "package",
-      "path": "microsoft.windows.mixedreality.dotnetwinrt/0.5.1043",
+      "path": "microsoft.windows.mixedreality.dotnetwinrt/0.5.1048",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -71,7 +71,7 @@
         "lib/unity/net46/Microsoft.Windows.MixedReality.DotNetWinRT.dll.meta",
         "lib/unity/netstandard2.0/Microsoft.Windows.MixedReality.DotNetWinRT.dll",
         "lib/unity/netstandard2.0/Microsoft.Windows.MixedReality.DotNetWinRT.dll.meta",
-        "microsoft.windows.mixedreality.dotnetwinrt.0.5.1043.nupkg.sha512",
+        "microsoft.windows.mixedreality.dotnetwinrt.0.5.1048.nupkg.sha512",
         "microsoft.windows.mixedreality.dotnetwinrt.nuspec"
       ]
     },
@@ -139,26 +139,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\danii\\.nuget\\packages\\": {},
-    "C:\\Microsoft\\Xamarin\\NuGet\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Daniil\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
+      "projectUniqueName": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
       "projectName": "DotNetAdapter",
-      "projectPath": "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
-      "packagesPath": "C:\\Users\\danii\\.nuget\\packages\\",
-      "outputPath": "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\.obj\\",
+      "projectPath": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
+      "packagesPath": "C:\\Users\\Daniil\\.nuget\\packages\\",
+      "outputPath": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\.obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Microsoft\\Xamarin\\NuGet\\",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\NuGet.Config",
-        "C:\\Users\\danii\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\NuGet.Config",
+        "C:\\Users\\Daniil\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
@@ -195,7 +193,7 @@
             "version": "[0.5.*, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

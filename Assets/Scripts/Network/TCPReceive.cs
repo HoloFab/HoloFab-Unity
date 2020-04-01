@@ -10,6 +10,7 @@ using Windows.Storage.Streams;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text;
 #else
 using System.Net;
 using System.Net.Sockets;
@@ -49,12 +50,13 @@ namespace HoloFab {
         
 		public bool flagConnectionFound;
         
-		public TCPReceive(int _localPort)
-		{
+		public TCPReceive(int _localPort) {
 			this.flagDataRead = true;
 			this.localPort = _localPort;
 			this.status = "Initiation";
 			this.flagConnectionFound = false;
+			this.debugMessages = new List<string>();
+			this.dataMessages = new List<string>();
 			StopConnection();
 		}
         
@@ -114,15 +116,92 @@ namespace HoloFab {
 			string receiveString;
 			this.flagConnectionFound = true;
 			this.debugMessages.Add("TCPReceive: UWP: New Client Found");
-			using (StreamReader reader = new StreamReader(args.Socket.InputStream.AsStreamForRead())) {
-				receiveString = await reader.ReadLineAsync();
-			}
-			// If buffer not empty - react to it.
-			if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
-				this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
-				Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
-				this.dataMessages.Add(receiveString);
-				this.flagDataRead = false;
+            
+			// using (StreamReader reader = new StreamReader(args.Socket.InputStream.AsStreamForRead())) {
+			// 	receiveString = await reader.ReadLineAsync();
+			// }
+			// this.debugMessages.Add("TCPReceive: UWP: message found: " + receiveString);
+			// // sender.Dispose();
+			//
+			// // If buffer not empty - react to it.
+			// if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
+			// 	this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
+			// 	Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
+			// 	this.dataMessages.Add(receiveString);
+			// 	this.flagDataRead = false;
+			// }
+            
+			// DataReader reader = new DataReader(args.Socket.InputStream);
+			// try {
+			// 	while (true) {
+			// 		// Read first 4 bytes (length of the subsequent string).
+			// 		uint sizeFieldCount = await reader.LoadAsync(sizeof(uint));
+			// 		if (sizeFieldCount != sizeof(uint)) {
+			// 			// The underlying socket was closed before we were able to read the whole data.
+			// 			return;
+			// 		}
+			// 		this.debugMessages.Add("TCPReceive: UWP: Message got through.");
+			// 		Debug.Log("TCPReceive: UWP: Message got through.");
+			//
+			// 		// Read the string.
+			// 		uint stringLength = reader.ReadUInt32();
+			// 		uint actualStringLength = await reader.LoadAsync(stringLength);
+			// 		this.debugMessages.Add("TCPReceive: UWP: found string of size: supposed: " + stringLength + ", actual: " + actualStringLength);
+			// 		Debug.Log("TCPReceive: UWP: found string of size: supposed: " + stringLength + ", actual: " + actualStringLength);
+			// 		if (stringLength != actualStringLength) {
+			// 			// The underlying socket was closed before we were able to read the whole data.
+			// 			return;
+			// 		}
+			//
+			// 		// Display the string on the screen. The event is invoked on a non-UI thread, so we need to marshal
+			// 		// the text back to the UI thread.
+			// 		receiveString = reader.ReadString(actualStringLength);
+			// 		this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
+			// 		Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
+			// 		if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
+			// 			this.dataMessages.Add(receiveString);
+			// 			this.flagDataRead = false;
+			// 		}
+			// 	}
+			// } catch (Exception exception) {
+			// 	// If this is an unknown status it means that the error is fatal and retry will likely fail.
+			// 	SocketErrorStatus webErrorStatus = SocketError.GetStatus(exception.GetBaseException().HResult);
+			// 	string webError = (webErrorStatus.ToString() != "Unknown") ? webErrorStatus.ToString() :
+			// 	                                                             exception.Message;
+			// 	// Exception.
+			// 	this.debugMessages.Add("TCPReceive: UWP: Exception: " + webError); //exception.ToString()
+			// }
+            
+			DataReader reader;
+			StringBuilder stringBuilder;
+            
+			try {
+				// while (true) {
+				using (reader = new DataReader(args.Socket.InputStream)) {
+					stringBuilder = new StringBuilder();
+					reader.InputStreamOptions = InputStreamOptions.Partial;
+					reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+					reader.ByteOrder = ByteOrder.LittleEndian;
+					await reader.LoadAsync(256);
+					while (reader.UnconsumedBufferLength > 0) {
+						stringBuilder.Append(reader.ReadString(reader.UnconsumedBufferLength));
+						await reader.LoadAsync(256);
+					}
+					reader.DetachStream();
+					receiveString = stringBuilder.ToString();
+				}
+				if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
+					this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
+					Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
+					this.dataMessages.Add(receiveString);
+					this.flagDataRead = false;
+				}
+				//}
+			} catch {
+				this.debugMessages.Add("TCPReceive: UWP: Rception error");
+				Debug.Log("TCPReceive: UWP: Rception error");
+                
+				this.flagConnectionFound = false;
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////

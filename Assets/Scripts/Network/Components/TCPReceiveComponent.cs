@@ -1,5 +1,7 @@
 #define DEBUG
+// #define DEBUG2
 //#undef DEBUG
+#undef DEBUG2
 
 using System;
 using System.Collections.Generic;
@@ -24,10 +26,10 @@ namespace HoloFab {
 		// Local Variables.
 		// - last interpreted message.
 		private string lastMessage = "";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
-		// - Local reference of CPlane object
-		private GameObject cPlane;
+		// // - CPlane object tag.
+		// private string tagCPlane = "CPlane";
+		// // - Local reference of CPlane object
+		// private GameObject cPlane;
         
 		// temp:
 		public List<string> debugMessages = new List<string>();
@@ -53,20 +55,20 @@ namespace HoloFab {
 		}
 		void Update() {
 			if (!this.tcp.flagConnectionFound) {
-				#if DEBUG
+				#if DEBUG2
 				Debug.Log("TCPReceive Component: Connection Found: " + this.tcp.flagConnectionFound);
 				#endif
 				this.tcp.TryStartConnection(this.localPortOverride);
 				if (!this.tcp.flagConnectionFound) return;
 			}
-			if (this.cPlane == null) {
-				UnityUtilities.UniversalDebug("CPlane not found. Set it by touching scanned grid.");
-				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-				#if DEBUG
-				Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
-				#endif
-				if (this.cPlane == null) return;
-			}
+			// if (this.cPlane == null) {
+			// 	UnityUtilities.UniversalDebug("CPlane not found. Set it by touching scanned grid.");
+			// 	this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+			// 	#if DEBUG
+			// 	Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
+			// 	#endif
+			// 	if (this.cPlane == null) return;
+			// }
 			if (!this.tcp.flagDataRead) {
 				UnityUtilities.UniversalDebug("Parsing input . . .");
 				InterpreteData(this.tcp.dataMessages[this.tcp.dataMessages.Count-1]);

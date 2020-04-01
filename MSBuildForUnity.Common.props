@@ -2,15 +2,15 @@
   <PropertyGroup>
     <MSBuildForUnityVersion>0.8.3</MSBuildForUnityVersion>
     
-    <MSBuildForUnityGeneratedOutputDirectory>C:\00_USERFILES\Work\22_HoloFab\HoloFab-Unity\MSBuild\Projects</MSBuildForUnityGeneratedOutputDirectory>
-    <UnityProjectAssetsPath>C:\00_USERFILES\Work\22_HoloFab\HoloFab-Unity\Assets</UnityProjectAssetsPath>
+    <MSBuildForUnityGeneratedOutputDirectory>C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\MSBuild\Projects</MSBuildForUnityGeneratedOutputDirectory>
+    <UnityProjectAssetsPath>C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets</UnityProjectAssetsPath>
     <MSBuildForUnityDefaultOutputPath>$(UnityProjectAssetsPath)\Dependencies</MSBuildForUnityDefaultOutputPath>
     
     <UnityCurrentPlatform>WSA</UnityCurrentPlatform>
     <UnityCurrentTargetFramework>net46</UnityCurrentTargetFramework>
     
     <UnityMajorVersion>2019</UnityMajorVersion>
-    <UnityMinorVersion>2</UnityMinorVersion>
+    <UnityMinorVersion>3</UnityMinorVersion>
   </PropertyGroup>
   
   <Target Name="_RemoveOutputDirectory" AfterTargets="Clean">

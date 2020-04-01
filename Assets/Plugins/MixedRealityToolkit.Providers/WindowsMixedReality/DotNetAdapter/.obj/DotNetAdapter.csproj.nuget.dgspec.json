@@ -1,25 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj": {}
+    "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj": {}
   },
   "projects": {
-    "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj": {
+    "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
+        "projectUniqueName": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
         "projectName": "DotNetAdapter",
-        "projectPath": "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
-        "packagesPath": "C:\\Users\\danii\\.nuget\\packages\\",
-        "outputPath": "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\.obj\\",
+        "projectPath": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\DotNetAdapter.csproj",
+        "packagesPath": "C:\\Users\\Daniil\\.nuget\\packages\\",
+        "outputPath": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\.obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\00_USERFILES\\Work\\22_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\NuGet.Config",
-          "C:\\Users\\danii\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\DotNetAdapter\\NuGet.Config",
+          "C:\\Users\\Daniil\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -56,7 +55,7 @@
               "version": "[0.5.*, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.200\\RuntimeIdentifierGraph.json"
         }
       }
     }
