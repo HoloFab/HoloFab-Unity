@@ -1,7 +1,9 @@
-#define DEBUG
+// #define DEBUG
 // #define DEBUG2
-//#undef DEBUG
+#define DEBUGWARNING
+#undef DEBUG
 #undef DEBUG2
+// #undef DEBUGWARNING
 
 using System;
 using System.Collections.Generic;
@@ -24,88 +26,62 @@ namespace HoloFab {
 		public int localPortOverride = 11111;
         
 		// Local Variables.
+		private string sourceName = "TCP Receive Component";
+		private TCPReceive tcpReceiver;
 		// - last interpreted message.
 		private string lastMessage = "";
-		// // - CPlane object tag.
-		// private string tagCPlane = "CPlane";
-		// // - Local reference of CPlane object
-		// private GameObject cPlane;
-        
-		// temp:
-		public List<string> debugMessages = new List<string>();
-		private int count=0;
-        
-		TCPReceive tcp;
         
 		// Unity Functions.
 		void OnEnable() {
-			#if UNITY_ANDROID
-			UnityUtilities.UniversalDebug("Hollo World . . .");
-			Thread.Sleep(1500);
-			UnityUtilities.UniversalDebug("Your IP is:\n" + NetworkUtilities.LocalIPAddress());
-			Thread.Sleep(3500);
-			#endif
-			if (this.tcp != null)
-				this.tcp.StopConnection();
-			this.tcp = new TCPReceive(localPortOverride);
-			this.tcp.TryStartConnection(this.localPortOverride);
+			if (this.tcpReceiver != null)
+				this.tcpReceiver.Disconnect();
+			this.tcpReceiver = new TCPReceive(this.localPortOverride);
+			this.tcpReceiver.Connect();
 		}
 		void OnDisable() {
-			this.tcp.StopConnection();
+			this.tcpReceiver.Disconnect();
 		}
 		void Update() {
-			if (!this.tcp.flagConnectionFound) {
-				#if DEBUG2
-				Debug.Log("TCPReceive Component: Connection Found: " + this.tcp.flagConnectionFound);
+			if (!this.tcpReceiver.flagConnectionFound) {
+				#if DEBUGWARNING && DEBUG2
+				DebugUtilities.UniversalWarning(this.sourceName, "Connection not Found.");
 				#endif
-				this.tcp.TryStartConnection(this.localPortOverride);
-				if (!this.tcp.flagConnectionFound) return;
+				this.tcpReceiver.Connect();
+				if (!this.tcpReceiver.flagConnectionFound) return;
 			}
-			// if (this.cPlane == null) {
-			// 	UnityUtilities.UniversalDebug("CPlane not found. Set it by touching scanned grid.");
-			// 	this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
-			// 	#if DEBUG
-			// 	Debug.Log("TCPReceive Component: CPlane: " + this.cPlane);
-			// 	#endif
-			// 	if (this.cPlane == null) return;
-			// }
-			if (!this.tcp.flagDataRead) {
-				UnityUtilities.UniversalDebug("Parsing input . . .");
-				InterpreteData(this.tcp.dataMessages[this.tcp.dataMessages.Count-1]);
-				this.tcp.flagDataRead = true;
-			}
-			if ((count == 0) || (count < tcp.debugMessages.Count)) {
-				for (int i = count; i < tcp.debugMessages.Count; i++) {
-					#if DEBUG
-					Debug.Log(tcp.debugMessages[i]);
-					#endif
-				}
-				count = tcp.debugMessages.Count;
+			if (!this.tcpReceiver.flagDataRead) {
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Parsing input . . .");
+				#endif
+				InterpreteData(this.tcpReceiver.dataMessages[this.tcpReceiver.dataMessages.Count-1]);
+				this.tcpReceiver.flagDataRead = true;
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// A function responsible for decoding and reacting to received TCP data.
 		private void InterpreteData(string message) {
-			if ((!string.IsNullOrEmpty(message)) && (this.lastMessage != message)) {
-				this.lastMessage = message;
-				#if DEBUG
-				Debug.Log("TCPReceive Component: New message found: " + message);
-				#endif
-				string[] messageComponents;
-				messageComponents = message.Split(new char[] { '|' }, 2);
-                
-				string header = messageComponents[0];
-				#if DEBUG
-				Debug.Log("TCPReceive Component: Header: " + header);
-				#endif
-				if (header == "MESHSTREAMING") {
-					InterpreteMesh(messageComponents[1], SourceType.TCP);
-				} else if (header == "HOLOBOTS") {
-					InterpreteHoloBots(messageComponents[1]);
-				} else {
+			if (!string.IsNullOrEmpty(message)) {
+				message = EncodeUtilities.StripSplitter(message);
+				if (this.lastMessage != message) {
+					this.lastMessage = message;
 					#if DEBUG
-					Debug.Log("TCPReceive Component: Header Not Recognized");
+					DebugUtilities.UniversalDebug(this.sourceName, "New message found: " + message);
 					#endif
+					string[] messageComponents = message.Split(new string[] {EncodeUtilities.headerSplitter}, 2,StringSplitOptions.RemoveEmptyEntries);
+                    
+					string header = messageComponents[0];
+					#if DEBUG
+					DebugUtilities.UniversalDebug(this.sourceName, "Header: " + header);
+					#endif
+					if (header == "MESHSTREAMING") {
+						InterpreteMesh(messageComponents[1], SourceType.TCP);
+					} else if (header == "HOLOBOTS") {
+						InterpreteHoloBots(messageComponents[1]);
+					} else {
+						#if DEBUGWARNING
+						DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
+						#endif
+					}
 				}
 			}
 		}
@@ -117,24 +93,6 @@ namespace HoloFab {
 		// - HoloBots
 		private void InterpreteHoloBots(string data){
 			ObjectManager.instance.GetComponent<RobotProcessor>().ProcessRobot(EncodeUtilities.InterpreteHoloBots(data));
-		}
-        
-		public void _ShowAndroidToastMessage(string message)
-		{
-			AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-			AndroidJavaObject unityActivity =
-				unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-            
-			if (unityActivity != null) {
-				AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
-				unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
-				{
-					AndroidJavaObject toastObject =
-						toastClass.CallStatic<AndroidJavaObject>(
-						                                         "makeText", unityActivity, message, 0);
-					toastObject.Call("show");
-				}));
-			}
 		}
 	}
 }

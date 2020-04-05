@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
 using HoloFab;
 using HoloFab.CustomData;
 
@@ -33,15 +34,6 @@ namespace HoloFab {
 			// Calculate the angle.
 			Vector2 temp = new Vector2(direction.x, direction.z).normalized;
 			return Mathf.Atan2(temp.x, temp.y) * Mathf.Rad2Deg;
-		}
-        
-		public static void UniversalDebug(string message){
-			#if UNITY_ANDROID
-			AndroidUtilities.ToastMessage(message);
-			// #elif WINDOWS_UWP
-			#else
-			Debug.Log(message);
-			#endif
 		}
 	}
     

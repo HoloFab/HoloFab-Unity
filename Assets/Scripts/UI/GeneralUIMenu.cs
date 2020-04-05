@@ -52,9 +52,9 @@ namespace HoloFab {
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
 			#if WINDOWS_UWP
-			ObjectManager.cPlane.GetComponent<Placeable>().OnTap();
+			ObjectManager.instance.cPlane.GetComponent<Placeable>().OnTap();
 			#else
-			DestroyImmediate(ObjectManager.cPlane);
+			DestroyImmediate(ObjectManager.instance.cPlane);
 			Resources.UnloadUnusedAssets();
 			#endif
 		}
@@ -103,7 +103,7 @@ namespace HoloFab {
 			if (!ObjectManager.instance.CheckCPlane()) return;
             
 			GameObject p3D = Instantiate(this.goP3D, Camera.main.transform.position + Camera.main.transform.forward,
-			                             ObjectManager.cPlane.transform.rotation, ObjectManager.cPlane.transform);
+			                             ObjectManager.instance.cPlane.transform.rotation, ObjectManager.instance.cPlane.transform);
 		}
 	}
 }

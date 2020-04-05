@@ -43,9 +43,9 @@ namespace HoloFab {
 					#if DEBUG
 					Debug.Log("Tag: tag new instantiating.");
 					#endif
-					tagInstance = Instantiate(this.goPrefabTag, ObjectManager.cPlane.transform.position,
-					                          ObjectManager.cPlane.transform.rotation,
-					                          ObjectManager.cPlane.transform);
+					tagInstance = Instantiate(this.goPrefabTag, ObjectManager.instance.cPlane.transform.position,
+					                          ObjectManager.instance.cPlane.transform.rotation,
+					                          ObjectManager.instance.cPlane.transform);
 				}
                 
 				// Prepare Values

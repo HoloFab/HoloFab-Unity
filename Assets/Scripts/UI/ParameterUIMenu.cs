@@ -1,4 +1,4 @@
-//#define DEBUG
+// #define DEBUG
 #undef DEBUG
 
 using System.Collections;
@@ -164,8 +164,8 @@ namespace HoloFab {
 				GameObject[] goCounters = GameObject.FindGameObjectsWithTag(this.tagUIItemCounter);
 				GameObject[] goSliders = GameObject.FindGameObjectsWithTag(this.tagUIItemSlider);
 				#if DEBUG
-				#endif
 				Debug.Log("ParameterUIMenu: Found items: booleans: " + goBooleans.Length + ", counters: " + goCounters.Length + ", sliders: " + goSliders.Length);
+				#endif
                 
 				// Extract data.
 				List<bool> bools = new List<bool>();

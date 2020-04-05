@@ -96,7 +96,7 @@ namespace HoloFab {
 					#if DEBUG
 					Debug.Log("Mesh: Adding new Mesh");
 					#endif
-					meshInstance = Instantiate(currentPrefab, ObjectManager.cPlane.transform.position, ObjectManager.cPlane.transform.rotation, ObjectManager.cPlane.transform);
+					meshInstance = Instantiate(currentPrefab, ObjectManager.instance.cPlane.transform.position, ObjectManager.instance.cPlane.transform.rotation, ObjectManager.instance.cPlane.transform);
 				}
 				meshInstance.GetComponent<Renderer>().material.SetFloat("_ShadowStrength", 1.0f);
 				meshInstance.GetComponent<Renderer>().material.SetFloat("_Alpha", alpha);

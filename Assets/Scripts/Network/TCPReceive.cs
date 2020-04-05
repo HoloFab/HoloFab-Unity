@@ -1,3 +1,10 @@
+// #define DEBUG
+// #define DEBUG2
+#define DEBUGWARNING
+#undef DEBUG
+#undef DEBUG2
+// #undef DEBUGWARNING
+
 using System;
 using System.Collections.Generic;
 
@@ -18,26 +25,34 @@ using System.Threading;
 #endif
 
 namespace HoloFab {
-	//using UnityEngine;
-    
 	public class TCPReceive {
 		#if WINDOWS_UWP
+		private string sourceName = "TCP Receive Interface UWP";
 		// Connection Object References.
 		private StreamSocketListener listener;
-		private StreamSocket client;
 		// Task Object Reference.
-		private CancellationTokenSource cancellationTokenSource;
-		private Task receiver;
+		private CancellationTokenSource connectionCancellationTokenSource;
+		private Task connectionReceiver;
+		private DataReader reader;
 		#else
+		private string sourceName = "TCP Receive Interface";
 		// Connection Object References.
 		public TcpListener listener;
 		public TcpClient client;
 		public NetworkStream stream;
 		// Thread Object Reference.
-		private Thread receiver = null;
+		private Thread connectionReceiver = null;
 		#endif
+        
+		// Local Variables.
 		// Local Port
 		private int localPort;
+		// Size of buffer to try to read at once.
+		private uint bufferSize = 8096;
+		// Local buffer
+		private string currentHistory = string.Empty;
+		// Flag raised when server is found
+		public bool flagConnectionFound;
 		// History:
 		// - debug
 		public List<string> debugMessages = new List<string>();
@@ -46,55 +61,61 @@ namespace HoloFab {
 		// Flag to be raised on data recepcion.
 		public bool flagDataRead;
         
-		public string status;
-        
-		public bool flagConnectionFound;
-        
-		public TCPReceive(int _localPort) {
+		public TCPReceive(int _localPort=11111) {
 			this.flagDataRead = true;
 			this.localPort = _localPort;
-			this.status = "Initiation";
-			this.flagConnectionFound = false;
 			this.debugMessages = new List<string>();
 			this.dataMessages = new List<string>();
-			StopConnection();
+			this.flagConnectionFound = false;
+			Disconnect();
 		}
         
 		// Enable connection - if not yet open.
-		public void TryStartConnection(int _localPort=11111) {
+		public void Connect() {
 			// Create a new thread to receive incoming messages.
-			if (this.receiver == null)
-				StartConnection(_localPort);
+			if (this.connectionReceiver == null)
+				StartListenning(this.localPort);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		#if WINDOWS_UWP
-		private async void StartConnection(int _localPort){
+		private async void StartListenning(int _localPort){
 			if (this.localPort != _localPort)
 				this.localPort = _localPort;
 			// Reset.
 			this.debugMessages = new List<string>();
 			this.dataMessages = new List<string>();
 			// Start the thread.
-			this.cancellationTokenSource = new CancellationTokenSource();
-			this.receiver = new Task(() => ReceiveConnection(), this.cancellationTokenSource.Token);
-			this.receiver.Start();
-			this.debugMessages.Add("TCPReceive: UWP: Task Finished: " + this.receiver.IsCompleted); // Check if even works at all.
-			this.debugMessages.Add("TCPReceive: UWP: Thread Started.");
+			this.connectionCancellationTokenSource = new CancellationTokenSource();
+			this.connectionReceiver = new Task(() => ReceiveConnection(), this.connectionCancellationTokenSource.Token);
+			this.connectionReceiver.Start();
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "Client receivng thread Started.", ref this.debugMessages);
+			#endif
 		}
 		// Disable connection.
-		public void StopConnection() {
+		public void Disconnect() {
 			// Reset.
-			if (this.receiver != null) {
-				this.cancellationTokenSource.Cancel();
-				this.receiver.Wait(1);
-				this.cancellationTokenSource.Dispose();
-				this.receiver = null; // Good Practice?
-				this.debugMessages.Add("TCPReceive: UWP: Stopping Task.");
+			if (this.connectionReceiver != null) {
+				this.connectionCancellationTokenSource.Cancel();
+				this.connectionReceiver.Wait(1);
+				this.connectionCancellationTokenSource.Dispose();
+				this.connectionReceiver = null;     // Good Practice?
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Connection Reception Task.", ref this.debugMessages);
+				#endif
 			}
 			if (this.listener != null) {
 				this.listener.Dispose();
-				this.listener = null; // Good Practice?
-				this.debugMessages.Add("TCPReceive: UWP: Stopping Listener.");
+				this.listener = null;     // Good Practice?
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Listener.", ref this.debugMessages);
+				#endif
+			}
+			if (this.reader != null) {
+				this.reader.DetachStream();
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Reader.", ref this.debugMessages);
+				#endif
 			}
 		}
 		// Constantly check for new messages on given port.
@@ -104,132 +125,103 @@ namespace HoloFab {
 				this.listener = new StreamSocketListener();
 				this.listener.ConnectionReceived += OnClientFound;
 				await this.listener.BindServiceNameAsync(this.localPort.ToString());
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Started Listening for Incoming Connections.", ref this.debugMessages);
+				#endif
 			} catch (Exception exception) {
+				// Exception.
 				SocketErrorStatus webErrorStatus = SocketError.GetStatus(exception.GetBaseException().HResult);
 				string webError = (webErrorStatus.ToString() != "Unknown") ? webErrorStatus.ToString() :
 				                                                             exception.Message;
-				// Exception.
-				this.debugMessages.Add("TCPReceive: UWP: Exception: " + webError); //exception.ToString()
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Exception: " + webError, ref this.debugMessages);
+				#endif
 			}
 		}
 		private async void OnClientFound(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args){
-			string receiveString;
 			this.flagConnectionFound = true;
-			this.debugMessages.Add("TCPReceive: UWP: New Client Found");
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "New Client Found!", ref this.debugMessages);
+			#endif
+			uint dataLengthToRead;
             
-			// using (StreamReader reader = new StreamReader(args.Socket.InputStream.AsStreamForRead())) {
-			// 	receiveString = await reader.ReadLineAsync();
-			// }
-			// this.debugMessages.Add("TCPReceive: UWP: message found: " + receiveString);
-			// // sender.Dispose();
-			//
-			// // If buffer not empty - react to it.
-			// if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
-			// 	this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
-			// 	Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
-			// 	this.dataMessages.Add(receiveString);
-			// 	this.flagDataRead = false;
-			// }
-            
-			// DataReader reader = new DataReader(args.Socket.InputStream);
-			// try {
-			// 	while (true) {
-			// 		// Read first 4 bytes (length of the subsequent string).
-			// 		uint sizeFieldCount = await reader.LoadAsync(sizeof(uint));
-			// 		if (sizeFieldCount != sizeof(uint)) {
-			// 			// The underlying socket was closed before we were able to read the whole data.
-			// 			return;
-			// 		}
-			// 		this.debugMessages.Add("TCPReceive: UWP: Message got through.");
-			// 		Debug.Log("TCPReceive: UWP: Message got through.");
-			//
-			// 		// Read the string.
-			// 		uint stringLength = reader.ReadUInt32();
-			// 		uint actualStringLength = await reader.LoadAsync(stringLength);
-			// 		this.debugMessages.Add("TCPReceive: UWP: found string of size: supposed: " + stringLength + ", actual: " + actualStringLength);
-			// 		Debug.Log("TCPReceive: UWP: found string of size: supposed: " + stringLength + ", actual: " + actualStringLength);
-			// 		if (stringLength != actualStringLength) {
-			// 			// The underlying socket was closed before we were able to read the whole data.
-			// 			return;
-			// 		}
-			//
-			// 		// Display the string on the screen. The event is invoked on a non-UI thread, so we need to marshal
-			// 		// the text back to the UI thread.
-			// 		receiveString = reader.ReadString(actualStringLength);
-			// 		this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
-			// 		Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
-			// 		if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
-			// 			this.dataMessages.Add(receiveString);
-			// 			this.flagDataRead = false;
-			// 		}
-			// 	}
-			// } catch (Exception exception) {
-			// 	// If this is an unknown status it means that the error is fatal and retry will likely fail.
-			// 	SocketErrorStatus webErrorStatus = SocketError.GetStatus(exception.GetBaseException().HResult);
-			// 	string webError = (webErrorStatus.ToString() != "Unknown") ? webErrorStatus.ToString() :
-			// 	                                                             exception.Message;
-			// 	// Exception.
-			// 	this.debugMessages.Add("TCPReceive: UWP: Exception: " + webError); //exception.ToString()
-			// }
-            
-			DataReader reader;
-			StringBuilder stringBuilder;
-            
+			this.reader = new DataReader(args.Socket.InputStream);
+			this.reader.InputStreamOptions = InputStreamOptions.Partial;
+			this.reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "Starting infinite loop reading data.", ref this.debugMessages);
+			#endif
 			try {
-				// while (true) {
-				using (reader = new DataReader(args.Socket.InputStream)) {
-					stringBuilder = new StringBuilder();
-					reader.InputStreamOptions = InputStreamOptions.Partial;
-					reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
-					reader.ByteOrder = ByteOrder.LittleEndian;
-					await reader.LoadAsync(256);
-					while (reader.UnconsumedBufferLength > 0) {
-						stringBuilder.Append(reader.ReadString(reader.UnconsumedBufferLength));
-						await reader.LoadAsync(256);
+				while (true) {
+					// Try to read a byte - if timed out - will raise an exceptiion.
+					// CancellationTokenSource timeoutSource = new CancellationTokenSource(TimeSpan.FromMilliseconds(1000));
+					// uint temp = await this.reader.LoadAsync(1).AsTask(timeoutSource.Token);
+                    
+					dataLengthToRead = await this.reader.LoadAsync(this.bufferSize);
+					if (dataLengthToRead > 0) {
+						#if DEBUG2
+						DebugUtilities.UniversalDebug(this.sourceName, "Data found in stream.", ref this.debugMessages);
+						#endif
+						this.currentHistory += this.reader.ReadString(dataLengthToRead);
+						// if found a message splitter - process first and remove from history.
+						if (this.currentHistory.Contains(EncodeUtilities.messageSplitter))
+							ReactToMessage();
+						// Check if there is more data in stream.
+						dataLengthToRead = await this.reader.LoadAsync(bufferSize);
 					}
-					reader.DetachStream();
-					receiveString = stringBuilder.ToString();
+					// await Task.Delay(TimeSpan.FromMilliseconds(100));
+					// DebugUniversal("Keeping going . . .");
 				}
-				if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
-					this.debugMessages.Add("TCPReceive: UWP: New Data: " + receiveString);
-					Debug.Log("TCPReceive: UWP: New Data: " + receiveString);
-					this.dataMessages.Add(receiveString);
-					this.flagDataRead = false;
-				}
-				//}
-			} catch {
-				this.debugMessages.Add("TCPReceive: UWP: Rception error");
-				Debug.Log("TCPReceive: UWP: Rception error");
-                
-				this.flagConnectionFound = false;
+			} catch(TaskCanceledException) {
+				// timeout
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Connection timed out!", ref this.debugMessages);
+				#endif
+			} catch(Exception exception) {
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Receiving Exception: " + exception.ToString(), ref this.debugMessages);
+				#endif
 			}
+			// TODO: Shouldn't it close in case of error?
+			// finally {
+			// 	this.flagConnectionFound = false;
+			// 	this.reader.DetachStream();
+			// }
 		}
 		//////////////////////////////////////////////////////////////////////////
 		#else
-		private void StartConnection(int _localPort){
+		private void StartListenning(int _localPort){
 			// Reset.
 			this.debugMessages = new List<string>();
 			this.dataMessages = new List<string>();
 			// Start the thread.
-			this.receiver = new Thread(new ThreadStart(this.ReceiveData));
-			this.receiver.IsBackground = true;
-			this.receiver.Start();
-			this.debugMessages.Add("TCPReceive: Thread Started.");
+			this.connectionReceiver = new Thread(new ThreadStart(this.ReceiveData));
+			this.connectionReceiver.IsBackground = true;
+			this.connectionReceiver.Start();
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "Thread Started.", ref this.debugMessages);
+			#endif
 		}
 		// Disable connection.
-		public void StopConnection() {
+		public void Disconnect() {
 			// Reset.
 			if (this.listener != null) {
 				this.listener.Stop();
-				this.debugMessages.Add("TCPReceive: Stopping Listener.");
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Listener.", ref this.debugMessages);
+				#endif
 			}
 			if (this.client != null) {
 				this.client.Close();
-				this.debugMessages.Add("TCPReceive: Stopping Client.");
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Client.", ref this.debugMessages);
+				#endif
 			}
-			if (this.receiver != null) {
-				this.receiver.Abort();
-				this.debugMessages.Add("TCPReceive: Stopping Thread.");
+			if (this.connectionReceiver != null) {
+				this.connectionReceiver.Abort();
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Thread.", ref this.debugMessages);
+				#endif
 			}
 		}
 		// Constantly check for new messages on given port.
@@ -240,22 +232,31 @@ namespace HoloFab {
 				this.listener = new TcpListener(anyIP);
 				this.listener.Start();
                 
+				this.currentHistory = "";
 				// Infinite loop.
 				while (true) {
 					if (this.client == null) {
-						this.status = "Listening for a Client!";
+						#if DEBUG
+						DebugUtilities.UniversalDebug(this.sourceName, "Listening for a Client!", ref this.debugMessages);
+						#endif
 						this.client = this.listener.AcceptTcpClient();
 						this.stream = this.client.GetStream();
 					} else {
 						try {
-                            
 							if (this.stream.DataAvailable) {
 								OnClientFound();
-								this.status = "Reading Data: " + this.client.Available.ToString();
+								#if DEBUG
+								DebugUtilities.UniversalDebug(this.sourceName, "Reading Data: " + this.client.Available.ToString(), ref this.debugMessages);
+								#endif
 							} else {
 								if (this.IsConnected) {
-									this.status = "NoData Available!";
+									#if DEBUGWARNING
+									DebugUtilities.UniversalWarning(this.sourceName, "No Data Available!", ref this.debugMessages);
+									#endif
 								} else {
+									#if DEBUGWARNING
+									DebugUtilities.UniversalWarning(this.sourceName, "Client Disconnected", ref this.debugMessages);
+									#endif
 									this.stream.Close();
 									this.client.Close();
 									this.client = null;
@@ -272,40 +273,32 @@ namespace HoloFab {
 				}
 			} catch (SocketException exception) {
 				// SocketException.
-				this.debugMessages.Add("TCPReceive: SocketException: " + exception.ToString());
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "SocketException: " + exception.ToString(), ref this.debugMessages);
+				#endif
 			} catch (Exception exception) {
 				// Exception.
-				this.debugMessages.Add("TCPReceive: Exception: " + exception.ToString());
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Exception: " + exception.ToString(), ref this.debugMessages);
+				#endif
 			}
+			// TODO: Shouldn't it close in case of error?
 			// finally {
-			// 	this.StopConnection();
+			// 	this.Disconnect();
 			// }
 		}
-        
 		private void OnClientFound(){
 			this.flagConnectionFound = true;
-			byte[] data = new byte[8096];
-			string receiveString = string.Empty;
+			byte[] buffer = new byte[bufferSize];
+            
 			// Receive Bytes.
-            
-			//int i;
-			//while ((i = stream.Read(data, 0, data.Length)) != 0)
-			string d = "";
-			while (!d.EndsWith(";")) {
-				int i = stream.Read(data, 0, data.Length);
-				d = EncodeUtilities.DecodeData(data, 0, i);
-				receiveString += d;
+			while (!currentHistory.Contains(EncodeUtilities.messageSplitter)) {
+				int currentReadBufferSize = stream.Read(buffer, 0, buffer.Length);
+				this.currentHistory += EncodeUtilities.DecodeData(buffer, 0, currentReadBufferSize);
 			}
-			this.debugMessages.Add("TCPReceive: Received data: " + receiveString);
-            
-			// If buffer not empty - react to it.
-			if ((!string.IsNullOrEmpty(receiveString)) && ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
-				this.dataMessages.Add(receiveString.Substring(0, receiveString.Length-1));
-				this.flagDataRead = false;
-			}
-			this.debugMessages.Add("TCPReceive: New Data: " + receiveString);
+			ReactToMessage();
 		}
-        
+		// Check if Server Disconnected.
 		public bool IsConnected {
 			get {
 				try {
@@ -328,7 +321,6 @@ namespace HoloFab {
 								return true;
 							}
 						}
-                        
 						return true;
 					} else {
 						return false;
@@ -339,5 +331,26 @@ namespace HoloFab {
 			}
 		}
 		#endif
+		// When splitter is found - react to it.
+		private void ReactToMessage(){
+			string[] messages = this.currentHistory.Split(new string[] { EncodeUtilities.messageSplitter },
+			                                              StringSplitOptions.RemoveEmptyEntries);
+			int index = (messages.Length > 1) ? messages.Length-2 : 0;
+			string receiveString = messages[index];
+			this.currentHistory = (messages.Length > 1) ? messages[index+1] : string.Empty;
+			if (!string.IsNullOrEmpty(receiveString)) {
+				#if DEBUG2
+				DebugUtilities.UniversalDebug(this.sourceName, "Total Data found: " + receiveString, ref this.debugMessages);
+				#endif
+				if ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString)) {
+					this.dataMessages.Add(receiveString);
+					this.flagDataRead = false;
+				} else {
+					#if DEBUG2
+					DebugUtilities.UniversalDebug(this.sourceName, "Message already added.", ref this.debugMessages);
+					#endif
+				}
+			}
+		}
 	}
 }

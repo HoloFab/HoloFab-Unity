@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311912, g: 0.3807398, b: 0.3587272, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -464,8 +465,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
   Events: []
   enabledOnStart: 1
 --- !u!224 &1715843927 stripped
@@ -624,10 +623,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3798030945849454401, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+    - target: {fileID: -2505333804154878619, guid: 4afa700613cd6a0418c0ecd6c679c78e,
         type: 3}
-      propertyPath: m_Name
-      value: CPlane_Hololens
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+        type: 3}
+      propertyPath: m_textInfo.lineCount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+        type: 3}
+      propertyPath: m_textInfo.pageCount
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 223835945175131222, guid: 4afa700613cd6a0418c0ecd6c679c78e,
         type: 3}
@@ -734,30 +753,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+    - target: {fileID: 3798030945849454401, guid: 4afa700613cd6a0418c0ecd6c679c78e,
         type: 3}
-      propertyPath: m_textInfo.characterCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
-        type: 3}
-      propertyPath: m_textInfo.wordCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
-        type: 3}
-      propertyPath: m_textInfo.lineCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 134009956001568792, guid: 4afa700613cd6a0418c0ecd6c679c78e,
-        type: 3}
-      propertyPath: m_textInfo.pageCount
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -2505333804154878619, guid: 4afa700613cd6a0418c0ecd6c679c78e,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: m_Name
+      value: CPlane_Hololens
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4afa700613cd6a0418c0ecd6c679c78e, type: 3}

@@ -1,3 +1,10 @@
+// #define DEBUG
+// #define DEBUG2
+#define DEBUGWARNING
+#undef DEBUG
+#undef DEBUG2
+// #undef DEBUGWARNING
+
 using System;
 using System.Collections.Generic;
 
@@ -15,102 +22,135 @@ namespace HoloFab {
 	// UDP receiver.
 	// TODO:
 	// - Change data received into an event to be raised and subscribed by listeners.
-	public static class UDPReceive {
-		#if WINDOWS_UWP
-		// Connection Object Reference.
-		private static DatagramSocket client;
-		#else
-		// Connection Object Reference.
-		private static UdpClient client;
-		// Thread Object Reference.
-		private static Thread receiveThread = null;
-		#endif
+	public class UDPReceive {
 		// Local Port
-		private static int localPort = 8055;
+		private int localPort = 8055;
+        
+		// Network Objects:
+		#if WINDOWS_UWP
+		private string sourceName = "UDP Receive Interface UWP";
+		// Connection Object Reference.
+		private DatagramSocket client;
+		#else
+		private string sourceName = "UDP Receive Interface";
+		// Connection Object Reference.
+		private UdpClient client;
+		// Thread Object Reference.
+		private Thread receiveThread = null;
+		#endif
 		// History:
 		// - debug
-		public static List<string> debugMessages = new List<string>();
+		public List<string> debugMessages = new List<string>();
 		// - received data
-		public static List<string> dataMessages = new List<string>();
+		public List<string> dataMessages = new List<string>();
 		// Flag to be raised on data recepcion.
-		public static bool flagDataRead = true;
+		public bool flagDataRead = true;
+        
+		// Constructor.
+		public UDPReceive(int _localPort=8055){
+			this.flagDataRead = true;
+			this.localPort = _localPort;
+			this.debugMessages = new List<string>();
+			this.dataMessages = new List<string>();
+			Disconnect();
+		}
         
 		// Enable connection - if not yet open.
-		public static void TryStartConnection(int _localPort=8055) {
+		public void Connect() {
 			#if WINDOWS_UWP
-			StartConnection(_localPort);
+			StartReceiving();
 			#else
 			// Create a new thread to receive incoming messages.
-			if (UDPReceive.receiveThread == null)
-				StartConnection(_localPort);
+			if (this.receiveThread == null)
+				StartReceiving();
 			#endif
 		}
 		//////////////////////////////////////////////////////////////////////////
 		#if WINDOWS_UWP
-		private static async void StartConnection(int _localPort){
-			if (UDPReceive.localPort != _localPort)
-				UDPReceive.localPort = _localPort;
-			UDPReceive.client = new DatagramSocket();
-			UDPReceive.client.MessageReceived += ReceiveData;
+		private async void StartReceiving(){
+			// Reset.
+			// Start receiving.
+			this.client = new DatagramSocket();
+			this.client.MessageReceived += ReceiveData;
 			try {
-				await client.BindEndpointAsync(new HostName(NetworkUtilities.LocalIPAddress()), UDPReceive.localPort.ToString());
+				await client.BindEndpointAsync(new HostName(NetworkUtilities.LocalIPAddress()), this.localPort.ToString());
 			} catch (Exception exception) {
-				UDPReceive.debugMessages.Add("Receive:UWP:ERROR "+exception.ToString() + SocketError.GetStatus(exception.HResult).ToString());
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Exception: " + exception.ToString() + ":" + SocketError.GetStatus(exception.HResult).ToString(), ref this.debugMessages);
+				#endif
 			}
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "Client receivng thread Started.", ref this.debugMessages);
+			#endif
 		}
 		// Disable connection.
-		public static async void StopConnection() {
+		public async void Disconnect() {
 			// Reset.
-			if (UDPReceive.client != null) {
-				UDPReceive.client.Dispose();
-				UDPReceive.client = null; // Good Practice?
-				UDPReceive.debugMessages.Add("UDPReceive: Stopping Client.");
+			if (this.client != null) {
+				this.client.Dispose();
+				this.client = null; // Good Practice?
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Client.", ref this.debugMessages);
+				#endif
 			}
 		}
 		// Constantly check for new messages on given port.
-		private static async void ReceiveData(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args){
+		private async void ReceiveData(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args){
 			//Read the message that was received from the UDP client.
 			DataReader reader = args.GetDataReader();
 			string receiveString = reader.ReadString(reader.UnconsumedBufferLength).Trim();
 			// If string not empty and not read yet - react to it.
-			if ((!string.IsNullOrEmpty(receiveString)) && ((UDPReceive.dataMessages.Count == 0) || (UDPReceive.dataMessages[UDPReceive.dataMessages.Count-1] != receiveString))) {
-				UDPReceive.debugMessages.Add("UDPReceive: New Data: " + receiveString);
-				UDPReceive.dataMessages.Add(receiveString);
-				UDPReceive.flagDataRead = false;
+			if (!string.IsNullOrEmpty(receiveString)) {
+				#if DEBUG2
+				DebugUtilities.UniversalDebug(this.sourceName, "Total Data found: " + receiveString, ref this.debugMessages);
+				#endif
+				if ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString)) {
+					this.dataMessages.Add(receiveString);
+					this.flagDataRead = false;
+				} else {
+					#if DEBUG2
+					DebugUtilities.UniversalDebug(this.sourceName, "Message already added.", ref this.debugMessages);
+					#endif
+				}
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
 		#else
-		private static void StartConnection(int _localPort){
-			if (UDPReceive.localPort != _localPort)
-				UDPReceive.localPort = _localPort;
+		private void StartReceiving(){
 			// Reset.
-			UDPReceive.debugMessages = new List<string>();
-			UDPReceive.dataMessages = new List<string>();
+			this.debugMessages = new List<string>();
+			this.dataMessages = new List<string>();
 			// Start the thread.
-			UDPReceive.receiveThread = new Thread(new ThreadStart(ReceiveData));
-			UDPReceive.receiveThread.IsBackground = true;
-			UDPReceive.receiveThread.Start();
-			UDPReceive.debugMessages.Add("UDPReceive: Thread Started.");
+			this.receiveThread = new Thread(new ThreadStart(ReceiveData));
+			this.receiveThread.IsBackground = true;
+			this.receiveThread.Start();
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "Client receivng thread Started.", ref this.debugMessages);
+			#endif
 		}
 		// Disable connection.
-		public static void StopConnection() {
+		public void Disconnect() {
 			// Reset.
-			if (UDPReceive.receiveThread != null) {
-				UDPReceive.receiveThread.Abort();
-				UDPReceive.receiveThread = null; // Good Practice?
-				UDPReceive.debugMessages.Add("UDPReceive: Stopping Thread.");
+			if (this.receiveThread != null) {
+				this.receiveThread.Abort();
+				this.receiveThread = null; // Good Practice?
+				this.debugMessages.Add("UDPReceive: Stopping Thread.");
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Connection Reception Thread.", ref this.debugMessages);
+				#endif
 			}
-			if (UDPReceive.client != null) {
-				UDPReceive.client.Close();
-				UDPReceive.client = null; // Good Practice?
-				UDPReceive.debugMessages.Add("UDPReceive: Stopping Client.");
+			if (this.client != null) {
+				this.client.Close();
+				this.client = null; // Good Practice?
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Client.", ref this.debugMessages);
+				#endif
 			}
 		}
 		// Constantly check for new messages on given port.
-		private static void ReceiveData(){
+		private void ReceiveData(){
 			// Open.
-			UDPReceive.client = new UdpClient(UDPReceive.localPort);
+			this.client = new UdpClient(this.localPort);
 			IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
 			// Infinite loop.
 			try {
@@ -122,22 +162,37 @@ namespace HoloFab {
 					if (data.Length > 0) {
 						// If buffer not empty - decode it.
 						receiveString = EncodeUtilities.DecodeData(data);
-						if ((!string.IsNullOrEmpty(receiveString)) && ((UDPReceive.dataMessages.Count == 0) || (UDPReceive.dataMessages[UDPReceive.dataMessages.Count-1] != receiveString))) {
-							UDPReceive.debugMessages.Add("UDPReceive: New Data: " + receiveString);
-							UDPReceive.dataMessages.Add(receiveString);
-							UDPReceive.flagDataRead = false;
+						// If string not empty and not read yet - react to it.
+						if (!string.IsNullOrEmpty(receiveString)) {
+							#if DEBUG2
+							DebugUtilities.UniversalDebug(this.sourceName, "Total Data found: " + receiveString, ref this.debugMessages);
+							#endif
+							if ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString)) {
+								this.dataMessages.Add(receiveString);
+								this.flagDataRead = false;
+							} else {
+								#if DEBUG2
+								DebugUtilities.UniversalDebug(this.sourceName, "Message already added.", ref this.debugMessages);
+								#endif
+							}
 						}
 					}
 				}
 			} catch (SocketException exception) {
 				// SocketException.
-				UDPReceive.debugMessages.Add("UDPReceive: SocketException: " + exception.ToString());
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "SocketException: " + exception.ToString(), ref this.debugMessages);
+				#endif
 			} catch (Exception exception) {
 				// Exception.
-				UDPReceive.debugMessages.Add("UDPReceive: Exception: " + exception.ToString());
-			} finally {
-				UDPReceive.StopConnection();
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Exception: " + exception.ToString(), ref this.debugMessages);
+				#endif
 			}
+			// TODO: Shouldn't it close in case of error?
+			// finally {
+			// 	this.StopConnection();
+			// }
 		}
 		#endif
 	}

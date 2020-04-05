@@ -65,34 +65,34 @@ namespace HoloFab {
 			//	#if DEBUG
 			//	Debug.Log("Robot: robot doesn't exist. Creating.");
 			//	#endif
-			//	goHoloBot = CreateBot(ObjectManager.cPlane, goPrefab, endEffector, robotID);
+			//	goHoloBot = CreateBot(ObjectManager.instance.cPlane, goPrefab, endEffector, robotID);
 			//}
 			if (!robots.ContainsKey(robotID)) {
-				goHoloBot = CreateBot(ObjectManager.cPlane, goPrefab, endEffector, robotID);
+				goHoloBot = CreateBot(ObjectManager.instance.cPlane, goPrefab, endEffector, robotID);
 				robots.Add(robotID, goHoloBot);
 			} else {
 				goHoloBot = robots[robotID];
 				if (goHoloBot.tag != tag) {
 					DestroyImmediate(goHoloBot);
-					goHoloBot = CreateBot(ObjectManager.cPlane, goPrefab, endEffector, robotID);
+					goHoloBot = CreateBot(ObjectManager.instance.cPlane, goPrefab, endEffector, robotID);
 					robots[robotID] = goHoloBot;
 				}
 			}
 			// Update HoloBot transform.
-			goHoloBot.transform.SetPositionAndRotation(ObjectManager.cPlane.transform.position + new Vector3((float)basePlane[0],
-			                                                                                                 (float)basePlane[1],
-			                                                                                                 (float)basePlane[2]),
-			                                           ObjectManager.cPlane.transform.rotation * new Quaternion(-(float)basePlane[5],
-			                                                                                                    (float)basePlane[6],
-			                                                                                                    (float)basePlane[4],
-			                                                                                                    (float)basePlane[3]));
+			goHoloBot.transform.SetPositionAndRotation(ObjectManager.instance.cPlane.transform.position + new Vector3((float)basePlane[0],
+			                                                                                                          (float)basePlane[1],
+			                                                                                                          (float)basePlane[2]),
+			                                           ObjectManager.instance.cPlane.transform.rotation * new Quaternion(-(float)basePlane[5],
+			                                                                                                             (float)basePlane[6],
+			                                                                                                             (float)basePlane[4],
+			                                                                                                             (float)basePlane[3]));
 		}
         
 		private GameObject CreateBot(GameObject cPlane, GameObject goPrefab, EndeffectorData endEffector, int robotID) { // int port, double[] tcp
 			#if DEBUG
 			Debug.Log("Robot: Instantiating");
 			#endif
-			GameObject goHoloBot = Instantiate(goPrefab, ObjectManager.cPlane.transform.position, ObjectManager.cPlane.transform.rotation, ObjectManager.cPlane.transform);
+			GameObject goHoloBot = Instantiate(goPrefab, ObjectManager.instance.cPlane.transform.position, ObjectManager.instance.cPlane.transform.rotation, ObjectManager.instance.cPlane.transform);
 			goHoloBot.GetComponentInChildren<RobotController>().robotID = robotID;
             
 			foreach (MeshFilter meshFilter in goHoloBot.GetComponentsInChildren<MeshFilter>()) {

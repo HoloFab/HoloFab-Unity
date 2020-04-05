@@ -1,5 +1,7 @@
-//#define DEBUG
+// #define DEBUG
+#define DEBUGWARNING
 #undef DEBUG
+// #undef DEBUGWARNING
 
 using System;
 using System.Collections.Generic;
@@ -16,64 +18,60 @@ namespace HoloFab {
 		public int localPortOverride = 12121;
         
 		// Local Variables.
+		private string sourceName = "UDP Receive Component";
+		private UDPReceive udpReceiver;
+		// - last interpreted message.
+		private string lastMessage = "";
 		// - IP Address received.
 		[HideInInspector]
 		public static bool flagUICommunicationStarted = false;
-		// - last interpreted message.
-		private string lastMessage = "";
-		// - CPlane object tag.
-		private string tagCPlane = "CPlane";
-		// - Local reference of CPlane object
-		private GameObject cPlane;
         
 		// Unity Functions.
 		void OnEnable() {
-			UDPReceive.TryStartConnection(this.localPortOverride);
+			this.udpReceiver = new UDPReceive(this.localPortOverride);
+			this.udpReceiver.Connect();
 		}
 		void OnDisable() {
-			UDPReceive.StopConnection();
+			this.udpReceiver.Disconnect();
 		}
 		void Update() {
-			if (this.cPlane == null) {
-				this.cPlane = GameObject.FindGameObjectWithTag(this.tagCPlane);
+			if (!this.udpReceiver.flagDataRead) {
 				#if DEBUG
-				Debug.Log("UDPReceive Component: CPlane: " + this.cPlane);
+				DebugUtilities.UniversalDebug(this.sourceName, "Parsing input . . .");
 				#endif
-				if (this.cPlane == null) return;
-			}
-            
-			if (!UDPReceive.flagDataRead) {
-				UDPReceive.flagDataRead = true;
-				InterpreteData(UDPReceive.dataMessages[UDPReceive.dataMessages.Count-1]);
+				this.udpReceiver.flagDataRead = true;
+				InterpreteData(this.udpReceiver.dataMessages[this.udpReceiver.dataMessages.Count-1]);
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// A function responsible for decoding and reacting to received UDP data.
 		private void InterpreteData(string message) {
-			if ((!string.IsNullOrEmpty(message)) && (this.lastMessage != message)) {
-				this.lastMessage = message;
-				#if DEBUG
-				Debug.Log("UDPReceive Component: New message found: " + message);
-				#endif
-				string[] messageComponents;
-				messageComponents = message.Split('|');
-                
-				string header = messageComponents[0];
-				#if DEBUG
-				Debug.Log("UDPReceive Component: Header: " + header);
-				#endif
-				if (header == "MESHSTREAMINGPLUS") {
-					InterpreteMesh(messageComponents[1], SourceType.UDP);
-				} else if (header == "CONTROLLER") {
-					InterpreteRobotController(messageComponents[1]);
-				} else if (header == "HOLOTAG") {
-					InterpreteTag(messageComponents[1]);
-				} else if(header == "IPADDRESS") {
-					InterpreteIPAddress(messageComponents[1]);
-				} else {
+			if (!string.IsNullOrEmpty(message)) {
+				message = EncodeUtilities.StripSplitter(message);
+				if (this.lastMessage != message) {
+					this.lastMessage = message;
 					#if DEBUG
-					Debug.Log("UDPReceive Component: Header Not Recognized");
+					DebugUtilities.UniversalDebug(this.sourceName, "New message found: " + message);
 					#endif
+					string[] messageComponents = message.Split(new string[] {EncodeUtilities.headerSplitter}, 2,StringSplitOptions.RemoveEmptyEntries);
+                    
+					string header = messageComponents[0];
+					#if DEBUG
+					DebugUtilities.UniversalDebug(this.sourceName, "Header: " + header);
+					#endif
+					if (header == "MESHSTREAMING") {
+						InterpreteMesh(messageComponents[1], SourceType.UDP);
+					} else if (header == "CONTROLLER") {
+						InterpreteRobotController(messageComponents[1]);
+					} else if (header == "HOLOTAG") {
+						InterpreteTag(messageComponents[1]);
+					} else if(header == "IPADDRESS") {
+						InterpreteIPAddress(messageComponents[1]);
+					} else {
+						#if DEBUGWARNING
+						DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
+						#endif
+					}
 				}
 			}
 		}
@@ -102,7 +100,13 @@ namespace HoloFab {
 		// - IP address
 		private void InterpreteIPAddress(string data){
 			UDPSendComponent sender = gameObject.GetComponent<UDPSendComponent>();
-			sender.remoteIP = EncodeUtilities.InterpreteIPAddress(data);
+			string remoteIP = EncodeUtilities.InterpreteIPAddress(data);
+			#if DEBUG
+			DebugUtilities.UniversalDebug(this.sourceName, "Remote IP: " + remoteIP);
+			#endif
+			// TODO: Add ip integrity check
+			// TODO: Should not be stored in udp sender.
+			sender.remoteIP = remoteIP;
 			UDPReceiveComponent.flagUICommunicationStarted = true;
 			// Inform UI Manager.
 			ParameterUIMenu.instance.OnValueChanged();
