@@ -49,6 +49,8 @@ namespace HoloFab {
 		private int localPort;
 		// Size of buffer to try to read at once.
 		private uint bufferSize = 8096;
+		// Force the messages depite history.
+		public bool flagForce = true;
 		// Local buffer
 		private string currentHistory = string.Empty;
 		// Flag raised when server is found
@@ -69,6 +71,9 @@ namespace HoloFab {
 			this.flagConnectionFound = false;
 			Disconnect();
 		}
+		~TCPReceive(){
+			Disconnect();
+		}
         
 		// Enable connection - if not yet open.
 		public void Connect() {
@@ -76,14 +81,33 @@ namespace HoloFab {
 			if (this.connectionReceiver == null)
 				StartListenning(this.localPort);
 		}
+		// When splitter is found - react to it.
+		private void ReactToMessage(){
+			string[] messages = this.currentHistory.Split(new string[] { EncodeUtilities.messageSplitter },
+			                                              StringSplitOptions.RemoveEmptyEntries);
+			int index = (messages.Length > 1) ? messages.Length-2 : 0;
+			string receiveString = messages[index];
+			this.currentHistory = (messages.Length > 1) ? messages[index+1] : string.Empty;
+			if (!string.IsNullOrEmpty(receiveString)) {
+				#if DEBUG2
+				DebugUtilities.UniversalDebug(this.sourceName, "Total Data found: " + receiveString, ref this.debugMessages);
+				#endif
+				if ((this.dataMessages.Count == 0) ||
+				    (this.flagForce || (this.dataMessages[this.dataMessages.Count-1] != receiveString))) {
+					this.dataMessages.Add(receiveString);
+					this.flagDataRead = false;
+				} else {
+					#if DEBUG2
+					DebugUtilities.UniversalDebug(this.sourceName, "Message already added.", ref this.debugMessages);
+					#endif
+				}
+			}
+		}
 		//////////////////////////////////////////////////////////////////////////
 		#if WINDOWS_UWP
 		private async void StartListenning(int _localPort){
 			if (this.localPort != _localPort)
 				this.localPort = _localPort;
-			// Reset.
-			this.debugMessages = new List<string>();
-			this.dataMessages = new List<string>();
 			// Start the thread.
 			this.connectionCancellationTokenSource = new CancellationTokenSource();
 			this.connectionReceiver = new Task(() => ReceiveConnection(), this.connectionCancellationTokenSource.Token);
@@ -113,6 +137,7 @@ namespace HoloFab {
 			}
 			if (this.reader != null) {
 				this.reader.DetachStream();
+				this.reader = null;
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Reader.", ref this.debugMessages);
 				#endif
@@ -158,17 +183,17 @@ namespace HoloFab {
 					// uint temp = await this.reader.LoadAsync(1).AsTask(timeoutSource.Token);
                     
 					dataLengthToRead = await this.reader.LoadAsync(this.bufferSize);
-					if (dataLengthToRead > 0) {
+					if ((dataLengthToRead != 0) && (!this.currentHistory.Contains(EncodeUtilities.messageSplitter))) {
 						#if DEBUG2
 						DebugUtilities.UniversalDebug(this.sourceName, "Data found in stream.", ref this.debugMessages);
 						#endif
 						this.currentHistory += this.reader.ReadString(dataLengthToRead);
-						// if found a message splitter - process first and remove from history.
-						if (this.currentHistory.Contains(EncodeUtilities.messageSplitter))
-							ReactToMessage();
 						// Check if there is more data in stream.
 						dataLengthToRead = await this.reader.LoadAsync(bufferSize);
 					}
+					// if found a message splitter - process first and remove from history.
+					if (this.currentHistory.Contains(EncodeUtilities.messageSplitter))
+						ReactToMessage();
 					// await Task.Delay(TimeSpan.FromMilliseconds(100));
 					// DebugUniversal("Keeping going . . .");
 				}
@@ -191,9 +216,6 @@ namespace HoloFab {
 		//////////////////////////////////////////////////////////////////////////
 		#else
 		private void StartListenning(int _localPort){
-			// Reset.
-			this.debugMessages = new List<string>();
-			this.dataMessages = new List<string>();
 			// Start the thread.
 			this.connectionReceiver = new Thread(new ThreadStart(this.ReceiveData));
 			this.connectionReceiver.IsBackground = true;
@@ -207,18 +229,21 @@ namespace HoloFab {
 			// Reset.
 			if (this.listener != null) {
 				this.listener.Stop();
+				this.listener = null;
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Listener.", ref this.debugMessages);
 				#endif
 			}
 			if (this.client != null) {
 				this.client.Close();
+				this.client = null;
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Client.", ref this.debugMessages);
 				#endif
 			}
 			if (this.connectionReceiver != null) {
 				this.connectionReceiver.Abort();
+				this.connectionReceiver = null;
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Stopping Thread.", ref this.debugMessages);
 				#endif
@@ -292,11 +317,13 @@ namespace HoloFab {
 			byte[] buffer = new byte[bufferSize];
             
 			// Receive Bytes.
-			while (!currentHistory.Contains(EncodeUtilities.messageSplitter)) {
-				int currentReadBufferSize = stream.Read(buffer, 0, buffer.Length);
-				this.currentHistory += EncodeUtilities.DecodeData(buffer, 0, currentReadBufferSize);
+			int dataLengthToRead = this.stream.Read(buffer, 0, buffer.Length);
+			while ((dataLengthToRead != 0) && (!this.currentHistory.Contains(EncodeUtilities.messageSplitter))) {
+				this.currentHistory += EncodeUtilities.DecodeData(buffer, 0, dataLengthToRead);
+				dataLengthToRead = this.stream.Read(buffer, 0, buffer.Length);
 			}
-			ReactToMessage();
+			if (this.currentHistory.Contains(EncodeUtilities.messageSplitter))
+				ReactToMessage();
 		}
 		// Check if Server Disconnected.
 		public bool IsConnected {
@@ -331,26 +358,5 @@ namespace HoloFab {
 			}
 		}
 		#endif
-		// When splitter is found - react to it.
-		private void ReactToMessage(){
-			string[] messages = this.currentHistory.Split(new string[] { EncodeUtilities.messageSplitter },
-			                                              StringSplitOptions.RemoveEmptyEntries);
-			int index = (messages.Length > 1) ? messages.Length-2 : 0;
-			string receiveString = messages[index];
-			this.currentHistory = (messages.Length > 1) ? messages[index+1] : string.Empty;
-			if (!string.IsNullOrEmpty(receiveString)) {
-				#if DEBUG2
-				DebugUtilities.UniversalDebug(this.sourceName, "Total Data found: " + receiveString, ref this.debugMessages);
-				#endif
-				if ((this.dataMessages.Count == 0) || (this.dataMessages[this.dataMessages.Count-1] != receiveString)) {
-					this.dataMessages.Add(receiveString);
-					this.flagDataRead = false;
-				} else {
-					#if DEBUG2
-					DebugUtilities.UniversalDebug(this.sourceName, "Message already added.", ref this.debugMessages);
-					#endif
-				}
-			}
-		}
 	}
 }

@@ -11,6 +11,7 @@ using Windows.Networking;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 #else
+using System.Net;
 using System.Net.Sockets;
 #endif
 
@@ -28,6 +29,7 @@ namespace HoloFab {
 		private string sourceName = "UDP Send Interface UWP";
 		// Connection Object Reference.
 		private DatagramSocket client;
+		private static string broadcastAddress = "255.255.255.255";
 		#else
 		private string sourceName = "UDP Send Interface";
 		// Connection Object Reference.
@@ -57,7 +59,8 @@ namespace HoloFab {
 				// Open new one.
 				this.client = new DatagramSocket();
 				// Write.
-				using (var stream = await client.GetOutputStreamAsync(new HostName(this.remoteIP), this.remotePort.ToString())) {
+				using (var stream = await this.client.GetOutputStreamAsync(new HostName(this.remoteIP),
+				                                                           this.remotePort.ToString())) {
 					using (DataWriter writer = new DataWriter(stream)) {
 						writer.WriteBytes(sendBuffer);
 						await writer.StoreAsync();
@@ -79,6 +82,39 @@ namespace HoloFab {
 				#endif
 			}
 		}
+		// Broadcast Message to everyone.
+		public async void Broadcast(byte[] sendBuffer) {
+			// Reset.
+			if (this.client != null) {
+				this.client.Dispose();
+				this.client = null; // Good Practice?
+			}
+			try {
+				// Open.
+				this.client = new DatagramSocket();
+				// Write.
+				using (var stream = await this.client.GetOutputStreamAsync(new HostName(UDPSend.broadcastAddress),
+				                                                           this.remotePort.ToString())) {
+					using (DataWriter writer = new DataWriter(stream)) {
+						writer.WriteBytes(sendBuffer);
+						await writer.StoreAsync();
+					}
+				}
+				// Close.
+				this.client.Dispose();
+				// Acknowledge.
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Broadcast Sent!", ref this.debugMessages);
+				#endif
+				this.success = true;
+				return;
+			} catch (Exception exception) {
+				// Exception.
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Exception: " + exception.ToString(), ref this.debugMessages);
+				#endif
+			}
+		}
 		#else
 		// Start a connection and send given byte array.
 		public void Send(byte[] sendBuffer) {
@@ -90,7 +126,7 @@ namespace HoloFab {
 			}
 			try {
 				// Open.
-				this.client = new UdpClient(remoteIP, this.remotePort);
+				this.client = new UdpClient(this.remoteIP, this.remotePort);
 				// Write.
 				this.client.Send(sendBuffer, sendBuffer.Length);
 				// Close.
@@ -98,6 +134,33 @@ namespace HoloFab {
 				// Acknowledge.
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Data Sent!", ref this.debugMessages);
+				#endif
+				this.success = true;
+				return;
+			} catch (Exception exception) {
+				// Exception.
+				#if DEBUGWARNING
+				DebugUtilities.UniversalWarning(this.sourceName, "Exception: " + exception.ToString(), ref this.debugMessages);
+				#endif
+			}
+		}
+		// Broadcast Message to everyone.
+		public void Broadcast(byte[] sendBuffer) {
+			// Reset.
+			if (this.client != null) {
+				this.client.Close();
+				this.client = null; // Good Practice?
+			}
+			try {
+				// Open.
+				this.client = new UdpClient(new IPEndPoint(IPAddress.Broadcast, this.remotePort));
+				// Write.
+				this.client.Send(sendBuffer, sendBuffer.Length);
+				// Close.
+				this.client.Close();
+				// Acknowledge.
+				#if DEBUG
+				DebugUtilities.UniversalDebug(this.sourceName, "Broadcast Sent!", ref this.debugMessages);
 				#endif
 				this.success = true;
 				return;

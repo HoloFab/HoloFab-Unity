@@ -21,7 +21,7 @@ namespace HoloFab {
 		private string tagTool = "tool_Object";
 		// - Keep track of robots by ids.
 		[HideInInspector]
-		public Dictionary<int, GameObject> robots = new Dictionary<int, GameObject>();
+		public Dictionary<int, GameObject> robotsInstantiated = new Dictionary<int, GameObject>();
         
 		// Decode Received Data.
 		public void ProcessRobot(List<RobotData> receivedRobots) {
@@ -67,15 +67,15 @@ namespace HoloFab {
 			//	#endif
 			//	goHoloBot = CreateBot(ObjectManager.instance.cPlane, goPrefab, endEffector, robotID);
 			//}
-			if (!robots.ContainsKey(robotID)) {
+			if (!this.robotsInstantiated.ContainsKey(robotID)) {
 				goHoloBot = CreateBot(ObjectManager.instance.cPlane, goPrefab, endEffector, robotID);
-				robots.Add(robotID, goHoloBot);
+				this.robotsInstantiated.Add(robotID, goHoloBot);
 			} else {
-				goHoloBot = robots[robotID];
+				goHoloBot = this.robotsInstantiated[robotID];
 				if (goHoloBot.tag != tag) {
 					DestroyImmediate(goHoloBot);
 					goHoloBot = CreateBot(ObjectManager.instance.cPlane, goPrefab, endEffector, robotID);
-					robots[robotID] = goHoloBot;
+					this.robotsInstantiated[robotID] = goHoloBot;
 				}
 			}
 			// Update HoloBot transform.
@@ -142,7 +142,7 @@ namespace HoloFab {
 		}
         
 		public void DeleteRobots() {
-			List<GameObject> robots = this.robots.Values.ToList();
+			List<GameObject> robots = this.robotsInstantiated.Values.ToList();
 			for (int i = robots.Count - 1; i >=0; i--) {
 				DestroyImmediate(robots[i]);
 			}

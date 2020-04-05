@@ -180,11 +180,11 @@ namespace HoloFab {
 				UIData ui = new UIData(bools, ints, floats);
                 
 				// Encode and if changed - send it.
-				byte[] data = EncodeUtilities.EncodeData(string.Empty, ui, out string message);
-				if (ParameterUIMenu.lastMessage != message) { // TODO: Technically not necessary now since we call directly from UI elements themselves.
-					ParameterUIMenu.lastMessage = message;
+				byte[] data = EncodeUtilities.EncodeData("UIDATA", ui, out string currentMessage);
+				if (ParameterUIMenu.lastMessage != currentMessage) { // TODO: Technically not necessary now since we call directly from UI elements themselves.
+					ParameterUIMenu.lastMessage = currentMessage;
 					#if DEBUG
-					Debug.Log("ParameterUIMenu: values changed, sending: " + message);
+					Debug.Log("ParameterUIMenu: values changed, sending: " + currentMessage);
 					#endif
                     
 					if (ParameterUIMenu.sender == null) ParameterUIMenu.sender = FindObjectOfType<UDPSendComponent>();

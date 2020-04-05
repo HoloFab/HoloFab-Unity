@@ -42,13 +42,13 @@ namespace HoloFab {
 			this.tcpReceiver.Disconnect();
 		}
 		void Update() {
-			if (!this.tcpReceiver.flagConnectionFound) {
-				#if DEBUGWARNING && DEBUG2
-				DebugUtilities.UniversalWarning(this.sourceName, "Connection not Found.");
-				#endif
-				this.tcpReceiver.Connect();
-				if (!this.tcpReceiver.flagConnectionFound) return;
-			}
+			// if (!this.tcpReceiver.flagConnectionFound) {
+			// 	#if DEBUGWARNING && DEBUG2
+			// 	DebugUtilities.UniversalWarning(this.sourceName, "Connection not Found.");
+			// 	#endif
+			// 	this.tcpReceiver.Connect();
+			// 	if (!this.tcpReceiver.flagConnectionFound) return;
+			// }
 			if (!this.tcpReceiver.flagDataRead) {
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Parsing input . . .");
@@ -67,19 +67,24 @@ namespace HoloFab {
 					#if DEBUG
 					DebugUtilities.UniversalDebug(this.sourceName, "New message found: " + message);
 					#endif
-					string[] messageComponents = message.Split(new string[] {EncodeUtilities.headerSplitter}, 2,StringSplitOptions.RemoveEmptyEntries);
-                    
-					string header = messageComponents[0];
-					#if DEBUG
-					DebugUtilities.UniversalDebug(this.sourceName, "Header: " + header);
-					#endif
-					if (header == "MESHSTREAMING") {
-						InterpreteMesh(messageComponents[1], SourceType.TCP);
-					} else if (header == "HOLOBOTS") {
-						InterpreteHoloBots(messageComponents[1]);
+					string[] messageComponents = message.Split(new string[] {EncodeUtilities.headerSplitter}, 2, StringSplitOptions.RemoveEmptyEntries);
+					if (messageComponents.Length > 1) {
+						string header = messageComponents[0], content = messageComponents[1];
+						#if DEBUG
+						DebugUtilities.UniversalDebug(this.sourceName, "Header: " + header + ", content: " + content);
+						#endif
+						if (header == "MESHSTREAMING") {
+							InterpreteMesh(content, SourceType.TCP);
+						} else if (header == "HOLOBOTS") {
+							InterpreteHoloBots(content);
+						} else {
+							#if DEBUGWARNING
+							DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
+							#endif
+						}
 					} else {
 						#if DEBUGWARNING
-						DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
+						DebugUtilities.UniversalWarning(this.sourceName, "Improper message");
 						#endif
 					}
 				}

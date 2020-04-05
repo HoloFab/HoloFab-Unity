@@ -28,7 +28,7 @@ namespace HoloFab {
         
 		// Unity Functions.
 		void Update() {
-			Ray mouseRay = GenerateMouseRay();
+			Ray mouseRay = UnityUtilities.GenerateMouseRay();
 			RaycastHit hit;
             
 			if (Input.GetMouseButtonDown(0)) {
@@ -94,21 +94,6 @@ namespace HoloFab {
 				xyMove = false;
 				gObj = null;
 			}
-		}
-        
-		private Ray GenerateMouseRay() {
-			Vector3 mousePosFar = new Vector3(Input.mousePosition.x,
-			                                  Input.mousePosition.y,
-			                                  Camera.main.farClipPlane);
-			Vector3 mousePosNear = new Vector3(Input.mousePosition.x,
-			                                   Input.mousePosition.y,
-			                                   Camera.main.nearClipPlane);
-            
-			Vector3 mousePosF = Camera.main.ScreenToWorldPoint(mousePosFar);
-			Vector3 mousePosN = Camera.main.ScreenToWorldPoint(mousePosNear);
-            
-			Ray mr = new Ray(mousePosN, mousePosF);
-			return mr;
 		}
 	}
 }

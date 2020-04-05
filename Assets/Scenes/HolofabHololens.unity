@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e4c74e73a25a714a99af532f50996de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cPlane: {fileID: 0}
 --- !u!1 &874633746
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,6 +312,7 @@ GameObject:
   - component: {fileID: 1560679192}
   - component: {fileID: 1560679191}
   - component: {fileID: 1560679190}
+  - component: {fileID: 1560679193}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -372,7 +374,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   localPortOverride: 11111
-  debugMessages: []
+--- !u!114 &1560679193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560679188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec34e77c9dd781742b4624fbff219e07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  remotePort: 8888
+  expireTime: 1
+  broadcastMessage: HelloWorld!
 --- !u!1 &1601193745
 GameObject:
   m_ObjectHideFlags: 0

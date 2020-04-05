@@ -53,23 +53,28 @@ namespace HoloFab {
 					#if DEBUG
 					DebugUtilities.UniversalDebug(this.sourceName, "New message found: " + message);
 					#endif
-					string[] messageComponents = message.Split(new string[] {EncodeUtilities.headerSplitter}, 2,StringSplitOptions.RemoveEmptyEntries);
-                    
-					string header = messageComponents[0];
-					#if DEBUG
-					DebugUtilities.UniversalDebug(this.sourceName, "Header: " + header);
-					#endif
-					if (header == "MESHSTREAMING") {
-						InterpreteMesh(messageComponents[1], SourceType.UDP);
-					} else if (header == "CONTROLLER") {
-						InterpreteRobotController(messageComponents[1]);
-					} else if (header == "HOLOTAG") {
-						InterpreteTag(messageComponents[1]);
-					} else if(header == "IPADDRESS") {
-						InterpreteIPAddress(messageComponents[1]);
+					string[] messageComponents = message.Split(new string[] {EncodeUtilities.headerSplitter}, 2, StringSplitOptions.RemoveEmptyEntries);
+					if (messageComponents.Length > 1) {
+						string header = messageComponents[0], content = messageComponents[1];
+						#if DEBUG
+						DebugUtilities.UniversalDebug(this.sourceName, "Header: " + header + ", content: " + content);
+						#endif
+						if (header == "MESHSTREAMING") {
+							InterpreteMesh(content, SourceType.UDP);
+						} else if (header == "CONTROLLER") {
+							InterpreteRobotController(content);
+						} else if (header == "HOLOTAG") {
+							InterpreteTag(content);
+						} else if(header == "IPADDRESS") {
+							InterpreteIPAddress(content);
+						} else {
+							#if DEBUGWARNING
+							DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
+							#endif
+						}
 					} else {
 						#if DEBUGWARNING
-						DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
+						DebugUtilities.UniversalWarning(this.sourceName, "Improper message");
 						#endif
 					}
 				}
@@ -86,12 +91,8 @@ namespace HoloFab {
             
 			RobotProcessor processor = ObjectManager.instance.GetComponent<RobotProcessor>();
 			foreach (RobotControllerData controllerData in controllersData)
-				if(processor.robots.ContainsKey(controllerData.robotID))
-					processor.robots[controllerData.robotID].GetComponentInChildren<RobotController>().ProcessRobotController(controllerData);
-			// GameObject[] gos = GameObject.FindGameObjectsWithTag("Axis");
-			// for (int i = 0; i < gos.Length; i++) {
-			// 	gos[i].GetComponent<RobotController>().ProcessRobotController(EncodeUtilities.InterpreteRobotController(data));
-			// }
+				if(processor.robotsInstantiated.ContainsKey(controllerData.robotID))
+					processor.robotsInstantiated[controllerData.robotID].GetComponentInChildren<RobotController>().ProcessRobotController(controllerData);
 		}
 		// - Tag
 		private void InterpreteTag(string data){
@@ -99,13 +100,13 @@ namespace HoloFab {
 		}
 		// - IP address
 		private void InterpreteIPAddress(string data){
-			UDPSendComponent sender = gameObject.GetComponent<UDPSendComponent>();
 			string remoteIP = EncodeUtilities.InterpreteIPAddress(data);
 			#if DEBUG
 			DebugUtilities.UniversalDebug(this.sourceName, "Remote IP: " + remoteIP);
 			#endif
 			// TODO: Add ip integrity check
 			// TODO: Should not be stored in udp sender.
+			UDPSendComponent sender = gameObject.GetComponent<UDPSendComponent>();
 			sender.remoteIP = remoteIP;
 			UDPReceiveComponent.flagUICommunicationStarted = true;
 			// Inform UI Manager.
