@@ -287,7 +287,7 @@ PlayerSettings:
   - m_BuildTarget: Android
     m_Icons:
     - m_Textures:
-      - {fileID: 0}
+      - {fileID: 2800000, guid: 0560e3f2d8baa7f4480ce8c85ebd2d89, type: 3}
       m_Width: 192
       m_Height: 192
       m_Kind: 1
@@ -323,7 +323,7 @@ PlayerSettings:
       m_Kind: 1
       m_SubKind: 
     - m_Textures:
-      - {fileID: 0}
+      - {fileID: 2800000, guid: 0560e3f2d8baa7f4480ce8c85ebd2d89, type: 3}
       m_Width: 192
       m_Height: 192
       m_Kind: 0
@@ -358,7 +358,9 @@ PlayerSettings:
       m_Height: 36
       m_Kind: 0
       m_SubKind: 
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 0560e3f2d8baa7f4480ce8c85ebd2d89, type: 3}
+      - {fileID: 0}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
@@ -723,15 +725,43 @@ PlayerSettings:
     : 6
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Template3D
-  metroPackageVersion: 1.0.77.0
+  metroPackageName: HoloFab
+  metroPackageVersion: 1.0.83.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: HoloFab
   metroCertificateIssuer: HoloFab
   metroCertificateNotAfter: 00086bfd05e3d601
-  metroApplicationDescription: Template_3D
-  wsaImages: {}
+  metroApplicationDescription: HoloFab
+  wsaImages:
+    65636: Assets/Resources/HoloFab_Icon_50.png
+    65661: Assets/Resources/HoloFab_Icon_63.png
+    65686: Assets/Resources/HoloFab_Icon_75.png
+    65736: Assets/Resources/HoloFab_Icon_100.png
+    65936: Assets/Resources/HoloFab_Icon_200.png
+    2031648: Assets/Resources/HoloFab_Icon_32.png
+    2031664: Assets/Resources/HoloFab_Icon_48.png
+    2031716: Assets/Resources/HoloFab_Icon_44.png
+    2031741: Assets/Resources/HoloFab_Icon_55.png
+    2031766: Assets/Resources/HoloFab_Icon_66.png
+    2031816: Assets/Resources/HoloFab_Icon_88.png
+    2031872: Assets/Resources/HoloFab_Icon_256.png
+    2097252: Assets/Resources/HoloFab_Icon_71.png
+    2097277: Assets/Resources/HoloFab_Icon_89.png
+    2097302: Assets/Resources/HoloFab_Icon_107.png
+    2097352: Assets/Resources/HoloFab_Icon_142.png
+    2162788: Assets/Resources/HoloFab_Icon_150.png
+    2162813: Assets/Resources/HoloFab_Icon_188.png
+    2162838: Assets/Resources/HoloFab_Icon_225.png
+    2162888: Assets/Resources/HoloFab_Icon_300.png
+    2228324: Assets/Resources/HoloFab_Icon_310.png
+    2228349: Assets/Resources/HoloFab_Icon_388.png
+    2228374: Assets/Resources/HoloFab_Icon_465.png
+    2228424: Assets/Resources/HoloFab_Icon_620.png
+    2293860: Assets/Resources/HoloFab_Icon_310x150.png
+    2293885: Assets/Resources/HoloFab_Icon_388x188.png
+    2293910: Assets/Resources/HoloFab_Icon_465x225.png
+    2293960: Assets/Resources/HoloFab_Icon_620x300.png
   metroTileShortName: HoloFab
   metroTileShowName: 0
   metroMediumTileShowName: 1
@@ -756,6 +786,7 @@ PlayerSettings:
       CodeGeneration: False
       Contacts: False
       EnterpriseAuthentication: False
+      GazeInput: False
       HumanInterfaceDevice: False
       InputInjectionBrokered: False
       InternetClient: True
