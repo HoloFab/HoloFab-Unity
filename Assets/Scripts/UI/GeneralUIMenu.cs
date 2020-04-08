@@ -10,6 +10,7 @@ using UnityEngine.UI;
 #if WINDOWS_UWP
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.SpatialAwareness;
+using Windows.ApplicationModel.Core;
 #else
 using GoogleARCore.Examples.HelloAR;
 using GoogleARCore.Examples.Common;
@@ -39,7 +40,9 @@ namespace HoloFab {
 		public void OnExit() {
 			#if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;
-			#else
+			#elif WINDOWS_UWP
+			CoreApplication.Exit();
+			#else // UNITY_ANDROID
 			Application.Quit();
 			#endif
 		}

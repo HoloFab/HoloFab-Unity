@@ -726,7 +726,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: HoloFab
-  metroPackageVersion: 1.0.85.0
+  metroPackageVersion: 1.0.98.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: HoloFab
@@ -739,6 +739,12 @@ PlayerSettings:
     65686: Assets/Resources/HoloFab_Icon_75.png
     65736: Assets/Resources/HoloFab_Icon_100.png
     65936: Assets/Resources/HoloFab_Icon_200.png
+    131172: Assets/Resources/HoloFab_Icon_620x300.png
+    131197: Assets/Resources/HoloFab_Icon_775x375.png
+    131222: Assets/Resources/HoloFab_Icon_930x450.png
+    131272: Assets/Resources/HoloFab_Icon_1240x600.png
+    2031632: Assets/Resources/HoloFab_Icon_16.png
+    2031640: Assets/Resources/HoloFab_Icon_24.png
     2031648: Assets/Resources/HoloFab_Icon_32.png
     2031664: Assets/Resources/HoloFab_Icon_48.png
     2031716: Assets/Resources/HoloFab_Icon_44.png

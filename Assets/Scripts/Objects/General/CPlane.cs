@@ -38,8 +38,7 @@ namespace HoloFab {
 					dist = hit.transform.position.y - hit.point.y;
                     
 					// Debug.Log(gObj.tag);
-                    
-					if (gObj.tag == "CPlaneXY") {
+					if ((gObj.tag == "CPlaneXY") || (gObj.tag == "Point3DPlaneXY")) {
 						gObj = gObj.transform.parent.gameObject;
 						objPlane = new Plane(gObj.transform.up, gObj.transform.position);
 						xyMove = true;
@@ -62,10 +61,14 @@ namespace HoloFab {
 						xyMove = false;
 						rotationMode = false;
 						zMove = true;
+					} else if (gObj.tag == "Point3DToggle") {
+						gObj.GetComponentInParent<Point3DController>().ToggleState();
+					} else {
+						zMove = false;
+						rotationMode = false;
+						xyMove = false;
+						gObj = null;
 					}
-					// else if (gObj.tag == "Point3DToggle") {
-					// 	gObj.GetComponentInParent<Point3DController>().ToggleState();
-					// }
 				}
 			} else if (Input.GetMouseButton(0) && gObj) {
 				Ray mRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -89,12 +92,13 @@ namespace HoloFab {
 						gObj.transform.position = new Vector3(currentX, gObj.transform.position.y, currentY);
 					}
 				}
-			} else if (Input.GetMouseButtonUp(0) && gObj) {
-				zMove = false;
-				rotationMode = false;
-				xyMove = false;
-				gObj = null;
 			}
+			// else if (Input.GetMouseButtonUp(0) && gObj) {
+			// 	zMove = false;
+			// 	rotationMode = false;
+			// 	xyMove = false;
+			// 	gObj = null;
+			// }
 		}
 	}
 }
