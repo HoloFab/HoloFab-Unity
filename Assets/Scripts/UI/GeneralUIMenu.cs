@@ -34,9 +34,6 @@ namespace HoloFab {
 		// KEep track of the scanned grid status.
 		private bool flagGridVisible = true;
         
-		[Tooltip("Example of point 3D object.")]
-		public GameObject goP3D;
-        
 		// Events to be raised on clicks:
 		// - exit application
 		public void OnExit() {
@@ -93,17 +90,17 @@ namespace HoloFab {
 		}
 		// - Destroy Objects
 		public void OnDestroyObjects() {
-			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.TCP);
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
+			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
 			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();
+			ObjectManager.instance.gameObject.GetComponent<Point3DProcessor>().DeletePoints();
 		}
 		public void OnAdd3DPoint() {
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
             
-			GameObject p3D = Instantiate(this.goP3D, Camera.main.transform.position + Camera.main.transform.forward,
-			                             ObjectManager.instance.cPlane.transform.rotation, ObjectManager.instance.cPlane.transform);
+			ObjectManager.instance.gameObject.GetComponent<Point3DProcessor>().AddPoint();
 		}
 	}
 }

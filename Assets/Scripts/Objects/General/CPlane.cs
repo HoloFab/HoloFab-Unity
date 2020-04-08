@@ -62,9 +62,10 @@ namespace HoloFab {
 						xyMove = false;
 						rotationMode = false;
 						zMove = true;
-					} else if (gObj.tag == "Point3DToggle") {
-						gObj.GetComponentInParent<Point3DDrag>().open = !gObj.GetComponentInParent<Point3DDrag>().open;
 					}
+					// else if (gObj.tag == "Point3DToggle") {
+					// 	gObj.GetComponentInParent<Point3DController>().ToggleState();
+					// }
 				}
 			} else if (Input.GetMouseButton(0) && gObj) {
 				Ray mRay = Camera.main.ScreenPointToRay(Input.mousePosition);

@@ -18,15 +18,19 @@ namespace HoloFab {
 	// Generatable Object manager.
 	// TODO:
 	// - Later: Move processors here?
+	[RequireComponent(typeof(MeshProcessor))]
+	[RequireComponent(typeof(RobotProcessor))]
+	[RequireComponent(typeof(TagProcessor))]
+	[RequireComponent(typeof(Point3DProcessor))]
 	public class ObjectManager : Type_Manager<ObjectManager> {
 		// - CPlane object tag.
 		private string tagCPlane = "CPlane";
 		// - Local reference of CPlane object
 		public GameObject cPlane;
-
+        
 		// Local Variables.
 		private string sourceName = "Object Manager";
-
+        
 		void OnEnable(){
 			DebugUtilities.UserMessage("Hollo World . . .");
 			#if UNITY_ANDROID

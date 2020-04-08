@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 182787766}
   - component: {fileID: 182787765}
   - component: {fileID: 182787764}
+  - component: {fileID: 182787767}
   m_Layer: 0
   m_Name: ObjectManager
   m_TagString: Untagged
@@ -209,6 +210,20 @@ MonoBehaviour:
   goPrefabMesh: {fileID: 6652279977047057797, guid: f1bfd66cb67dcb04abb866d73e20509b,
     type: 3}
   goPrefabMeshPlus: {fileID: 6485863935620914876, guid: 2f19f9cf93d4bd64ead4042a262d7157,
+    type: 3}
+--- !u!114 &182787767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182787762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0e6361045284eb4f84feb02c30528a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goPoint3DExample: {fileID: 2183236549890647024, guid: 513ac4cc05b296d498a2351004b9ac74,
     type: 3}
 --- !u!114 &182787768
 MonoBehaviour:
@@ -619,7 +634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   remotePort: 8888
   expireTime: 1
-  broadcastMessage: HelloWorld!
+  broadcastMessage: Hololens
 --- !u!1 &1601193745
 GameObject:
   m_ObjectHideFlags: 0
