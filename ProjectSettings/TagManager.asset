@@ -20,6 +20,10 @@ TagManager:
   - Counter
   - Slider
   - ARGenPlane
+  - Point3D
+  - Point3DToggle
+  - Point3DPlaneXY
+  - ObjectManager
   layers:
   - Default
   - TransparentFX

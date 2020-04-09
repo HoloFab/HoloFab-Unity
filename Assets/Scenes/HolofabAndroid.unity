@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311912, g: 0.3807398, b: 0.3587272, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311918, g: 0.3807398, b: 0.35872716, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -284,15 +284,16 @@ GameObject:
   - component: {fileID: 182787766}
   - component: {fileID: 182787765}
   - component: {fileID: 182787764}
+  - component: {fileID: 182787767}
   m_Layer: 0
   m_Name: ObjectManager
-  m_TagString: Untagged
+  m_TagString: ObjectManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &182787763
-Transform:
+--- !u!224 &182787763
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -305,6 +306,11 @@ Transform:
   m_Father: {fileID: 1270908119}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &182787764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,7 +323,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 130189eb051b82d41ac07bf21dfdd18f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  robotDictionary: []
+  robotDictionary:
+  - name: IRB120
+    tag: ABB_120
+    goExample: {fileID: 8076200126170897127, guid: b33e488789ad84a4a9ac2cd2d5121ca0,
+      type: 3}
+  - name: IRB140
+    tag: ABB_140
+    goExample: {fileID: 8782127542623183166, guid: e1a8df5a7ca86df40b3fe2ced8a04af2,
+      type: 3}
+  - name: KR150-2_110
+    tag: Kuka_KR150
+    goExample: {fileID: 4557406995237818066, guid: d6670f86846abae4aba9b25dc5ddffb6,
+      type: 3}
 --- !u!114 &182787765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,6 +365,20 @@ MonoBehaviour:
   goPrefabMesh: {fileID: 6652279977047057797, guid: f1bfd66cb67dcb04abb866d73e20509b,
     type: 3}
   goPrefabMeshPlus: {fileID: 6485863935620914876, guid: 2f19f9cf93d4bd64ead4042a262d7157,
+    type: 3}
+--- !u!114 &182787767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182787762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0e6361045284eb4f84feb02c30528a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goPoint3DExample: {fileID: 2183236549890647024, guid: 513ac4cc05b296d498a2351004b9ac74,
     type: 3}
 --- !u!114 &182787768
 MonoBehaviour:
@@ -399,12 +431,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 225398834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 10
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
+--- !u!1 &1261589618 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8256977020131229426, guid: 888687b39be1c614cb29e1b200ce5010,
+    type: 3}
+  m_PrefabInstance: {fileID: 7527860806946807474}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1261589624
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261589618}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 200, y: 775, z: 1}
+  m_Center: {x: -100, y: -387.5, z: 0}
 --- !u!1 &1270908118
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,7 +650,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1560679188}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa4c684cb1c5dd64eb0e4ba5ca8dff10, type: 3}
   m_Name: 
@@ -1010,7 +1062,7 @@ Canvas:
   m_GameObject: {fileID: 3591653401173674769}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 200
   m_PixelPerfect: 0

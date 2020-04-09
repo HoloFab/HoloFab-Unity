@@ -153,9 +153,9 @@ namespace HoloFab {
 			}
 			try {
 				// Open.
-				this.client = new UdpClient(new IPEndPoint(IPAddress.Broadcast, this.remotePort));
+				this.client = new UdpClient();
 				// Write.
-				this.client.Send(sendBuffer, sendBuffer.Length);
+				this.client.Send(sendBuffer, sendBuffer.Length, new IPEndPoint(IPAddress.Broadcast, this.remotePort));
 				// Close.
 				this.client.Close();
 				// Acknowledge.

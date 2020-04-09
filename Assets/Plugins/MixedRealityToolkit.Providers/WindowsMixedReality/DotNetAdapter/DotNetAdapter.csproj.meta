@@ -1,10 +1,7 @@
 fileFormatVersion: 2
 guid: 14c729fdf72b47f46bde418574656351
 ScriptedImporter:
-  internalIDToNameTable:
-  - first:
-      114: 11400002
-    second: DotNetAdapter
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 2
   userData: 

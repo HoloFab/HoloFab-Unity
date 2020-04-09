@@ -60,12 +60,13 @@ namespace HoloFab {
 		[Tooltip("Limiting amounts for each type of generatable UI.")]
 		public int UILimitCount = 6;
         
-		[Header("Adjustable panel from scene")]
+        public int initialSize = 110;
+        public int maximumSize = 625;
+
+        [Header("Adjustable panel from scene")]
 		[Tooltip("Adjustable UI panel")]
 		public GameObject panel;
 		private RectTransform rt;
-		private int InitialSize;
-		private int maximumSize;
 		private float maxY;
         
 		// Local variables.
@@ -80,9 +81,7 @@ namespace HoloFab {
 		void Start() {
 			// Instanses of panel variables
 			rt = panel.GetComponent<RectTransform>();
-			InitialSize = 110;
-			maximumSize = 660;
-		}
+        }
 		//////////////////////////////////////////////////////////////////////////
 		// Generic UI adding function.
 		private void TryAddUIItem(ref int amount, int limit, GameObject goPrefab, Canvas cParent, float height) {
@@ -96,7 +95,7 @@ namespace HoloFab {
 				//Updating the size of panel
 				if (poseY != 0) {
 					if (maxY <= poseY) {
-						rt.sizeDelta = new Vector2(rt.sizeDelta.x, poseY + InitialSize);
+						rt.sizeDelta = new Vector2(rt.sizeDelta.x, poseY + initialSize);
 						maxY = poseY;
 					}
 				}
@@ -148,8 +147,8 @@ namespace HoloFab {
 			ParameterUIMenu.instance.OnValueChanged();
             
 			// Setting the Initial size of panel
-			rt.sizeDelta = new Vector2(rt.sizeDelta.x, InitialSize);
-			maxY = InitialSize;
+			rt.sizeDelta = new Vector2(rt.sizeDelta.x, initialSize);
+			maxY = initialSize;
 		}
         
 		//////////////////////////////////////////////////////////////////////////

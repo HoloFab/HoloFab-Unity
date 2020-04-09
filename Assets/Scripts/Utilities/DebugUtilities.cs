@@ -29,7 +29,20 @@ namespace HoloFab {
 			#endif
 		}
 		private static void UniversalDebug(string message, MessageType messageType = MessageType.Normal){
-			DebugUtilities.UserMessage(message, messageType);
+			// Unity Debugging.
+			#if UNITY_ANDROID || WINDOWS_UWP
+			// AndroidUtilities.ToastMessage(message);
+			// #elif WINDOWS_UWP
+			if (messageType == MessageType.Normal)
+				Debug.Log(message);
+			else if (messageType == MessageType.Warning)
+				Debug.LogWarning(message);
+			else
+				Debug.LogError(message);
+			// Grasshopper Debugging
+			#else
+			Console.Write(message);
+			#endif
 		}
 		public static void UniversalDebug(string source, string message, MessageType messageType = MessageType.Normal){
 			DebugUtilities.UniversalDebug("[" + DateTime.Now.ToString() + "]" + source + ": " + message, messageType);

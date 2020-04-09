@@ -9,6 +9,7 @@ using UnityEngine;
 
 #if UNITY_ANDROID
 using System.Threading;
+using GoogleARCore.Examples.HelloAR;
 #endif
 
 using HoloFab;
@@ -18,15 +19,19 @@ namespace HoloFab {
 	// Generatable Object manager.
 	// TODO:
 	// - Later: Move processors here?
+	[RequireComponent(typeof(MeshProcessor))]
+	[RequireComponent(typeof(RobotProcessor))]
+	[RequireComponent(typeof(TagProcessor))]
+	[RequireComponent(typeof(Point3DProcessor))]
 	public class ObjectManager : Type_Manager<ObjectManager> {
 		// - CPlane object tag.
 		private string tagCPlane = "CPlane";
 		// - Local reference of CPlane object
 		public GameObject cPlane;
-
+        
 		// Local Variables.
 		private string sourceName = "Object Manager";
-
+        
 		void OnEnable(){
 			DebugUtilities.UserMessage("Hollo World . . .");
 			#if UNITY_ANDROID
@@ -49,7 +54,14 @@ namespace HoloFab {
 				DebugUtilities.UniversalDebug(this.sourceName, "CPlane: " + this.cPlane);
 				#endif
 			}
+			#if UNITY_ANDROID
+			HoloFabARController.cPlaneInstance = this.cPlane;
+			#endif
 			return true;
 		}
+		//public void Update(){
+		//    if (!CheckCPlane()) return;
+		//    this.transform.position = this.cPlane.transform.position;
+		//}
 	}
 }

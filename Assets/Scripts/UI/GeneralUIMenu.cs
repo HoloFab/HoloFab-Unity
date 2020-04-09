@@ -10,6 +10,7 @@ using UnityEngine.UI;
 #if WINDOWS_UWP
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.SpatialAwareness;
+using Windows.ApplicationModel.Core;
 #else
 using GoogleARCore.Examples.HelloAR;
 using GoogleARCore.Examples.Common;
@@ -34,15 +35,14 @@ namespace HoloFab {
 		// KEep track of the scanned grid status.
 		private bool flagGridVisible = true;
         
-		[Tooltip("Example of point 3D object.")]
-		public GameObject goP3D;
-        
 		// Events to be raised on clicks:
 		// - exit application
 		public void OnExit() {
 			#if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;
-			#else
+			#elif WINDOWS_UWP
+			CoreApplication.Exit();
+			#else // UNITY_ANDROID
 			Application.Quit();
 			#endif
 		}
@@ -51,11 +51,12 @@ namespace HoloFab {
 			//TODO not actually delete c plane but start placing it (put infron tf camera and activate placable)
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
-			#if WINDOWS_UWP
+            #if WINDOWS_UWP
 			ObjectManager.instance.cPlane.GetComponent<Placeable>().OnTap();
-			#else
-			DestroyImmediate(ObjectManager.instance.cPlane);
-			Resources.UnloadUnusedAssets();
+            #else
+            ObjectManager.instance.cPlane.SetActive(false);
+            //DestroyImmediate(ObjectManager.instance.cPlane);
+			//Resources.UnloadUnusedAssets();
 			#endif
 		}
 		// - Toggle AR Core Grid
@@ -93,17 +94,17 @@ namespace HoloFab {
 		}
 		// - Destroy Objects
 		public void OnDestroyObjects() {
-			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.TCP);
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
+			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
 			ObjectManager.instance.gameObject.GetComponent<RobotProcessor>().DeleteRobots();
+			ObjectManager.instance.gameObject.GetComponent<Point3DProcessor>().DeletePoints();
 		}
 		public void OnAdd3DPoint() {
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
             
-			GameObject p3D = Instantiate(this.goP3D, Camera.main.transform.position + Camera.main.transform.forward,
-			                             ObjectManager.instance.cPlane.transform.rotation, ObjectManager.instance.cPlane.transform);
+			ObjectManager.instance.gameObject.GetComponent<Point3DProcessor>().AddPoint();
 		}
 	}
 }
