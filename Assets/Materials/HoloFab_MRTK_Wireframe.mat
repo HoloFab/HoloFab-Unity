@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MRTK_Wireframe
+  m_Name: HoloFab_MRTK_Wireframe
   m_Shader: {fileID: 4800000, guid: 5c1653eb4e20b76499141de7bc57c063, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 5
@@ -77,7 +77,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WireThickness: 100
+    - _WireThickness: 50
     - _ZOffsetFactor: 0
     - _ZOffsetUnits: 0
     - _ZTest: 4

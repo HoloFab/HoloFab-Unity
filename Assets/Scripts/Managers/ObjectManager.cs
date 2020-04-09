@@ -54,12 +54,14 @@ namespace HoloFab {
 				DebugUtilities.UniversalDebug(this.sourceName, "CPlane: " + this.cPlane);
 				#endif
 			}
-            HoloFabARController.cPlaneInstance = this.cPlane;
-            return true;
+			#if UNITY_ANDROID
+			HoloFabARController.cPlaneInstance = this.cPlane;
+			#endif
+			return true;
 		}
-        //public void Update(){
-        //    if (!CheckCPlane()) return;
-        //    this.transform.position = this.cPlane.transform.position;
-        //}
-    }
+		//public void Update(){
+		//    if (!CheckCPlane()) return;
+		//    this.transform.position = this.cPlane.transform.position;
+		//}
+	}
 }
