@@ -25,7 +25,8 @@ namespace HoloFab {
 		// private List<Vector3> historyNormal = new List<Vector3>();
         
 		void Update(){
-			if (this.flagSelected || this.flagTapped) {
+            #if WINDOWS_UWP
+            if (this.flagSelected || this.flagTapped) {
 				Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 				if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit)) {
 					if (hit.collider.gameObject.layer == LayerMask.NameToLayer(this.scanMeshLayerName)) {
@@ -41,9 +42,11 @@ namespace HoloFab {
 				if (this.flagTapped) this.flagSelected = true;
 				this.flagTapped = false;
 			}
+            #endif
 		}
         
 		public void OnTap(){
+            #if WINDOWS_UWP
 			// if (!this.flagSelected) {
 			// 	this.historyPosition = new List<Vector3>();
 			// 	this.historyNormal = new List<Vector3>();
@@ -54,10 +57,12 @@ namespace HoloFab {
 			#if DEBUG
 			DebugUtilities.UniversalDebug(sourceName, "Tapped: New State: " + this.flagSelected);
 			#endif
+            #endif
 		}
         
 		private void Place(Vector3 position, Vector3 normal){
-			// this.historyPosition.Add(position);
+            #if WINDOWS_UWP			
+            // this.historyPosition.Add(position);
 			// if (this.historyPosition.Count > this.historySize)
 			// 	this.historyPosition.RemoveAt(0);
 			// Vector3 positionAverage = Vector3.zero;
@@ -77,6 +82,7 @@ namespace HoloFab {
             
 			transform.position = position;
 			// transform.localRotation = Quaternion.FromToRotation(transform.up, normal);
+            #endif
 		}
 	}
 }

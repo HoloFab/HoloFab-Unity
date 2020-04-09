@@ -9,6 +9,7 @@ using UnityEngine;
 
 #if UNITY_ANDROID
 using System.Threading;
+using GoogleARCore.Examples.HelloAR;
 #endif
 
 using HoloFab;
@@ -53,7 +54,12 @@ namespace HoloFab {
 				DebugUtilities.UniversalDebug(this.sourceName, "CPlane: " + this.cPlane);
 				#endif
 			}
-			return true;
+            HoloFabARController.cPlaneInstance = this.cPlane;
+            return true;
 		}
-	}
+        //public void Update(){
+        //    if (!CheckCPlane()) return;
+        //    this.transform.position = this.cPlane.transform.position;
+        //}
+    }
 }

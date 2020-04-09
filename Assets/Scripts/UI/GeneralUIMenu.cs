@@ -51,11 +51,12 @@ namespace HoloFab {
 			//TODO not actually delete c plane but start placing it (put infron tf camera and activate placable)
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
-			#if WINDOWS_UWP
+            #if WINDOWS_UWP
 			ObjectManager.instance.cPlane.GetComponent<Placeable>().OnTap();
-			#else
-			DestroyImmediate(ObjectManager.instance.cPlane);
-			Resources.UnloadUnusedAssets();
+            #else
+            ObjectManager.instance.cPlane.SetActive(false);
+            //DestroyImmediate(ObjectManager.instance.cPlane);
+			//Resources.UnloadUnusedAssets();
 			#endif
 		}
 		// - Toggle AR Core Grid

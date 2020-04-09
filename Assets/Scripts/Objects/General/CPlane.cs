@@ -39,13 +39,13 @@ namespace HoloFab {
                     
 					// Debug.Log(gObj.tag);
 					if ((gObj.tag == "CPlaneXY") || (gObj.tag == "Point3DPlaneXY")) {
-						gObj = gObj.transform.parent.gameObject;
+						gObj = gObj.transform.parent.parent.gameObject;
 						objPlane = new Plane(gObj.transform.up, gObj.transform.position);
 						xyMove = true;
 						rotationMode = false;
 						zMove = false;
 					} else if (gObj.tag == "CPlaneXYR") {
-						gObj = gObj.transform.parent.gameObject;
+						gObj = gObj.transform.parent.parent.gameObject;
 						objPlane = new Plane(gObj.transform.up, gObj.transform.position);
 						xyMove = false;
 						rotationMode = true;
@@ -56,7 +56,7 @@ namespace HoloFab {
 							r0 = mRay.GetPoint(rayDistance) - gObj.transform.position;
 						}
 					} else if (gObj.tag == "CPlaneZ") {
-						gObj = gObj.transform.parent.gameObject;
+						gObj = gObj.transform.parent.parent.gameObject;
 						objPlane = new Plane(Camera.main.transform.forward, gObj.transform.position);
 						xyMove = false;
 						rotationMode = false;
@@ -93,12 +93,12 @@ namespace HoloFab {
 					}
 				}
 			}
-			// else if (Input.GetMouseButtonUp(0) && gObj) {
-			// 	zMove = false;
-			// 	rotationMode = false;
-			// 	xyMove = false;
-			// 	gObj = null;
-			// }
-		}
+            else if (Input.GetMouseButtonUp(0) && gObj) {
+                zMove = false;
+                rotationMode = false;
+                xyMove = false;
+                gObj = null;
+            }
+        }
 	}
 }

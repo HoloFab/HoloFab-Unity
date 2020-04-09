@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 760618258740221810}
   - component: {fileID: 5029415413535771290}
   - component: {fileID: 3880533824748863504}
+  - component: {fileID: 1003337022}
   m_Layer: 5
   m_Name: Canvas_InstantiateParameters
   m_TagString: Untagged
@@ -214,7 +215,22 @@ MonoBehaviour:
   tagUIItemCounter: Counter
   tagUIItemSlider: Slider
   UILimitCount: 6
+  initialSize: 110
+  maximumSize: 625
   panel: {fileID: 2367166028170808022}
+--- !u!65 &1003337022
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760618258740221808}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 950, y: 625, z: 1}
+  m_Center: {x: 475, y: 312.5, z: 0}
 --- !u!1 &760618258837372774
 GameObject:
   m_ObjectHideFlags: 0
@@ -1638,8 +1654,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: 25}
-  m_SizeDelta: {x: 60, y: -25}
+  m_AnchoredPosition: {x: 20, y: 0}
+  m_SizeDelta: {x: 60, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!223 &3471559497255089239
 Canvas:
@@ -1713,8 +1729,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -60, y: 25}
-  m_SizeDelta: {x: 360, y: -25}
+  m_AnchoredPosition: {x: -60, y: 0}
+  m_SizeDelta: {x: 360, y: 0}
   m_Pivot: {x: 1, y: 0}
 --- !u!223 &3471559497318395258
 Canvas:
@@ -1788,8 +1804,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: 25}
-  m_SizeDelta: {x: 200, y: -25}
+  m_AnchoredPosition: {x: 100, y: 0}
+  m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!223 &3471559498355580125
 Canvas:

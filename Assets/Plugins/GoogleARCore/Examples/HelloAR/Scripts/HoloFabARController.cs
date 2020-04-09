@@ -26,6 +26,8 @@ namespace GoogleARCore.Examples.HelloAR
     using UnityEngine;
     using UnityEngine.EventSystems;
 
+    using System.Linq;
+
 #if UNITY_EDITOR
     // Set up touch input propagation while using Instant Preview in the editor.
     using Input = InstantPreviewInput;
@@ -35,7 +37,11 @@ namespace GoogleARCore.Examples.HelloAR
     /// Controls the HelloAR example.
     /// </summary>
     public class HoloFabARController : MonoBehaviour
-    {       
+    {
+        /////////////////////////////////////////////////////////////////////////////////
+        public static GameObject cPlaneInstance;
+        /////////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
         /// The first-person camera being used to render the passthrough camera image (i.e. AR
         /// background).
@@ -106,10 +112,11 @@ namespace GoogleARCore.Examples.HelloAR
             //Modified
 
             //check if there is any CPlane already
-            GameObject cPlane = GameObject.FindGameObjectWithTag("CPlane");
+            if (cPlaneInstance == null)
+                cPlaneInstance = GameObject.FindGameObjectWithTag("CPlane");//Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("CPlane"));
 
             //Instantiate if there is no CPlane
-            if (cPlane==null)
+            if ((cPlaneInstance == null) || (!cPlaneInstance.activeSelf))
             {
                 if (Frame.Raycast(touch.position.x, touch.position.y, raycastFilter, out hit))
                 {
@@ -149,7 +156,15 @@ namespace GoogleARCore.Examples.HelloAR
                         }
 
                         // Instantiate prefab at the hit pose.
-                        var gameObject = Instantiate(prefab, hit.Pose.position, hit.Pose.rotation);
+                        GameObject gameObject;
+                        if (cPlaneInstance == null)
+                            gameObject = Instantiate(prefab, hit.Pose.position, hit.Pose.rotation);
+                        else {
+                            gameObject = cPlaneInstance;
+                            gameObject.transform.position = hit.Pose.position;
+                            gameObject.transform.rotation = hit.Pose.rotation;
+                            gameObject.SetActive(true);
+                        }
 
                         // Compensate for the hitPose rotation facing away from the raycast (i.e.
                         // camera).
@@ -157,6 +172,8 @@ namespace GoogleARCore.Examples.HelloAR
 
                         // Create an anchor to allow ARCore to track the hitpoint as understanding of
                         // the physical world evolves.
+                        //var anchor = GameObject.FindObjectOfType<Anchor>();
+                        //if (anchor == null)
                         var anchor = hit.Trackable.CreateAnchor(hit.Pose);
 
                         // Make game object a child of the anchor.
