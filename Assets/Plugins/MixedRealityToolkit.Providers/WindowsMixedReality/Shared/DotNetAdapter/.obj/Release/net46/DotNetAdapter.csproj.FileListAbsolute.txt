@@ -1,0 +1,10 @@
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT\Editor\Microsoft.Windows.MixedReality.DotNetWinRT.Editor.asmdef
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT\Editor\Microsoft.Windows.MixedReality.DotNetWinRT.Editor.asmdef.meta
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT\Editor\Microsoft.Windows.MixedReality.DotNetWinRT.Init.cs
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT\Editor\Microsoft.Windows.MixedReality.DotNetWinRT.Init.cs.meta
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT\x64\MonoSupport.dll
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT\x64\MonoSupport.dll.meta
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\Microsoft.Windows.MixedReality.DotNetWinRT.dll
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.bin\net46\System.Drawing.Primitives.dll
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.obj\Release\net46\DotNetAdapter.csprojAssemblyReference.cache
+C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets\Plugins\MixedRealityToolkit.Providers\WindowsMixedReality\Shared\DotNetAdapter\.obj\Release\net46\DotNetAdapter.csproj.CopyComplete
