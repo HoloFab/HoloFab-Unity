@@ -24,6 +24,16 @@ namespace HoloFab {
 			Ray ray = new Ray(mousePosN, mousePosF);
 			return ray;
 		}
+		public static Ray GenerateCameraRay() {
+			return new Ray(Camera.main.transform.position, Camera.main.transform.forward);;
+		}
+		public static Ray GenerateSelectionRay(){
+			#if WINDOWS_UWP
+			return UnityUtilities.GenerateCameraRay();
+			#else
+			return UnityUtilities.GenerateMouseRay();
+			#endif
+		}
 		// Extract angle of the vector projected on a plane perpendicular to a given normal and around given normal axis.
 		// Return in degrees.
 		public static float AngleFromDirection(Vector3 direction, Vector3 planeNormal) {

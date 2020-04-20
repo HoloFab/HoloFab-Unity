@@ -12,24 +12,41 @@ using HoloFab.CustomData;
 
 namespace HoloFab {
 	public class Placeable : MonoBehaviour {
-		public string scanMeshLayerName = "Spatial Awareness";
-		public float offsetDistance = 4f;
+		public float hoverDistance = 4f;
+        
+		// Start selected or not
+		public bool flagSelectedOnStart = true;
+		// Orient perpendicular to the mesh.
+		public bool flagOrient = true;
+		// Snap to CPlane or not.
+		public bool flagSnap = true;
+        
+		// Internal
+		[HideInInspector]
 		public bool flagSelected = true;
-        
+		// Internal state To trigger Update.
 		private bool flagTapped = false;
-        
+		// Debug source.
 		private string sourceName = "Placeable";
+        
+		public delegate void OnClickAction();
+		public OnClickAction OnPlace;
+		public OnClickAction OnStartPlacing;
         
 		// public int historySize = 10;
 		// private List<Vector3> historyPosition = new List<Vector3>();
 		// private List<Vector3> historyNormal = new List<Vector3>();
         
+		public void OnEnable(){
+			this.flagSelected = this.flagSelectedOnStart;
+		}
+        
 		void Update(){
-            #if WINDOWS_UWP
-            if (this.flagSelected || this.flagTapped) {
+			#if WINDOWS_UWP
+			if (this.flagSelected || this.flagTapped) {
 				Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
 				if (Physics.Raycast(ray.origin, ray.direction, out RaycastHit hit)) {
-					if (hit.collider.gameObject.layer == LayerMask.NameToLayer(this.scanMeshLayerName)) {
+					if (ObjectManager.instance.CheckEnvironmentObject(hit.collider.gameObject)) {
 						Place(hit.point, hit.normal);
 						// if tapped - deselect
 						if (this.flagTapped) this.flagSelected = false;
@@ -37,16 +54,15 @@ namespace HoloFab {
 						return;
 					}
 				}
-				Place(Camera.main.transform.position + Camera.main.transform.forward * this.offsetDistance, Vector3.up);
+				Place(Camera.main.transform.position + Camera.main.transform.forward * this.hoverDistance, Vector3.up);
 				// If tried placing not on grid - force placement back on.
-				if (this.flagTapped) this.flagSelected = true;
+				if ((this.flagTapped) && (!this.flagSnap)) this.flagSelected = true;
 				this.flagTapped = false;
 			}
-            #endif
+			#endif
 		}
         
 		public void OnTap(){
-            #if WINDOWS_UWP
 			// if (!this.flagSelected) {
 			// 	this.historyPosition = new List<Vector3>();
 			// 	this.historyNormal = new List<Vector3>();
@@ -57,12 +73,13 @@ namespace HoloFab {
 			#if DEBUG
 			DebugUtilities.UniversalDebug(sourceName, "Tapped: New State: " + this.flagSelected);
 			#endif
-            #endif
+            
+			if ((this.flagSelected) && (OnStartPlacing != null))
+				OnStartPlacing();
 		}
         
 		private void Place(Vector3 position, Vector3 normal){
-            #if WINDOWS_UWP			
-            // this.historyPosition.Add(position);
+			// this.historyPosition.Add(position);
 			// if (this.historyPosition.Count > this.historySize)
 			// 	this.historyPosition.RemoveAt(0);
 			// Vector3 positionAverage = Vector3.zero;
@@ -81,8 +98,8 @@ namespace HoloFab {
 			// transform.position = positionAverage;
             
 			transform.position = position;
-			// transform.localRotation = Quaternion.FromToRotation(transform.up, normal);
-            #endif
+			if (this.flagOrient)
+				transform.localRotation = Quaternion.FromToRotation(transform.up, normal);
 		}
 	}
 }

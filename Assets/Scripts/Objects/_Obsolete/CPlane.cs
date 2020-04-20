@@ -20,11 +20,11 @@ namespace HoloFab {
 		Vector3 r0;
 		bool rotationMode;
 		bool zMove, xyMove;
-		float dist;
-		Transform target;
-		GameObject Z;
-		public Transform camTransform;
-		bool open;
+		// float dist;
+		// Transform target;
+		// GameObject Z;
+		// public Transform camTransform;
+		// bool open;
         
 		// Unity Functions.
 		void Update() {
@@ -35,7 +35,7 @@ namespace HoloFab {
 				if (Physics.Raycast(mouseRay.origin, mouseRay.direction, out hit)) {
 					gObj = hit.transform.gameObject;
 					m0 = hit.transform.position - hit.point;
-					dist = hit.transform.position.y - hit.point.y;
+					// dist = hit.transform.position.y - hit.point.y;
                     
 					// Debug.Log(gObj.tag);
 					if ((gObj.tag == "CPlaneXY") || (gObj.tag == "Point3DPlaneXY")) {
@@ -92,13 +92,12 @@ namespace HoloFab {
 						gObj.transform.position = new Vector3(currentX, gObj.transform.position.y, currentY);
 					}
 				}
+			} else if (Input.GetMouseButtonUp(0) && gObj) {
+				zMove = false;
+				rotationMode = false;
+				xyMove = false;
+				gObj = null;
 			}
-            else if (Input.GetMouseButtonUp(0) && gObj) {
-                zMove = false;
-                rotationMode = false;
-                xyMove = false;
-                gObj = null;
-            }
-        }
+		}
 	}
 }
