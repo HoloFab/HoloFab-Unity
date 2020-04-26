@@ -7,9 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if WINDOWS_UWP
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
-#if WINDOWS_UWP
 #endif
 
 using HoloFab;
@@ -31,28 +31,28 @@ namespace HoloFab {
 		public Interactible_Placeable activePlaceable;
 		[HideInInspector]
 		public Interactible_Movable activeMovable;
-
+        
 		// Select
 		[HideInInspector]
 		public RaycastHit hit;
 		[HideInInspector]
 		public bool flagHit = false;
-
+        
 		// Click
 		private bool flagClick = false;
-
+        
 		// Drag
 		private Vector3 startDragPosition, currentDragPosition;
 		// Rotate
 		private Vector3 startRelativeDrag;
 		private float startAngle;
-
+        
 		#if WINDOWS_UWP
 		////////////////////////////////////////////////////////////////////////
 		protected virtual void OnEnable(){
 			RegisterHandlers();
 		}
-
+        
 		protected virtual void OnDisable(){
 			UnregisterHandlers();
 		}
@@ -60,12 +60,12 @@ namespace HoloFab {
 			// CoreServices.InputSystem?.RegisterHandler<IMixedRealityInputHandler>(this);
 			CoreServices.InputSystem?.RegisterHandler<IMixedRealityPointerHandler>(this);
 		}
-
+        
 		private void UnregisterHandlers() {
 			// CoreServices.InputSystem?.UnregisterHandler<IMixedRealityInputHandler>(this);
 			CoreServices.InputSystem?.UnregisterHandler<IMixedRealityPointerHandler>(this);
 		}
-
+        
 		// public void OnPositionInputChanged(InputEventData<Vector2> eventData) {
 		// 	Debug.Log("Interaction Manager: Input Position Changed vec 3 " + eventData.InputData);
 		// }
@@ -95,28 +95,28 @@ namespace HoloFab {
 		public void OnPointerDown(MixedRealityPointerEventData eventData) {
 			this.currentDragPosition = eventData.Pointer.Position;
 			Quaternion rotation = eventData.Pointer.Rotation;
-
+            
 			Debug.Log("Interaction Manager: OnPointer Down: Position " + this.currentDragPosition.ToString("F6") + ", rotation: " + rotation.ToString("F6"));
 			// eventData.Use();
-
+            
 			this.flagClick = true;
 			ExtractClickInfo();
 		}
 		public void OnPointerDragged(MixedRealityPointerEventData eventData) {
 			this.currentDragPosition = eventData.Pointer.Position;
 			Quaternion rotation = eventData.Pointer.Rotation;
-
+            
 			Debug.Log("Interaction Manager: OnPointer Drag: Position " + this.currentDragPosition.ToString("F6") + ", rotation: " + rotation.ToString("F6"));
 			// eventData.Use();
 		}
-
+        
 		public void OnPointerUp(MixedRealityPointerEventData eventData) {
 			this.currentDragPosition = eventData.Pointer.Position;
 			Quaternion rotation = eventData.Pointer.Rotation;
-
+            
 			Debug.Log("Interaction Manager: OnPointer Up: Position " + this.currentDragPosition.ToString("F6") + ", rotation: " + rotation.ToString("F6"));
 			// eventData.Use();
-
+            
 			// Reset Dargging
 			StopMoving();
 		}
@@ -128,18 +128,18 @@ namespace HoloFab {
 			// if (actions.Length > 0)
 			// 	Debug.Log("Interactible Manager: Mixed Reality events found: " + actions.Length);
 			// #endif
-
+            
 			CheckSelection();
 			CheckClick();
 			CheckDrag();
-
+            
 			#if DEBUG2
 			if (this.activeMovable != null)
 				Debug.Log("Interaction Manager: Active Movable: " + this.activeMovable.gameObject.name);
 			if (this.activePlaceable != null)
 				Debug.Log("Interaction Manager: Active Placeable: " + this.activePlaceable.gameObject.name);
 			#endif
-
+            
 			this.flagClick = false; // Force unclick
 		}
 		////////////////////////////////////////////////////////////////////////
@@ -237,7 +237,7 @@ namespace HoloFab {
 			#if !WINDOWS_UWP
 			this.currentDragPosition = CurrentProjectedPlanePoint(out bool _flagHit);
 			#endif
-
+            
 			if (flagDragStart)
 				this.startDragPosition = this.currentDragPosition;
 			return this.currentDragPosition - this.startDragPosition;
@@ -250,22 +250,22 @@ namespace HoloFab {
 			// relativeDrag = this.currentDragPosition - this.startDragPosition;
 			#endif
 			relativeDrag = this.currentDragPosition - this.activeMovable.transform.position;
-
+            
 			if (flagDragStart)
 				this.startRelativeDrag = relativeDrag;
-
+            
 			// a trick to check direction of rotation?
 			// TODO: Should be done once?
 			Vector3 controlVector = Quaternion.AngleAxis(1, this.activeMovable.orientationPlane.normal) * this.startRelativeDrag;
 			float currentAngle = Vector3.Angle(this.startRelativeDrag, relativeDrag);
 			float controlAngle = Vector3.Angle(controlVector, relativeDrag);
-
+            
 			if (flagDragStart)
 				this.startAngle = currentAngle;
 			float angleDifference = currentAngle - this.startAngle;
-
+            
 			if (controlAngle > angleDifference) angleDifference *= -1;
-
+            
 			return angleDifference;
 		}
 		private Vector3 CurrentProjectedPlanePoint(out bool _flagHit){
