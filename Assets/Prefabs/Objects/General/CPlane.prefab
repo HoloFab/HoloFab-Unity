@@ -1194,7 +1194,7 @@ GameObject:
   - component: {fileID: 5505426435189084519}
   - component: {fileID: 613705711188458022}
   m_Layer: 0
-  m_Name: CPlane_Hololens
+  m_Name: CPlane
   m_TagString: CPlane
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1255,9 +1255,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff137b28f178ea4f95f3f5762daa0a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flagPlacingOnStart: 1
+  flagPlacingOnStart: 0
   flagOrient: 0
-  hoverDistance: 2
+  hoverDistance: 0.5
   maxSnapDistance: 4
   goTrigger: {fileID: 5832645396192026367}
 --- !u!114 &613705711188458022

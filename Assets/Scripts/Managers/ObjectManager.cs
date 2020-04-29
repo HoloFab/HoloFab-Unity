@@ -12,6 +12,7 @@ using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.SpatialAwareness;
 #endif
 #if UNITY_ANDROID
+using System.Threading;
 using GoogleARCore.Examples.Common;
 using GoogleARCore.Examples.HelloAR;
 #endif
@@ -30,9 +31,9 @@ namespace HoloFab {
 	public class ObjectManager : Type_Manager<ObjectManager> {
 		// - CPlane object tag.
 		private string tagCPlane = "CPlane";
-		private string layerScanMesh = "Spatial Awareness";
-		// - Local reference of CPlane object
-		public GameObject cPlane;
+        private string layerScanMesh = "Spatial Awareness";
+        // - Local reference of CPlane object
+        public GameObject cPlane;
 		// - Meshes of the environment
 		public List<MeshRenderer> scannedEnvironment;
 		// Keep track of the scanned grid status.

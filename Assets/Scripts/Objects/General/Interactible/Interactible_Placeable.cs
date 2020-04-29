@@ -30,8 +30,8 @@ namespace HoloFab {
 			if (this.flagPlacing)
 				InteractionManager.instance.activePlaceable = this;
 			UpdateAppearance();
-			Place(this.hoverDistance, Vector3.up);
-		}
+            TryPlace();
+        }
 
 		////////////////////////////////////////////////////////////////////////
 		// Check if given object is the trigger and react.
@@ -72,20 +72,26 @@ namespace HoloFab {
 		void Update(){
 			// If placement activated
 			if (this.flagPlacing) {
-				float distance = this.hoverDistance;
-				Vector3 normal = Vector3.up;
-				if (InteractionManager.instance.flagHit)
-					if (ObjectManager.instance.CheckEnvironmentObject(InteractionManager.instance.hit.collider.gameObject)) {
-						distance = Distance2Camera(InteractionManager.instance.hit.point);
-						if (distance < this.maxSnapDistance) {
-							distance = Mathf.Min(distance, this.maxSnapDistance);
-							normal = InteractionManager.instance.hit.normal;
-						} else
-							distance = this.hoverDistance;
-					}
-				Place(distance, normal);
+                TryPlace();
 			}
 		}
+        private void TryPlace() {
+            float distance = this.hoverDistance;
+            Vector3 normal = Vector3.up;
+            if (InteractionManager.instance.flagHit)
+                if (ObjectManager.instance.CheckEnvironmentObject(InteractionManager.instance.hit.collider.gameObject))
+                {
+                    distance = Distance2Camera(InteractionManager.instance.hit.point);
+                    if (distance < this.maxSnapDistance)
+                    {
+                        distance = Mathf.Min(distance, this.maxSnapDistance);
+                        normal = InteractionManager.instance.hit.normal;
+                    }
+                    else
+                        distance = this.hoverDistance;
+                }
+            Place(distance, normal);
+        }
 		// Evaluate distance to the hit.
 		private float Distance2Camera(Vector3 point){
 			return (Camera.main.transform.position - point).magnitude;

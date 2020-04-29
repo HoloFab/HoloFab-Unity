@@ -32,10 +32,11 @@ namespace HoloFab {
 			return UnityUtilities.GenerateCameraRay();
 			#else
 			// If a mouse present - generate mouse ray, else - camera ray.
-			if (Input.GetMouseButton(0))
-				return UnityUtilities.GenerateMouseRay();
-			else
-				return UnityUtilities.GenerateCameraRay();
+            return UnityUtilities.GenerateMouseRay();
+			//if (Input.touchCount > 0)
+   //             return UnityUtilities.GenerateMouseRay();
+   //         else
+			//	return UnityUtilities.GenerateCameraRay();
 			#endif
 		}
 		// Extract angle of the vector projected on a plane perpendicular to a given normal and around given normal axis.

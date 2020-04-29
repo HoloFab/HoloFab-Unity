@@ -25,7 +25,10 @@ namespace HoloFab {
 		                            // , IMixedRealityInputHandler<Vector3>
 									#endif
 	{
-		private Interactible_Placeable[] placeables;
+        public float rotationSensitivity = .5f;
+
+
+        private Interactible_Placeable[] placeables;
 		private Interactible_Movable[] movables;
 		[HideInInspector]
 		public Interactible_Placeable activePlaceable;
@@ -157,9 +160,12 @@ namespace HoloFab {
 		// A function to register clicks (cross platform).
 		private void CheckClick(){
 			#if !WINDOWS_UWP
-			if (Input.GetMouseButtonDown(0)) {
-				this.flagClick = true;
-				ExtractClickInfo();
+            if (Input.GetMouseButtonDown(0)) {
+                CheckSelection();
+                if (this.flagHit) { 
+                    this.flagClick = true;
+				    ExtractClickInfo();
+                }
 			}
 			#endif
 			// In UWP handled by pointer events
@@ -167,8 +173,8 @@ namespace HoloFab {
 		// Extract information about cursor hit info.
 		private void ExtractClickInfo(){
 			#if DEBUG
-			Debug.Log("Interaction Manager: Click: " + this.hit.transform.gameObject.name);
 			#endif
+			Debug.Log("Interaction Manager: Click: " + this.hit.transform.gameObject.name);
 			// If clicked on scanned mesh - stop placment
 			if ((this.activePlaceable != null) && (ObjectManager.instance.CheckEnvironmentObject(this.hit.transform.gameObject))) {
 				#if DEBUG
@@ -204,14 +210,15 @@ namespace HoloFab {
 			return null;
 		}
 		private void TryStopPlacing(){
-			if (this.activePlaceable != null) {
-				if (this.activePlaceable.OnTrySnap())
-					this.activePlaceable = null;
-			}
-			// this.placeables = FindObjectsOfType<Interactible_Placeable>();
-			// foreach (Interactible_Placeable placeable in this.placeables)
-			// 	placeable.OnTrySnap();
-		}
+			//if (this.activePlaceable != null) {
+			//	if (this.activePlaceable.OnTrySnap())
+			//		this.activePlaceable = null;
+			//}
+			this.placeables = FindObjectsOfType<Interactible_Placeable>();
+			foreach (Interactible_Placeable placeable in this.placeables)
+			    placeable.OnTrySnap();
+            this.activePlaceable = null;
+        }
 		////////////////////////////////////////////////////////////////////////
 		// Find Movable object that is hit (if any).
 		private Interactible_Movable CheckMovableHit(GameObject goHit) {
@@ -223,15 +230,16 @@ namespace HoloFab {
 		}
 		// Deactivate Movement on Active Mover.
 		private void StopMoving(){
-			if (this.activeMovable != null) {
-				this.activeMovable.StopMoving();
-				this.activeMovable = null;
-			}
+			//if (this.activeMovable != null) {
+			//	this.activeMovable.StopMoving();
+			//	this.activeMovable = null;
+			//}
 			// Deactivate all movables - overkill, since we already have active one.
-			// this.movables = FindObjectsOfType<Interactible_Movable>();
-			// foreach (Interactible_Movable movable in this.movables)
-			// 	movable.StopMoving();
-		}
+			this.movables = FindObjectsOfType<Interactible_Movable>();
+            foreach (Interactible_Movable movable in this.movables)
+                movable.StopMoving();
+            this.activeMovable = null;
+        }
 		////////////////////////////////////////////////////////////////////////
 		public Vector3 DragMoveDifference(bool flagDragStart){
 			#if !WINDOWS_UWP
@@ -266,7 +274,7 @@ namespace HoloFab {
             
 			if (controlAngle > angleDifference) angleDifference *= -1;
             
-			return angleDifference;
+			return angleDifference * this.rotationSensitivity;
 		}
 		private Vector3 CurrentProjectedPlanePoint(out bool _flagHit){
 			Ray cameraMouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);

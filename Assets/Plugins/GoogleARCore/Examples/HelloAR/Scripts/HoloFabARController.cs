@@ -172,9 +172,9 @@ namespace GoogleARCore.Examples.HelloAR
 
                         // Create an anchor to allow ARCore to track the hitpoint as understanding of
                         // the physical world evolves.
-                        //var anchor = GameObject.FindObjectOfType<Anchor>();
-                        //if (anchor == null)
-                        var anchor = hit.Trackable.CreateAnchor(hit.Pose);
+                        var anchor = GameObject.FindObjectOfType<Anchor>();
+                        if (anchor == null)
+                            anchor = hit.Trackable.CreateAnchor(hit.Pose);
 
                         // Make game object a child of the anchor.
                         gameObject.transform.parent = anchor.transform;
