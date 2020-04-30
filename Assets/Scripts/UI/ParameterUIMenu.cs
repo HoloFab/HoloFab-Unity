@@ -60,10 +60,10 @@ namespace HoloFab {
 		[Tooltip("Limiting amounts for each type of generatable UI.")]
 		public int UILimitCount = 6;
         
-        public int initialSize = 110;
-        public int maximumSize = 625;
-
-        [Header("Adjustable panel from scene")]
+		public int initialSize = 110;
+		public int maximumSize = 625;
+        
+		[Header("Adjustable panel from scene")]
 		[Tooltip("Adjustable UI panel")]
 		public GameObject panel;
 		private RectTransform rt;
@@ -74,14 +74,14 @@ namespace HoloFab {
 		private int amountBooleanToggle = 0, amountCounter = 0, amountSlider = 0;
 		// Network variables.
 		// Stored message to avoid unnecessary traffic.
-		private static string lastMessage;
+		private static UIData lastData;
 		// Reference to the Sender.
 		private static UDPSendComponent sender;
         
 		void Start() {
 			// Instanses of panel variables
 			rt = panel.GetComponent<RectTransform>();
-        }
+		}
 		//////////////////////////////////////////////////////////////////////////
 		// Generic UI adding function.
 		private void TryAddUIItem(ref int amount, int limit, GameObject goPrefab, Canvas cParent, float height) {
@@ -179,16 +179,11 @@ namespace HoloFab {
 				UIData ui = new UIData(bools, ints, floats);
                 
 				// Encode and if changed - send it.
-				byte[] data = EncodeUtilities.EncodeData("UIDATA", ui, out string currentMessage);
-				if (ParameterUIMenu.lastMessage != currentMessage) { // TODO: Technically not necessary now since we call directly from UI elements themselves.
-					ParameterUIMenu.lastMessage = currentMessage;
-					#if DEBUG
-					Debug.Log("ParameterUIMenu: values changed, sending: " + currentMessage);
-					#endif
-                    
+				if (ParameterUIMenu.lastData != ui) { // TODO: Technically not necessary now since we call directly from UI elements themselves.
+					ParameterUIMenu.lastData = ui;
 					if (ParameterUIMenu.sender == null) ParameterUIMenu.sender = FindObjectOfType<UDPSendComponent>();
 					if (ParameterUIMenu.sender == null) return;
-					ParameterUIMenu.sender.SendUI(data);
+					ParameterUIMenu.sender.SendUI(ui);
 				}
 			}
 		}

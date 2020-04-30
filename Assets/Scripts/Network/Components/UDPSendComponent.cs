@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using HoloFab;
+using HoloFab.CustomData;
 
 namespace HoloFab {
 	// Unity Component Interfacing UDP Send class for UI.
@@ -22,12 +23,29 @@ namespace HoloFab {
 		// Local Variables.
 		private string sourceName = "UDP Sender Component";
         
-		public void SendUI(byte[] data) {
+		public void SendUI(UIData ui) {
+			Send("UIDATA", ui);
+		}
+        
+		public void SendPoints(PointCloudData pointCloud) {
+			Send("POINTCLOUD", pointCloud);
+		}
+        
+		public void SendMesh(MeshData mesh) {
+			Send("MESHSTREAMING", mesh);
+		}
+        
+		private void Send(string header, System.Object item) {
 			if (this.remoteIP != null) {// just in case
-				// if (this.udpSender == null)
-				this.udpSender = new UDPSend(this.remoteIP, this.remotePortOverride);
-				this.udpSender.Send(data);
-				// if (!this.udpSender.success) {
+				byte[] data = EncodeUtilities.EncodeData(header, item, out string currentMessage);
+				#if DEBUG
+				Debug.Log("UDP Sender: sending data: " + currentMessage);
+				#endif
+                
+				if (this.udpSender == null)
+					this.udpSender = new UDPSend(this.remoteIP, this.remotePortOverride);
+				this.udpSender.QueueUpData(data);
+				// if (!this.udpSender.flagSuccess) {
 				// 	#if DEBUGWARNING
 				// 	DebugUtilities.UniversalWarning(this.sourceName, "Couldn't send data.");
 				// 	#endif
