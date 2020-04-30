@@ -25,10 +25,10 @@ namespace HoloFab {
 		                            // , IMixedRealityInputHandler<Vector3>
 									#endif
 	{
-        public float rotationSensitivity = .5f;
-
-
-        private Interactible_Placeable[] placeables;
+		public float rotationSensitivity = .5f;
+        
+        
+		private Interactible_Placeable[] placeables;
 		private Interactible_Movable[] movables;
 		[HideInInspector]
 		public Interactible_Placeable activePlaceable;
@@ -132,9 +132,12 @@ namespace HoloFab {
 			// 	Debug.Log("Interactible Manager: Mixed Reality events found: " + actions.Length);
 			// #endif
             
+			// Find what current selection is on
 			CheckSelection();
+			// Check if click has occured and process it to be handled by corresponding interactibles/
 			CheckClick();
-			CheckDrag();
+			// Check if dragging has finished.
+			CheckEndDrag();
             
 			#if DEBUG2
 			if (this.activeMovable != null)
@@ -143,7 +146,8 @@ namespace HoloFab {
 				Debug.Log("Interaction Manager: Active Placeable: " + this.activePlaceable.gameObject.name);
 			#endif
             
-			this.flagClick = false; // Force unclick
+			// Force unclick - cick handled
+			this.flagClick = false;
 		}
 		////////////////////////////////////////////////////////////////////////
 		private void CheckSelection(){
@@ -159,13 +163,13 @@ namespace HoloFab {
 		}
 		// A function to register clicks (cross platform).
 		private void CheckClick(){
+			// #if UNITY_ANDROID
+			// if (Input.touchCount > 0) {
 			#if !WINDOWS_UWP
-            if (Input.GetMouseButtonDown(0)) {
-                CheckSelection();
-                if (this.flagHit) { 
-                    this.flagClick = true;
-				    ExtractClickInfo();
-                }
+			if (Input.GetMouseButtonDown(0)) {
+				this.flagClick = true;
+				if (this.flagHit)
+					ExtractClickInfo();
 			}
 			#endif
 			// In UWP handled by pointer events
@@ -178,8 +182,8 @@ namespace HoloFab {
 			// If clicked on scanned mesh - stop placment
 			if ((this.activePlaceable != null) && (ObjectManager.instance.CheckEnvironmentObject(this.hit.transform.gameObject))) {
 				#if DEBUG
-				Debug.Log("Interaction Manager: Click On Scan Mesh");
 				#endif
+				Debug.Log("Interaction Manager: Click On Scan Mesh");
 				TryStopPlacing();
 			} else {
 				// Find interactibles if any.
@@ -187,7 +191,7 @@ namespace HoloFab {
 				this.activePlaceable = CheckPlaceableHit(this.hit.transform.gameObject);
 			}
 		}
-		private void CheckDrag(){
+		private void CheckEndDrag(){
 			#if !WINDOWS_UWP
 			// Don't bother checking dragging if drag object wasn't found.
 			if (this.activeMovable != null) {
@@ -209,16 +213,17 @@ namespace HoloFab {
 				}
 			return null;
 		}
-		private void TryStopPlacing(){
-			//if (this.activePlaceable != null) {
-			//	if (this.activePlaceable.OnTrySnap())
-			//		this.activePlaceable = null;
-			//}
-			this.placeables = FindObjectsOfType<Interactible_Placeable>();
-			foreach (Interactible_Placeable placeable in this.placeables)
-			    placeable.OnTrySnap();
-            this.activePlaceable = null;
-        }
+		private void TryStopPlacing(bool flagForce=false){
+			if (flagForce) {
+				this.placeables = FindObjectsOfType<Interactible_Placeable>();
+				foreach (Interactible_Placeable placeable in this.placeables)
+					placeable.OnTrySnap();
+				this.activePlaceable = null;
+			} else if (this.activePlaceable != null) {
+				if (this.activePlaceable.OnTrySnap())
+					this.activePlaceable = null;
+			}
+		}
 		////////////////////////////////////////////////////////////////////////
 		// Find Movable object that is hit (if any).
 		private Interactible_Movable CheckMovableHit(GameObject goHit) {
@@ -229,17 +234,18 @@ namespace HoloFab {
 			return null;
 		}
 		// Deactivate Movement on Active Mover.
-		private void StopMoving(){
-			//if (this.activeMovable != null) {
-			//	this.activeMovable.StopMoving();
-			//	this.activeMovable = null;
-			//}
-			// Deactivate all movables - overkill, since we already have active one.
-			this.movables = FindObjectsOfType<Interactible_Movable>();
-            foreach (Interactible_Movable movable in this.movables)
-                movable.StopMoving();
-            this.activeMovable = null;
-        }
+		private void StopMoving(bool flagForce=false){
+			if (flagForce) {
+				// Deactivate all movables - overkill, since we already have active one.
+				this.movables = FindObjectsOfType<Interactible_Movable>();
+				foreach (Interactible_Movable movable in this.movables)
+					movable.StopMoving();
+				this.activeMovable = null;
+			} else if (this.activeMovable != null) {
+				this.activeMovable.StopMoving();
+				this.activeMovable = null;
+			}
+		}
 		////////////////////////////////////////////////////////////////////////
 		public Vector3 DragMoveDifference(bool flagDragStart){
 			#if !WINDOWS_UWP
