@@ -30,10 +30,11 @@ namespace GoogleARCore.Examples.Common {
 		////////////////////////////////////////////////////////////////////////////////
 		// Added
 		public static bool flagVisible = true;
-		// private string layerScanMesh = "Spatial Awareness";
-		////////////////////////////////////////////////////////////////////////////////
-        
-		private DetectedPlane m_DetectedPlane;
+        // private string layerScanMesh = "Spatial Awareness";
+        private MeshCollider m_MeshCollider;
+        ////////////////////////////////////////////////////////////////////////////////
+
+        private DetectedPlane m_DetectedPlane;
         
 		// Keep previous frame's mesh polygon to avoid mesh update every frame.
 		private List<Vector3> m_PreviousFrameMeshVertices = new List<Vector3>();
@@ -55,12 +56,13 @@ namespace GoogleARCore.Examples.Common {
 		{
 			m_Mesh = GetComponent<MeshFilter>().mesh;
 			m_MeshRenderer = GetComponent<UnityEngine.MeshRenderer>();
-			// ////////////////////////////////////////////////////////////////////////////////
-			// // Added
-			// gameObject.AddComponent<MeshCollider>();
-			// gameObject.layer = LayerMask.NameToLayer(this.layerScanMesh);
-			// ////////////////////////////////////////////////////////////////////////////////
-		}
+            // ////////////////////////////////////////////////////////////////////////////////
+            // // Added
+            // gameObject.AddComponent<MeshCollider>();
+            // gameObject.layer = LayerMask.NameToLayer(this.layerScanMesh);
+            m_MeshCollider = GetComponent<MeshCollider>();
+            // ////////////////////////////////////////////////////////////////////////////////
+        }
         
 		/// <summary>
 		/// The Unity Update() method.
@@ -76,9 +78,10 @@ namespace GoogleARCore.Examples.Common {
 				m_MeshRenderer.enabled = false;
 				return;
 			}
-			////////////////////////////////////////////////////////////////////////////////
-			// Modified
-			m_MeshRenderer.enabled = DetectedPlaneVisualizer.flagVisible;
+            ////////////////////////////////////////////////////////////////////////////////
+            // Modified
+            m_MeshCollider.sharedMesh = m_Mesh;
+            m_MeshRenderer.enabled = DetectedPlaneVisualizer.flagVisible;
 			////////////////////////////////////////////////////////////////////////////////
 			_UpdateMeshIfNeeded();
 		}

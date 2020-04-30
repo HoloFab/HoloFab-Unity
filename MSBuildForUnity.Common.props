@@ -2,12 +2,12 @@
   <PropertyGroup>
     <MSBuildForUnityVersion>0.8.3</MSBuildForUnityVersion>
     
-    <MSBuildForUnityGeneratedOutputDirectory>C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\MSBuild\Projects</MSBuildForUnityGeneratedOutputDirectory>
-    <UnityProjectAssetsPath>C:\_UserFiles\1_Work\30_HoloFab\HoloFab-Unity\Assets</UnityProjectAssetsPath>
+    <MSBuildForUnityGeneratedOutputDirectory>D:\_HoloFab-2020\HoloFab-Unity\MSBuild\Projects</MSBuildForUnityGeneratedOutputDirectory>
+    <UnityProjectAssetsPath>D:\_HoloFab-2020\HoloFab-Unity\Assets</UnityProjectAssetsPath>
     <MSBuildForUnityDefaultOutputPath>$(UnityProjectAssetsPath)\Dependencies</MSBuildForUnityDefaultOutputPath>
     
-    <UnityCurrentPlatform>WSA</UnityCurrentPlatform>
-    <UnityCurrentTargetFramework>net46</UnityCurrentTargetFramework>
+    <UnityCurrentPlatform>Android</UnityCurrentPlatform>
+    <UnityCurrentTargetFramework>netstandard2.0</UnityCurrentTargetFramework>
     
     <UnityMajorVersion>2019</UnityMajorVersion>
     <UnityMinorVersion>3</UnityMinorVersion>

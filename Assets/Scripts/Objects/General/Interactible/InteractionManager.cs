@@ -163,11 +163,20 @@ namespace HoloFab {
 		}
 		// A function to register clicks (cross platform).
 		private void CheckClick(){
-			// #if UNITY_ANDROID
-			// if (Input.touchCount > 0) {
-			#if !WINDOWS_UWP
-			if (Input.GetMouseButtonDown(0)) {
-				this.flagClick = true;
+            // #if UNITY_ANDROID
+            // if (Input.touchCount > 0) {
+            #if !WINDOWS_UWP
+            #if DEBUG
+            Debug.Log("Touch: " + (Input.touchCount > 0) + ", Mouse: " + Input.GetMouseButtonDown(0));
+            #endif
+
+            if ((Input.touchCount > 0) || (Input.GetMouseButtonDown(0))) {
+                #if DEBUG
+                if (Input.touchCount > 0)
+                    Debug.Log("Touch: " + (Input.GetTouch(0).position));
+                Debug.Log("Mouse: " + Input.mousePosition);
+                #endif
+                this.flagClick = true;
 				if (this.flagHit)
 					ExtractClickInfo();
 			}
