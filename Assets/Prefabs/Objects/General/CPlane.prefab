@@ -1255,7 +1255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff137b28f178ea4f95f3f5762daa0a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flagPlacingOnStart: 0
+  flagPlacingOnStart: 1
   flagOrient: 0
   hoverDistance: 0.5
   maxSnapDistance: 4

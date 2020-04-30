@@ -1040,6 +1040,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab8609f2db95b174eaf2f22794de0779, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSensitivity: 0.5
   activePlaceable: {fileID: 0}
   activeMovable: {fileID: 0}
   flagHit: 0
@@ -1263,6 +1264,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CPlane_Hololens
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505426435189084519, guid: 4afa700613cd6a0418c0ecd6c679c78e,
+        type: 3}
+      propertyPath: hoverDistance
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4afa700613cd6a0418c0ecd6c679c78e, type: 3}

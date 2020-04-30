@@ -31,9 +31,9 @@ namespace HoloFab {
 	public class ObjectManager : Type_Manager<ObjectManager> {
 		// - CPlane object tag.
 		private string tagCPlane = "CPlane";
-        private string layerScanMesh = "Spatial Awareness";
-        // - Local reference of CPlane object
-        public GameObject cPlane;
+		private string layerScanMesh = "Spatial Awareness";
+		// - Local reference of CPlane object
+		public GameObject cPlane;
 		// - Meshes of the environment
 		public List<MeshRenderer> scannedEnvironment;
 		// Keep track of the scanned grid status.
@@ -52,6 +52,7 @@ namespace HoloFab {
 			#if UNITY_ANDROID
 			Thread.Sleep(3500);
 			#endif
+			DebugUtilities.UserMessage("Place your CPlane by tapping on scanned mesh.");
 		}
 		////////////////////////////////////////////////////////////////////////
 		// If c plane is not found - hint user and return false.
@@ -66,9 +67,9 @@ namespace HoloFab {
 				DebugUtilities.UniversalDebug(this.sourceName, "CPlane: " + this.cPlane);
 				#endif
 			}
-			#if UNITY_ANDROID
-			HoloFabARController.cPlaneInstance = this.cPlane;
-			#endif
+			// #if UNITY_ANDROID
+			// HoloFabARController.cPlaneInstance = this.cPlane;
+			// #endif
 			return true;
 		}
 		////////////////////////////////////////////////////////////////////////
