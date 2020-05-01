@@ -113,7 +113,7 @@ namespace HoloFab {
 		// 	this.lastDragOrientation = currentDragOrientation;
 		// }
 		private void RotateZ(float rotateDifference){
-			transform.RotateAroundLocal(this.orientationPlane.normal, Mathf.Deg2Rad * rotateDifference);
-		}
+			transform.Rotate(this.orientationPlane.normal, rotateDifference);// Mathf.Deg2Rad * 
+        }
 	}
 }

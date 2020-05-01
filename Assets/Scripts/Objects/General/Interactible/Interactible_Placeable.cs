@@ -58,14 +58,17 @@ namespace HoloFab {
 		// If clicked on mesh - try to snap if the object is currently placing.
 		// NB! check the distance if the object is hovering (not on mesh) - ignore click.
 		public bool OnTrySnap(){
-			if ((this.flagPlacing) && (InteractionManager.instance.flagHit)) {
-				float distance = Distance2Camera(InteractionManager.instance.hit.point);
+			if ((this.flagPlacing) && (InteractionManager.instance.flagHitGaze)) {
+				float distance = Distance2Camera(InteractionManager.instance.hitGaze.point);
 				if (distance < this.maxSnapDistance) {
 					this.flagPlacing = false;
 					UpdateAppearance();
 					return true;
 				}
-			}
+            }
+            else {
+                DebugUtilities.UserMessage("Try to look at scanned mesh or come closer to it.");
+            }
 			return false;
 		}
 		////////////////////////////////////////////////////////////////////////
@@ -78,14 +81,14 @@ namespace HoloFab {
         private void TryPlace() {
             float distance = this.hoverDistance;
             Vector3 normal = Vector3.up;
-            if (InteractionManager.instance.flagHit)
-                if (ObjectManager.instance.CheckEnvironmentObject(InteractionManager.instance.hit.collider.gameObject))
+            if (InteractionManager.instance.flagHitGaze)
+                if (ObjectManager.instance.CheckEnvironmentObject(InteractionManager.instance.hitGaze.collider.gameObject))
                 {
-                    distance = Distance2Camera(InteractionManager.instance.hit.point);
+                    distance = Distance2Camera(InteractionManager.instance.hitGaze.point);
                     if (distance < this.maxSnapDistance)
                     {
                         distance = Mathf.Min(distance, this.maxSnapDistance);
-                        normal = InteractionManager.instance.hit.normal;
+                        normal = InteractionManager.instance.hitGaze.normal;
                     }
                     else
                         distance = this.hoverDistance;

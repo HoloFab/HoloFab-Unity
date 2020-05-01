@@ -1,5 +1,7 @@
-// #define DEBUG
-#undef DEBUG
+#define DEBUG
+#define DEBUGWARNING
+// #undef DEBUG
+// #undef DEBUGWARNING
 
 using System.Collections;
 using System.Collections.Generic;
@@ -187,7 +189,12 @@ namespace HoloFab {
 					#endif
                     
 					if (ParameterUIMenu.sender == null) ParameterUIMenu.sender = FindObjectOfType<UDPSendComponent>();
-					if (ParameterUIMenu.sender == null) return;
+                    if (ParameterUIMenu.sender == null) {
+                        #if DEBUGWARNING
+                        Debug.Log("ParameterUIMenu: No sender Found.");
+                        #endif
+                        return;
+                    }
 					ParameterUIMenu.sender.SendUI(data);
 				}
 			}
