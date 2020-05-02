@@ -41,7 +41,7 @@ public class UDPBroadcastComponent : MonoBehaviour {
 			DebugUtilities.UniversalDebug(this.sourceName, "Broadcasting a message: " + this.broadcastMessage);
 			#endif
 			this.udpBroadcaster.Broadcast(this.requestData);
-			if (!this.udpBroadcaster.success) {
+			if (!this.udpBroadcaster.flagSuccess) {
 				#if DEBUGWARNING
 				DebugUtilities.UniversalWarning(this.sourceName, "Couldn't broadcast the message.");
 				#endif
