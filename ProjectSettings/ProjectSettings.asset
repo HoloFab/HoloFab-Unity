@@ -730,7 +730,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: HoloFab
-  metroPackageVersion: 1.0.144.0
+  metroPackageVersion: 1.0.145.0
   metroCertificatePath: Assets\WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: HoloFab
