@@ -49,17 +49,18 @@ namespace HoloFab {
 			// 	this.tcpReceiver.Connect();
 			// 	if (!this.tcpReceiver.flagConnectionFound) return;
 			// }
-			if (!this.tcpReceiver.flagDataRead) {
+			if (this.tcpReceiver.dataMessages.Count > 0) {
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Parsing input . . .");
 				#endif
-				InterpreteData(this.tcpReceiver.dataMessages[this.tcpReceiver.dataMessages.Count-1]);
-				this.tcpReceiver.flagDataRead = true;
+				// Try to interprete message. If recognized - remove from the queue.
+				if (InterpreteData(this.tcpReceiver.dataMessages.Peek())) //[this.tcpReceiver.dataMessages.Count-1]);
+					this.tcpReceiver.dataMessages.Dequeue();
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// A function responsible for decoding and reacting to received TCP data.
-		private void InterpreteData(string message) {
+		private bool InterpreteData(string message) {
 			if (!string.IsNullOrEmpty(message)) {
 				message = EncodeUtilities.StripSplitter(message);
 				if (this.lastMessage != message) {
@@ -75,8 +76,10 @@ namespace HoloFab {
 						#endif
 						if (header == "MESHSTREAMING") {
 							InterpreteMesh(content, SourceType.TCP);
+							return true;
 						} else if (header == "HOLOBOTS") {
 							InterpreteHoloBots(content);
+							return true;
 						} else {
 							#if DEBUGWARNING
 							DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
@@ -89,6 +92,7 @@ namespace HoloFab {
 					}
 				}
 			}
+			return true;// Since we have one interpreter anyway
 		}
 		// Functions to interprete and react to determined type of messages: // TODO: Join with UDP interpreters?
 		// - Mesh

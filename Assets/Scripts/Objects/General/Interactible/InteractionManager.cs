@@ -1,6 +1,6 @@
 // #define DEBUG
 // #define DEBUG2
- #undef DEBUG
+#undef DEBUG
 #undef DEBUG2
 
 using System.Collections;
@@ -34,19 +34,19 @@ namespace HoloFab {
 		public Interactible_Placeable activePlaceable;
 		[HideInInspector]
 		public Interactible_Movable activeMovable;
-
-        // Select
-        [HideInInspector]
-        public RaycastHit hitGaze;
-        [HideInInspector]
-        public RaycastHit hitSelect;
-        [HideInInspector]
-        public bool flagHitGaze = false;
-        [HideInInspector]
-        public bool flagHitSelect = false;
-
-        // Click
-        private bool flagClick = false;
+        
+		// Select
+		[HideInInspector]
+		public RaycastHit hitGaze;
+		[HideInInspector]
+		public RaycastHit hitSelect;
+		[HideInInspector]
+		public bool flagHitGaze = false;
+		[HideInInspector]
+		public bool flagHitSelect = false;
+        
+		// Click
+		private bool flagClick = false;
         
 		// Drag
 		private Vector3 startDragPosition, currentDragPosition;
@@ -95,14 +95,18 @@ namespace HoloFab {
 		// }
 		////////////////////////////////////////////////////////////////////////
 		public void OnPointerClicked(MixedRealityPointerEventData eventData) {
+			#if DEBUG
 			Debug.Log("Interaction Manager: OnPointer Clicked");
+			#endif
 			// eventData.Use();
 		}
 		public void OnPointerDown(MixedRealityPointerEventData eventData) {
 			this.currentDragPosition = eventData.Pointer.Position;
 			Quaternion rotation = eventData.Pointer.Rotation;
             
+			#if DEBUG
 			Debug.Log("Interaction Manager: OnPointer Down: Position " + this.currentDragPosition.ToString("F6") + ", rotation: " + rotation.ToString("F6"));
+			#endif
 			// eventData.Use();
             
 			this.flagClick = true;
@@ -112,7 +116,9 @@ namespace HoloFab {
 			this.currentDragPosition = eventData.Pointer.Position;
 			Quaternion rotation = eventData.Pointer.Rotation;
             
+			#if DEBUG
 			Debug.Log("Interaction Manager: OnPointer Drag: Position " + this.currentDragPosition.ToString("F6") + ", rotation: " + rotation.ToString("F6"));
+			#endif
 			// eventData.Use();
 		}
         
@@ -120,7 +126,9 @@ namespace HoloFab {
 			this.currentDragPosition = eventData.Pointer.Position;
 			Quaternion rotation = eventData.Pointer.Rotation;
             
+			#if DEBUG
 			Debug.Log("Interaction Manager: OnPointer Up: Position " + this.currentDragPosition.ToString("F6") + ", rotation: " + rotation.ToString("F6"));
+			#endif
 			// eventData.Use();
             
 			// Reset Dargging
@@ -174,20 +182,20 @@ namespace HoloFab {
 		}
 		// A function to register clicks (cross platform).
 		private void CheckClick(){
-            // #if UNITY_ANDROID
-            // if (Input.touchCount > 0) {
-            #if !WINDOWS_UWP
-            #if DEBUG2
-            Debug.Log("Touch: " + (Input.touchCount > 0) + ", Mouse: " + Input.GetMouseButtonDown(0));
-            #endif
-
-            if (((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began)) || (Input.GetMouseButtonDown(0))) {
-                #if DEBUG2
-                if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
-                    Debug.Log("Touch: " + (Input.GetTouch(0).position));
-                Debug.Log("Mouse: " + Input.mousePosition);
-                #endif
-                this.flagClick = true;
+			// #if UNITY_ANDROID
+			// if (Input.touchCount > 0) {
+			#if !WINDOWS_UWP
+			#if DEBUG2
+			Debug.Log("Touch: " + (Input.touchCount > 0) + ", Mouse: " + Input.GetMouseButtonDown(0));
+			#endif
+            
+			if (((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began)) || (Input.GetMouseButtonDown(0))) {
+				#if DEBUG2
+				if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
+					Debug.Log("Touch: " + (Input.GetTouch(0).position));
+				Debug.Log("Mouse: " + Input.mousePosition);
+				#endif
+				this.flagClick = true;
 				if (this.flagHitSelect || this.flagHitGaze)
 					ExtractClickInfo();
 			}
@@ -203,11 +211,11 @@ namespace HoloFab {
 				#endif
 				TryStopPlacing();
 			} else {
-                // Find interactibles if any.
-                if (this.flagHitGaze)
-                    this.activePlaceable = CheckPlaceableHit(this.hitGaze.transform.gameObject);
-                if (this.flagHitSelect)
-                    this.activeMovable = CheckMovableHit(this.hitSelect.transform.gameObject);
+				// Find interactibles if any.
+				if (this.flagHitGaze)
+					this.activePlaceable = CheckPlaceableHit(this.hitGaze.transform.gameObject);
+				if (this.flagHitSelect)
+					this.activeMovable = CheckMovableHit(this.hitSelect.transform.gameObject);
 			}
 		}
 		private void CheckEndDrag(){
@@ -279,10 +287,10 @@ namespace HoloFab {
 			Vector3 relativeDrag;
 			#if !WINDOWS_UWP
 			this.currentDragPosition = CurrentProjectedPlanePoint(out bool _flagHit);
-			// #else
-			// relativeDrag = this.currentDragPosition - this.startDragPosition;
-			#endif
 			relativeDrag = this.currentDragPosition - this.activeMovable.transform.position;
+			#else
+			relativeDrag = this.currentDragPosition - this.startDragPosition;
+			#endif
             
 			if (flagDragStart)
 				this.lastRelativeDrag = relativeDrag;
@@ -292,15 +300,15 @@ namespace HoloFab {
 			Vector3 controlVector = Quaternion.AngleAxis(1, this.activeMovable.orientationPlane.normal) * this.lastRelativeDrag;
 			float currentAngle = Vector3.Angle(this.lastRelativeDrag, relativeDrag);
 			float controlAngle = Vector3.Angle(controlVector, relativeDrag);
-                        
+            
 			if (controlAngle > currentAngle) currentAngle *= -1;
-
-            this.lastRelativeDrag = relativeDrag;
-
-            return currentAngle;//angleDifference * this.rotationSensitivity;
+            
+			this.lastRelativeDrag = relativeDrag;
+            
+			return currentAngle;//angleDifference * this.rotationSensitivity;
 		}
 		private Vector3 CurrentProjectedPlanePoint(out bool _flagHit){
-            Ray cameraMouseRay = UnityUtilities.GenerateSelectionRay();//Camera.main.ScreenPointToRay(Input.mousePosition);
+			Ray cameraMouseRay = UnityUtilities.GenerateSelectionRay();//Camera.main.ScreenPointToRay(Input.mousePosition);
 			// NB! Isn't it the same as mouse Ray
 			if (this.activeMovable.orientationPlane.Raycast(cameraMouseRay, out float rayDistance)) {
 				_flagHit = true;

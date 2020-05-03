@@ -1,6 +1,6 @@
-#define DEBUG
+// #define DEBUG
 #define DEBUGWARNING
-// #undef DEBUG
+#undef DEBUG
 // #undef DEBUGWARNING
 
 using UnityEngine;
@@ -23,10 +23,12 @@ namespace HoloFab {
 		private string sourceName = "UDP Sender Component";
         
 		public void SendUI(byte[] data) {
-			if (this.remoteIP != null) {// just in case
-				// if (this.udpSender == null)
-				this.udpSender = new UDPSend(this.remoteIP, this.remotePortOverride);
-				this.udpSender.Send(data);
+			if (!string.IsNullOrEmpty(this.remoteIP)) {// just in case
+				if ((this.udpSender == null) || (this.udpSender.remoteIP != this.remoteIP)) {
+					this.udpSender = new UDPSend(this.remoteIP, this.remotePortOverride);
+					this.udpSender.Connect();
+				}
+				this.udpSender.QueueUpData(data);
 				// if (!this.udpSender.success) {
 				// 	#if DEBUGWARNING
 				// 	DebugUtilities.UniversalWarning(this.sourceName, "Couldn't send data.");

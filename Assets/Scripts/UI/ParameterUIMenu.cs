@@ -1,6 +1,6 @@
-#define DEBUG
+// #define DEBUG
 #define DEBUGWARNING
-// #undef DEBUG
+#undef DEBUG
 // #undef DEBUGWARNING
 
 using System.Collections;
@@ -62,10 +62,10 @@ namespace HoloFab {
 		[Tooltip("Limiting amounts for each type of generatable UI.")]
 		public int UILimitCount = 6;
         
-        public int initialSize = 110;
-        public int maximumSize = 625;
-
-        [Header("Adjustable panel from scene")]
+		public int initialSize = 110;
+		public int maximumSize = 625;
+        
+		[Header("Adjustable panel from scene")]
 		[Tooltip("Adjustable UI panel")]
 		public GameObject panel;
 		private RectTransform rt;
@@ -83,7 +83,7 @@ namespace HoloFab {
 		void Start() {
 			// Instanses of panel variables
 			rt = panel.GetComponent<RectTransform>();
-        }
+		}
 		//////////////////////////////////////////////////////////////////////////
 		// Generic UI adding function.
 		private void TryAddUIItem(ref int amount, int limit, GameObject goPrefab, Canvas cParent, float height) {
@@ -189,12 +189,12 @@ namespace HoloFab {
 					#endif
                     
 					if (ParameterUIMenu.sender == null) ParameterUIMenu.sender = FindObjectOfType<UDPSendComponent>();
-                    if (ParameterUIMenu.sender == null) {
-                        #if DEBUGWARNING
-                        Debug.Log("ParameterUIMenu: No sender Found.");
-                        #endif
-                        return;
-                    }
+					if (ParameterUIMenu.sender == null) {
+						#if DEBUGWARNING
+						Debug.Log("ParameterUIMenu: No sender Found.");
+						#endif
+						return;
+					}
 					ParameterUIMenu.sender.SendUI(data);
 				}
 			}
