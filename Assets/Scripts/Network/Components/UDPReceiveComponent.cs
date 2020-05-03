@@ -1,4 +1,4 @@
-// #define DEBUG
+//#define DEBUG
 #define DEBUGWARNING
 #undef DEBUG
 // #undef DEBUGWARNING
@@ -35,17 +35,18 @@ namespace HoloFab {
 			this.udpReceiver.Disconnect();
 		}
 		void Update() {
-			if (!this.udpReceiver.flagDataRead) {
+			if (this.udpReceiver.dataMessages.Count > 0) {
 				#if DEBUG
 				DebugUtilities.UniversalDebug(this.sourceName, "Parsing input . . .");
 				#endif
-				this.udpReceiver.flagDataRead = true;
-				InterpreteData(this.udpReceiver.dataMessages[this.udpReceiver.dataMessages.Count-1]);
+				// Try to interprete message. If recognized - remove from the queue.
+				if (InterpreteData(this.udpReceiver.dataMessages.Peek())) //[this.udpReceiver.dataMessages.Count-1]);
+					this.udpReceiver.dataMessages.Dequeue();
 			}
 		}
 		/////////////////////////////////////////////////////////////////////////////
 		// A function responsible for decoding and reacting to received UDP data.
-		private void InterpreteData(string message) {
+		private bool InterpreteData(string message) {
 			if (!string.IsNullOrEmpty(message)) {
 				message = EncodeUtilities.StripSplitter(message);
 				if (this.lastMessage != message) {
@@ -61,12 +62,16 @@ namespace HoloFab {
 						#endif
 						if (header == "MESHSTREAMING") {
 							InterpreteMesh(content, SourceType.UDP);
+							return true;
 						} else if (header == "CONTROLLER") {
 							InterpreteRobotController(content);
+							return true;
 						} else if (header == "HOLOTAG") {
 							InterpreteTag(content);
+							return true;
 						} else if(header == "IPADDRESS") {
 							InterpreteIPAddress(content);
+							return true;
 						} else {
 							#if DEBUGWARNING
 							DebugUtilities.UniversalWarning(this.sourceName, "Header Not Recognized");
@@ -79,6 +84,7 @@ namespace HoloFab {
 					}
 				}
 			}
+			return true;// Since we have one interpreter anyway
 		}
 		// Functions to interprete and react to determined type of messages:
 		// - Mesh

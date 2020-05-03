@@ -9,10 +9,7 @@ using UnityEngine.UI;
 
 #if WINDOWS_UWP
 using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.SpatialAwareness;
-using Windows.ApplicationModel.Core;
 #else
-using GoogleARCore.Examples.HelloAR;
 using GoogleARCore.Examples.Common;
 #endif
 
@@ -31,69 +28,59 @@ namespace HoloFab {
 		public Button buttonToggleGrid;
 		[Tooltip("Button to Delete Objects.")]
 		public Button buttonObjects;
-        
-		// KEep track of the scanned grid status.
-		private bool flagGridVisible = true;
-        
+
 		// Events to be raised on clicks:
 		// - exit application
 		public void OnExit() {
+			#if DEBUG
+			Debug.Log("General UI: exit.");
+			#endif
 			#if UNITY_EDITOR
 			UnityEditor.EditorApplication.isPlaying = false;
-			#elif WINDOWS_UWP
-			CoreApplication.Exit();
 			#else // UNITY_ANDROID
 			Application.Quit();
 			#endif
 		}
 		// - Destroy CPlane
 		public void OnDestroyCPlane() {
-			//TODO not actually delete c plane but start placing it (put infron tf camera and activate placable)
+			#if DEBUG
+			Debug.Log("General UI: reset C-Plane.");
+			#endif
+			//TODO not actually delete c plane but start placing it (put infron tf camera and activate placeable)
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
-            #if WINDOWS_UWP
-			ObjectManager.instance.cPlane.GetComponent<Placeable>().OnTap();
-            #else
-            ObjectManager.instance.cPlane.SetActive(false);
-            //DestroyImmediate(ObjectManager.instance.cPlane);
-			//Resources.UnloadUnusedAssets();
-			#endif
+            ObjectManager.instance.cPlane.GetComponent<Interactible_Placeable>().ForcePlacement();
+			//#if WINDOWS_UWP
+			//ObjectManager.instance.cPlane.GetComponent<Interactible_Placeable>().ForcePlacement();
+			//#else
+			//ObjectManager.instance.cPlane.SetActive(false);
+			////DestroyImmediate(ObjectManager.instance.cPlane);
+			////Resources.UnloadUnusedAssets();
+			//#endif
 		}
 		// - Toggle AR Core Grid
 		public void OnTogglePointsAndGrids() {
-			List<MeshRenderer> renderers = new List<MeshRenderer>();;
-			this.flagGridVisible = !this.flagGridVisible;
+			#if DEBUG
+			Debug.Log("General UI: toggle scanned environment visibility.");
+			#endif
+			ObjectManager.instance.ToggleEnvironmentMeshes();
 			#if WINDOWS_UWP
 			// Microsoft Windows MRTK
-			// Cast the Spatial Awareness system to IMixedRealityDataProviderAccess to get an Observer
-			var access = CoreServices.SpatialAwarenessSystem as IMixedRealityDataProviderAccess;
-			// Get the first Mesh Observer available, generally we have only one registered
-			var observers = access.GetDataProviders<IMixedRealitySpatialAwarenessMeshObserver>();
-			// Loop through all known Meshes
-			foreach (var observer in observers) {
-				foreach (SpatialAwarenessMeshObject meshObject in observer.Meshes.Values) {
-					renderers.Add(meshObject.Renderer);
-				}
-			}
-			if (this.flagGridVisible) {
-				// Resume Mesh Observation from all Observers
+			// Toggle Mesh Observation from all Observers
+			if (ObjectManager.instance.flagGridVisible)
 				CoreServices.SpatialAwarenessSystem.ResumeObservers();
-			} else {
-				// Suspend Mesh Observation from all Observers
+			else
 				CoreServices.SpatialAwarenessSystem.SuspendObservers();
-			}
-			#else
+			#elif UNITY_ANDROID
 			// Android ARkit
-			PointcloudVisualizer[] visualizers = FindObjectsOfType<PointcloudVisualizer>();
-			foreach (PointcloudVisualizer visualizer in visualizers)
-				renderers.Add(visualizer.meshRenderer);
-			DetectedPlaneVisualizer.flagVisible = this.flagGridVisible;
+			DetectedPlaneVisualizer.flagVisible = ObjectManager.instance.flagGridVisible;
 			#endif
-			foreach (MeshRenderer renderer in renderers)
-				renderer.enabled = this.flagGridVisible;
 		}
 		// - Destroy Objects
 		public void OnDestroyObjects() {
+			#if DEBUG
+			Debug.Log("General UI: destroy all objects.");
+			#endif
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.TCP);
 			ObjectManager.instance.gameObject.GetComponent<MeshProcessor>().DeleteMeshes(SourceType.UDP);
 			ObjectManager.instance.gameObject.GetComponent<TagProcessor>().DeleteTags();
@@ -101,9 +88,12 @@ namespace HoloFab {
 			ObjectManager.instance.gameObject.GetComponent<Point3DProcessor>().DeletePoints();
 		}
 		public void OnAdd3DPoint() {
+			#if DEBUG
+			Debug.Log("General UI: add a point.");
+			#endif
 			// Check for C-plane
 			if (!ObjectManager.instance.CheckCPlane()) return;
-            
+
 			ObjectManager.instance.gameObject.GetComponent<Point3DProcessor>().AddPoint();
 		}
 	}

@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "5Tv8bmj5KjY+owvjWDyaJFoqTMiiMUtuRPheffjJ9cLZvLRR5aBUNdN1f48Hpi8ak8Itdb8JXKqS4hs04ekHug==",
+  "success": true,
+  "projectFilePath": "C:\\_UserFiles\\1_Work\\30_HoloFab\\HoloFab-Unity\\Assets\\Plugins\\MixedRealityToolkit.Providers\\WindowsMixedReality\\Shared\\DotNetAdapter\\DotNetAdapter.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Daniil\\.nuget\\packages\\microsoft.windows.mixedreality.dotnetwinrt\\0.5.1045\\microsoft.windows.mixedreality.dotnetwinrt.0.5.1045.nupkg.sha512",
+    "C:\\Users\\Daniil\\.nuget\\packages\\system.drawing.primitives\\4.3.0\\system.drawing.primitives.4.3.0.nupkg.sha512"
+  ],
+  "logs": []
+}

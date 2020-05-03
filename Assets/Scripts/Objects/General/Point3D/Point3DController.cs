@@ -6,26 +6,25 @@ using TMPro;
 
 namespace HoloFab {
 	#if WINDOWS_UWP
-	[RequireComponent(typeof(Placeable))]
+	[RequireComponent(typeof(Interactible_Placeable))]
 	#endif
 	public class Point3DController : MonoBehaviour {
-		// TODO: This should be in animation
-		public Vector3 scaleClosed = new Vector3(0.01f, 0.01f, 0.01f);
-		public Vector3 scaleOpen = new Vector3(10f, 1f, 10f);
-        
+		// // TODO: This should be in animation
+		// public Vector3 scaleClosed = new Vector3(0.01f, 0.01f, 0.01f);
+		// public Vector3 scaleOpen = new Vector3(10f, 1f, 10f);
+
 		private bool flagOpen;
 		GameObject zAxis, yAxis, xAxis, xyPlane, trigger;
 		Animator xAnim, yAnim, zAnim, triggerAnim;
-		#if WINDOWS_UWP
-		private Placeable placeable;
-		#endif
-        
+
+		private Interactible_Placeable placeable;
+
 		// Label variables
 		private TextMeshProUGUI textHolder;
 		private Vector3 relativePosition;
-        
+
 		private string sourceName = "Point 3D Controller";
-        
+
 		void Start() {
 			this.flagOpen = false;
 			foreach (Transform child in transform) {
@@ -39,29 +38,30 @@ namespace HoloFab {
 			this.yAnim       = this.yAxis.GetComponent<Animator>();
 			this.xAnim       = this.xAxis.GetComponent<Animator>();
 			this.triggerAnim = this.trigger.GetComponent<Animator>();
-            
-			#if WINDOWS_UWP
-			this.placeable = gameObject.GetComponent<Placeable>();
-			this.placeable.flagSelected = false;
-			#endif
+
+			this.placeable = gameObject.GetComponent<Interactible_Placeable>();
+			// this.placeable.flagPlacingOnStart = true;
+			this.placeable.OnStartPlacing = ToggleState;
+			this.placeable.OnEndPlacing = ToggleState;
 		}
-        
+
 		// Update is called once per frame
 		void Update() {
 			//Should it be updated every frame?
 			UpdatePointLabel();
-			if (!this.flagOpen)
-				UpdateAnimationState();
-			else
-				UpdateAnimationState(false);
-            
-			#if WINDOWS_UWP
-			// TODO: Redo - Ugly solution
-			// check if was plcaed on Hololens
-			if ((this.flagOpen) && (!this.placeable.flagSelected)) // Placed - update internal state.
-				ToggleState();
+			// if (!this.flagOpen)
+			// 	UpdateAnimationState();
+			// else
+			// 	UpdateAnimationState(false);
+
+		}
+		// Accessible way to triger animation change.
+		public void ToggleState(){
+			this.flagOpen = !this.flagOpen;
+			UpdateAnimationState(this.flagOpen);
+			#if DEBUG
+			DebugUtilities.UniversalDebug(sourceName, "Toggling state: New State: " + this.flagOpen);
 			#endif
-            
 		}
 		// General way to update animations.
 		// TODO: Make one animation for all of them together
@@ -70,23 +70,7 @@ namespace HoloFab {
 			this.yAnim.SetBool("Expand", flagState);
 			this.zAnim.SetBool("Expand", flagState);
 			this.triggerAnim.SetBool("Expand", flagState);
-			this.xyPlane.transform.localScale = (flagState) ? scaleClosed : scaleOpen;
-		}
-		// Accessible way to triger animation change.
-		public void ToggleState(){
-			this.flagOpen = !this.flagOpen;
-			#if DEBUG
-			DebugUtilities.UniversalDebug(sourceName, "Toggling state: New State: " + this.flagOpen);
-			#endif
-            
-			#if WINDOWS_UWP
-			// TODO: Redo - Ugly solution
-			#if DEBUG
-			DebugUtilities.UniversalDebug(sourceName, "Toggling state: Placeable selected: " + this.placeable.flagSelected);
-			#endif
-			if ((this.flagOpen) && (!this.placeable.flagSelected)) // start placing on Hololens
-				this.placeable.OnTap();
-			#endif
+			// this.xyPlane.transform.localScale = (flagState) ? this.scaleClosed : this.scaleOpen;
 		}
 		////////////////////////////////////////////////////////////////////////
 		// A function to Update the point Label.
